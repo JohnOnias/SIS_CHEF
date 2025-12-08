@@ -1,0 +1,32 @@
+import { BrowserWindow } from "electron";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+let win; // variável global para a janela
+
+// Corrige __dirname em ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export function createWindow() {
+  if (win) return win;
+
+  win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: true,
+      preload: join(__dirname, "..", "preloads", "index.js"),
+    },
+  });
+
+  // Carrega sua aplicação React no Vite dev server
+  win.loadURL("http://localhost:5173/#gerente");
+
+  win.on("closed", () => {
+    win = null; // libera a referência quando a janela é fechada
+  });
+
+  return win;
+}

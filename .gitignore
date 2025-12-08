@@ -1,0 +1,36 @@
+# Node modules
+node_modules/
+front/node_modules/
+back/node_modules/
+
+# Electron
+back/node_modules/
+back/database/node_modules/
+*.exe
+*.dmg
+*.AppImage
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build
+dist/
+build/
+out/
+release/
+bin/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+EOF

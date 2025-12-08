@@ -1,0 +1,1 @@
+# screens: são onde as telas são renderizadas no electron, utiliza um preload unico modular
