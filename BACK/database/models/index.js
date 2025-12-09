@@ -7,8 +7,10 @@ import ProdutoModel from "./Produto.js";
 import MesaModel from "./Mesa.js";
 import PedidoModel from "./Pedido.js";
 import ItemPedidoModel from "./ItemPedido.js";
-
-dotenv.config();
+dotenv.config({
+  path: ".env", // opcional: especificar o caminho
+  quiet: true, // <-- Isso remove o aviso do dotenv
+});
 
 // Conexão com o banco
 const sequelize = new Sequelize({

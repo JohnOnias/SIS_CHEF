@@ -1,10 +1,18 @@
-import React from "react";
+
+import React, { useEffect } from "react";
 import RectangleImg from '../../assets/rectangle.png';
 import GroupImg from '../../assets/group.png';
+
 import './style.css';
 
 function LoginView() {
-  document.getElementById("titulo").innerHTML = "Login!";
+  useEffect(() => {
+    const tituloElement = document.getElementById("titulo");
+    if (tituloElement) {
+      tituloElement.innerHTML = "Login!";
+    }
+  }, []);
+  
 
   return (
     <div className="container">

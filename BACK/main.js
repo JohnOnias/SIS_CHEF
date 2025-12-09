@@ -1,7 +1,7 @@
 // ============================================================
 // subdividir o main em controllers cada um com sua resposabilidade
 // ============================================================
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import { createWindow } from "./screens/createBrowserWindow.js";
 
 // ============================================================
@@ -62,8 +62,10 @@ import { pedidoIpc } from "./ipc/pedido/pedidoIpc.js";
 
 
 
-
-
+ipcMain.handle("get-msg", async () => {
+  console.log("get-msg chamado no Main");
+  return "Mensagem do Main para o Preload!";
+});
 
 
 

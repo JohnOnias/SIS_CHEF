@@ -55,10 +55,10 @@ function gerentePreload() {
     });
   }
 
-  window.addEventListener("mesa-clicada", (e) => {
+ /* window.addEventListener("mesa-clicada", (e) => {
     console.log("EVENTO RECEBIDO NO PRELOAD:", e.detail);
     window.apiGerente.abrirTelaPedido();
-  });
+  });*/
 }
 
 export default gerentePreload;
