@@ -15,14 +15,14 @@ export function createWindow() {
     width: 1920,
     height: 1080,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: true,
       preload: join(__dirname, "..", "preloads", "index.js"),
     },
   });
 
   // Carrega sua aplicação React no Vite dev server
-  win.loadURL("http://localhost:5173/#gerente");
+  win.loadURL("http://localhost:5173/#garcom");
 
   win.on("closed", () => {
     win = null; // libera a referência quando a janela é fechada

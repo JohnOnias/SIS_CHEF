@@ -1,4 +1,5 @@
-import { contextBridge, ipcRenderer } from "electron";
+const { contextBridge, ipcRenderer } = require ("electron");
+
 
 function pedidoPreload() {
   try {
@@ -26,6 +27,9 @@ function pedidoPreload() {
       getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
       adicionarProdutosPedido: (pedido) =>
         ipcRenderer.invoke("adicionarProdutosPedido", pedido),
+      getTeste: () => ipcRenderer.invoke("get-teste")
+
+
     };
 
     // Expõe em namespace próprio

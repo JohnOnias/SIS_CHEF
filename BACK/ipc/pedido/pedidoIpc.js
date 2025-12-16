@@ -128,5 +128,11 @@ export function pedidoIpc() {
             return { success: false, error: err.message };
         }
     });
+
+    ipcMain.handle("get-teste", async () => {
+    console.log("teste chegou no main"); 
+    return "Teste chegou no main(back)"; 
+    })
+
 }
 

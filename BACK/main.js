@@ -60,14 +60,10 @@ import { admIpc} from './ipc/adm/admIpc.js';
 import { garcomIpc } from "./ipc/funcionario/garcomIpc.js";
 import { pedidoIpc } from "./ipc/pedido/pedidoIpc.js";
 
-
-
 ipcMain.handle("get-msg", async () => {
   console.log("get-msg chamado no Main");
   return "Mensagem do Main para o Preload!";
 });
-
-
 
 
 

@@ -6,15 +6,17 @@ import React from "react";
 import LoginView from "./views/login/loginView";
 import GerenteView from "./views/gerente/gerenteView";
 import AdmView from "./views/adm/admView";
+import GarcomView from "./views/garcom/garcomView";
 
 // IMPORTANDO HASH ROUTER
 import { createHashRouter, RouterProvider } from "react-router-dom";
 
 const router = createHashRouter([
-  {
+   {
     path: "/",
     element: <LoginView />,
   },
+ 
   {
     path: "/gerente",
     element: <GerenteView />,
@@ -22,7 +24,13 @@ const router = createHashRouter([
   {
     path: "/adm",
     element: <AdmView />,
-  }
+  },
+
+  {
+    path: "/garcom",
+    element: <GarcomView/>
+  },
+
 ]);
 
 createRoot(document.getElementById("root")).render(
