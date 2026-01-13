@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("tb_categorias", {
+    await queryInterface.createTable("tb_mesas", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -11,27 +11,27 @@ module.exports = {
         primaryKey: true,
       },
 
-      nome: {
-        type: Sequelize.STRING(100),
+      numero: {
+        type: Sequelize.INTEGER,
         allowNull: false,
         unique: true,
       },
 
       status: {
-        type: Sequelize.ENUM("disponivel", "indisponivel"),
+        type: Sequelize.ENUM("disponivel", "ocupada", "reservada"),
         allowNull: false,
         defaultValue: "disponivel",
       },
 
-      descricao: {
-        type: Sequelize.TEXT,
+      n_cadeiras: {
+        type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: null,
+        defaultValue: 4,
       },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("tb_categorias");
+    await queryInterface.dropTable("tb_mesas");
   },
 };

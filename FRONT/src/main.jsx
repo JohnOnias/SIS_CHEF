@@ -2,39 +2,14 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import React from "react";
 
-// views
-import LoginView from "./views/login/loginView";
-import GerenteView from "./views/gerente/gerenteView";
-import AdmView from "./views/adm/admView";
-import GarcomView from "./views/garcom/garcomView";
 
 // IMPORTANDO HASH ROUTER
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import Routers from "./routers/routers.jsx";
+import { RouterProvider } from "react-router-dom";
 
-const router = createHashRouter([
-   {
-    path: "/",
-    element: <LoginView />,
-  },
- 
-  {
-    path: "/gerente",
-    element: <GerenteView />,
-  },
-  {
-    path: "/adm",
-    element: <AdmView />,
-  },
-
-  {
-    path: "/garcom",
-    element: <GarcomView/>
-  },
-
-]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <RouterProvider router={Routers} />
   </StrictMode>
 );

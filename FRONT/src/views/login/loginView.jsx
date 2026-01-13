@@ -1,39 +1,82 @@
+import React, { useEffect, useState } from "react";
+import RectangleImg from '../../assets/others/rectangle.png';
+import GroupImg from '../../assets/others/group.png';
 
-import React, { useEffect } from "react";
-import RectangleImg from '../../assets/rectangle.png';
-import GroupImg from '../../assets/group.png';
+//importa o css
+import './styles/login.css';
 
-import './style.css';
+//import modal reset senha
+import ModalResetSenha from "../components/modal/resetPassword";
+
 
 function LoginView() {
+  // altera o titulo da pagina
   useEffect(() => {
     const tituloElement = document.getElementById("titulo");
     if (tituloElement) {
       tituloElement.innerHTML = "Login!";
     }
   }, []);
-  
 
+// set modal reset senha
+const [openModal, setOpenModal] = useState(false);
+// evento modal
+
+
+
+  // função de login
+  const login = (formulario) => {
+    console.log("Fazendo login com os dados:", formulario);
+    try {
+      // Chama a API de login do Electron (façam try catch)
+      window.apiLogin.login(formulario);
+
+    } catch (error) {
+      console.error("Erro ao chamar a API de login:", error);
+    }
+  };
+
+  // mmodelo formulario/dados
+  const modelo = {
+    email: "",
+    senha: "",
+  };
+
+  const [formulario, setFormulario] = useState(modelo);
+
+  // evento
+  const evento = (event) => {
+    let nome = event.target.name;
+    let valor = event.target.value;
+
+    setFormulario({ ...formulario, [nome]: valor });
+  };
+
+
+  //retorno da função do componete
   return (
-    <div className="container">
+    <>
+      <div className="container">
+        <div className="leftSide">
+          <img
+            src={RectangleImg}
+            alt="imagem de pratos suculentos a esquerda"
+          />
+        </div>
 
-      <div className="leftSide">
-        <img src={RectangleImg} alt="imagem de pratos suculentos a esquerda" />
-      </div>
+        <div className="rightSide">
+          <div className="centralizeRight">
+            <div className="divimg">
+              <img src={GroupImg} alt="perfil icone" />
+            </div>
 
-      <div className="rightSide">
-        <div className="centralizeRight">
-          <div className="divimg">
-            <img src={GroupImg} alt="perfil icone" />
-          </div>
-
-       
             <input
               placeholder="Email"
               type="text"
               id="email"
               name="email"
               required
+              onChange={evento}
             />
             <input
               placeholder="Senha"
@@ -41,18 +84,22 @@ function LoginView() {
               name="senha"
               id="senha"
               required
-              minLength={4}
-              maxLength={20}
+              minLength={6}
+              maxLength={12}
+              onChange={evento}
             />
-            <button id="entrar" type="submit">Entrar</button>
-          <a href="#" id="esqueci">Esqueci minha senha!</a>
-          
+            <button id="entrar" type="submit" onClick={() => login(formulario)}>
+              Entrar
+            </button>
+            <a href="#" id="esqueci" onClick={() => setOpenModal(true)}>
+              Esqueci minha senha!
+            </a>
+          </div>
         </div>
       </div>
 
-  
-
-    </div>
+      <ModalResetSenha isOpen={openModal} onClose={() => setOpenModal(false)} />
+    </>
   );
 }
 

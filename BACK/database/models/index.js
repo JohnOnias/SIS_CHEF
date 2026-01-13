@@ -1,12 +1,12 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
-import AdministradorModel from "./Administrador.js";
-import FuncionarioModel from "./Funcionario.js";
-import CategoriaModel from "./Categoria.js";
-import ProdutoModel from "./Produto.js";
-import MesaModel from "./Mesa.js";
-import PedidoModel from "./Pedido.js";
-import ItemPedidoModel from "./ItemPedido.js";
+import AdministradorModel from "./Administrator.js";
+import FuncionarioModel from "./Employee.js";
+import CategoriaModel from "./Category.js";
+import ProdutoModel from "./Product.js";
+import MesaModel from "./Table.js";
+import PedidoModel from "./Order.js";
+import ItemPedidoModel from "./OrderItens.js";
 dotenv.config({
   path: ".env", // opcional: especificar o caminho
   quiet: true, // <-- Isso remove o aviso do dotenv
