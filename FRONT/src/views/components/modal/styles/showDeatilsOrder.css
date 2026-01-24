@@ -1,0 +1,61 @@
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.tabela-itens {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+.tabela-itens th,
+.tabela-itens td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.tabela-itens thead {
+    background: #ecf0f1;
+}
+.total-pedido {
+    text-align: right;
+    padding: 20px;
+    background: #ecf0f1;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+.total-pedido h3 {
+    margin: 0;
+    color: #27ae60;
+}
+.acoes-modal {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

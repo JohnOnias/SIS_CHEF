@@ -18,13 +18,16 @@ function ManagerView() {
       titulo.innerHTML = "Gerente!";
     }
   }, []);
-
+ const getFuncionario = {
+    nome: "João",
+    tipo: "Gerente"
+ };
 
   return (
     <>
       <Menu
-        nomeFuncionario="João"
-        tipoFuncionario="Gerente"
+        nomeFuncionario={getFuncionario.nome}
+        tipoFuncionario={getFuncionario.tipo}
         setTela={setTela}
       />
 

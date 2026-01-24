@@ -1,4 +1,5 @@
-import { BrowserWindow } from "electron";
+import pkg from "electron";
+const { BrowserWindow } = pkg;
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 

@@ -23,9 +23,13 @@ function OpenOrderModal(isOpen, onClose, n_Mesa) {
       let value = event.target.value;
       setFormulario({...formulario, [name]: value});
     }
-
+    const garcons = [
+      "Carlos",
+      "Ana",
+      "Mariana",
+    ];
     // lista de garçons
-    const garcons = window.api.getGarcom(); 
+    //const garcons = window.api.getGarcom(); 
 
 
 if (!isOpen) return null;

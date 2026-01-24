@@ -6,7 +6,7 @@ import GroupImg from '../../assets/others/group.png';
 import './styles/login.css';
 
 //import modal reset senha
-import ModalResetSenha from "../components/modal/resetPassword";
+import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
 
 
 function LoginView() {
