@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { createWindow } from "../../screens/createBrowserWindow.js";
 
 
-export function garcomIpc() {
+export function bartenderIpc() {
     ipcMain.handle('abrirTelaGarcom', async () => {
         try {
             await createWindow();

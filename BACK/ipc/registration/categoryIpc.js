@@ -1,9 +1,9 @@
 import { ipcMain } from "electron";
 import { createWindow } from "../../screens/createBrowserWindow.js";
-import { cadastrarCategoria, getCategoria } from '../../models/cadastro/categoria.js';
+import { cadastrarCategoria, getCategoria } from '../../models/registration/category.js';
 
 
-export function categoriaIpc() {
+export function categoryIpc() {
 
   ipcMain.handle("abrirCadastroCategoria", async () => {
     await createWindow();

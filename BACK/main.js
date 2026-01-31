@@ -1,7 +1,9 @@
 // ============================================================
 // subdividir o main em controllers cada um com sua resposabilidade
 // ============================================================
-import { app, ipcMain } from "electron";
+import pkg from "electron"; //Alterei esse import J*
+const { app, ipcMain, BrowserWindow } = pkg;//Alterei esse import J*
+ 
 import { createWindow } from "./screens/createBrowserWindow.js";
 
 // ============================================================
@@ -21,16 +23,16 @@ app.whenReady().then(() => {
 // chamar os ipc
 //=============================================================
   loginIpc();
-  categoriaIpc();
+  categoryIpc();
   produtoIpc();
   funcionarioIpc();
-  mesaIpc();
+  tableIpc();
   resetIpc();
   userIpc();
-  gerenteIpc();
+  managerIpc();
   admIpc();
-  garcomIpc(); 
-  pedidoIpc(); 
+  bartenderIpc(); 
+  orderIpc(); 
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -49,16 +51,16 @@ app.on("window-all-closed", () => {
 // importação dos IpcMains
 // ============================================================
 import { loginIpc } from './ipc/login/loginIpc.js';
-import {categoriaIpc} from './ipc/cadastro/categoriaIpc.js';  
-import { produtoIpc } from './ipc/cadastro/produtoIpc.js';
-import { funcionarioIpc } from './ipc/cadastro/funcionarioIpc.js';
-import { mesaIpc } from './ipc/cadastro/mesaIpc.js';
+import {categoryIpc} from './ipc/registration/categoryIpc.js';  
+import { productIpc } from './ipc/registration/productIpc.js';
+import { employeeIpc } from './ipc/registration/employeeIpc.js';
+import { tableIpc } from './ipc/registration/tableIpc.js';
 import { resetIpc } from './ipc/reset/resetIpc.js';
 import { userIpc } from './ipc/user/userIpc.js';  
-import { gerenteIpc } from './ipc/funcionario/gerenteIpc.js';
+import { managerIpc } from './ipc/employee/managerIpc.js';
 import { admIpc} from './ipc/adm/admIpc.js';
-import { garcomIpc } from "./ipc/funcionario/garcomIpc.js";
-import { pedidoIpc } from "./ipc/pedido/pedidoIpc.js";
+import { bartenderIpc } from "./ipc/employee/bartenderIpc.js";
+import { orderIpc } from "./ipc/order/orderIpc.js";
 
 ipcMain.handle("get-msg", async () => {
   console.log("get-msg chamado no Main");

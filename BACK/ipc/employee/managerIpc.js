@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { createWindow } from "../../screens/createBrowserWindow.js";
 
 
-export function gerenteIpc() {
+export function managerIpc() {
     ipcMain.handle('abrirTelaGerente', async () => {
         try {
             await createWindow();

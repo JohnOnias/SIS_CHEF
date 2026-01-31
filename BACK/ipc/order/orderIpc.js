@@ -1,10 +1,10 @@
 import { ipcMain } from 'electron';
-import { criarTelaPedido, fecharTelaPedido, criarTelaSelecaoProdutos, fecharTelaSelecaoProdutos } from '../../screens/pedido/screenPedido.js';
+import { criarTelaPedido, fecharTelaPedido, criarTelaSelecaoProdutos, fecharTelaSelecaoProdutos } from '../../screens/order/screenOrder.js';
 import { getFuncionario } from '../../models/utils/getFuncionario.js';
 import { registrarPedido} from '../../models/utils/registrarPedido.js'; 
-import { mudarStatus } from '../../models/cadastro/mesa.js';
+import { mudarStatus } from '../../models/registration/table.js';
 import { getProdutosID, getTodosProdutos, adicionarProdutosPedido } from '../../models/utils/produto.js';
-import { getCategoria } from '../../models/cadastro/categoria.js';
+import { getCategoria } from '../../models/registration/category.js';
 //import { inicializarTabelas } from '../../database/db/inicializador.js';
 
 let pedidoAtual = {
@@ -13,7 +13,7 @@ let pedidoAtual = {
     idPedido: null
 };
 
-export function pedidoIpc() {
+export function orderIpc() {
 
     // Abrir a tela de pedido
     ipcMain.handle('abrirTelaPedido', async () => {

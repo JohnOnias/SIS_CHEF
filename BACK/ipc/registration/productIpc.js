@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
-import { criarTelaCadastroProduto } from '../../screens/cadastro/screenProduto.js';
-import { cadastrarProduto, getProdutosID } from '../../models/cadastro/produto.js';
+import { criarTelaCadastroProduto } from '../../screens/cadastro/screenProduct.js';
+import { cadastrarProduto, getProdutosID } from '../../models/registration/product.js';
 
-export function produtoIpc() {
+export function productIpc() {
   
   ipcMain.handle("get-produtos-por-categoria", async (_, idCategoria) => {
       return await getProdutosID(idCategoria);

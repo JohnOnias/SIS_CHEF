@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
-import { criarTelaCadastroMesa } from '../../screens/cadastro/screenMesa.js';
-import { cadastrarMesa, getMesas } from '../../models/cadastro/mesa.js';
+import { criarTelaCadastroMesa } from '../../screens/cadastro/screenTable.js';
+import { cadastrarMesa, getMesas } from '../../models/registration/table.js';
 
-export function mesaIpc() {
+export function tableIpc() {
    
    ipcMain.handle("abrirCadastroMesa", async () => {
       await criarTelaCadastroMesa();
