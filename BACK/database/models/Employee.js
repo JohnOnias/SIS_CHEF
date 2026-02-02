@@ -21,7 +21,7 @@ export default function FuncionarioModel(sequelize) {
     {
       tableName: "tb_funcionarios",
       timestamps: false,
-    }
+    },
   );
 
   return Funcionario;

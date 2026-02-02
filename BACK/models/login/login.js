@@ -1,5 +1,3 @@
-// ATENÇÃO: Confirme se o nome do seu model agora é "Usuario".
-// Se você manteve o nome "Funcionario" no arquivo, mude o import abaixo.
 import { Funcionario } from "../../database/models/index.js";
 import bcrypt from "bcryptjs";
 

@@ -22,7 +22,7 @@ module.exports = {
       },
 
       tipo_pagamento: {
-        type: Sequelize.ENUM("pix", "debito", "credito", "dinheiro"),
+        type: Sequelize.STRING(50),
         allowNull: true,
         defaultValue: "dinheiro",
       },

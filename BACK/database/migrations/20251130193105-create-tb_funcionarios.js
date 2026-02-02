@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("tb_usuarios", {
+    await queryInterface.createTable("tb_funcionarios", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -18,7 +18,7 @@ module.exports = {
 
       cpf: {
         type: Sequelize.STRING(14),
-        allowNull: true,
+        allowNull: false,
         unique: true,
         defaultValue: null,
       },
@@ -30,7 +30,7 @@ module.exports = {
       },
 
       tipo: {
-        type: Sequelize.ENUM("garçom", "gerente", "administrador"),
+        type: Sequelize.STRING(50),
         allowNull: false,
         defaultValue: "garçom",
       },
@@ -47,7 +47,7 @@ module.exports = {
       },
 
       reset_expires: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.STRING(255),
         allowNull: true,
         defaultValue: null,
       },
@@ -61,6 +61,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("tb_usuarios");
+    await queryInterface.dropTable("tb_funcionarios");
   },
 };

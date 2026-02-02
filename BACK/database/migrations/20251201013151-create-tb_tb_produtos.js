@@ -23,7 +23,7 @@ module.exports = {
       },
 
       status: {
-        type: Sequelize.ENUM("disponivel", "indisponivel"),
+        type: Sequelize.STRING(50),
         allowNull: false,
         defaultValue: "disponivel",
       },

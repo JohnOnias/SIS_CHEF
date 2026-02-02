@@ -10,11 +10,17 @@ dotenv.config({
   path: ".env", // opcional: especificar o caminho
   quiet: true, // <-- Isso remove o aviso do dotenv
 });
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Conexão com o banco
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: process.env.DB_STORAGE || "../AppRestaurante.sqlite",
+  //storage: process.env.DB_STORAGE || "../AppRestaurante.sqlite",
+  storage: path.join(__dirname, "../AppRestaurante.sqlite"),
   logging: false, // opcional: desliga logs SQL
 });
 

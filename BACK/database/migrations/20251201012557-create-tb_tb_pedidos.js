@@ -18,10 +18,9 @@ module.exports = {
       },
 
       status: {
-        type: Sequelize.ENUM("aberto", "fechado", "cancelado"),
-        allowNull: true,
-        defaultValue: "aberto",
-      },
+  type: Sequelize.STRING,
+  defaultValue: "aberto",
+},
 
       valor_total: {
         type: Sequelize.DECIMAL(10, 2),
@@ -29,11 +28,11 @@ module.exports = {
         defaultValue: "0.00",
       },
 
-      id_usuario: {
+      id_funcionario: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: "tb_usuarios",
+          model: "tb_funcionarios",
           key: "id",
         },
         // SQL não define CASCADE
@@ -41,8 +40,8 @@ module.exports = {
     });
 
     // Índice conforme o SQL
-    await queryInterface.addIndex("tb_pedidos", ["id_usuario"], {
-      name: "fk_pedido_usuario",
+    await queryInterface.addIndex("tb_pedidos", ["id_funcionario"], {
+      name: "fk_pedido_funcionario",
     });
   },
 
