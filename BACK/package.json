@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Sistema de Gerenciamento para Chef",
   "main": "main.js",
-  "type": "module",
   "scripts": {
     "start": "electron .",
     "server": "node server.js",

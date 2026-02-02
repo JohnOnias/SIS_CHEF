@@ -1,6 +1,5 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
-import AdministradorModel from "./Administrator.js";
 import FuncionarioModel from "./Employee.js";
 import CategoriaModel from "./Category.js";
 import ProdutoModel from "./Product.js";
@@ -20,7 +19,6 @@ const sequelize = new Sequelize({
 });
 
 // Inicializa os models
-const Administrador = AdministradorModel(sequelize, Sequelize.DataTypes);
 const Funcionario = FuncionarioModel(sequelize, Sequelize.DataTypes);
 const Categoria = CategoriaModel(sequelize, Sequelize.DataTypes);
 const Produto = ProdutoModel(sequelize, Sequelize.DataTypes);
@@ -50,7 +48,6 @@ ItemPedido.belongsTo(Produto, { foreignKey: "produto_id" });
 export {
   sequelize,
   Sequelize,
-  Administrador,
   Funcionario,
   Categoria,
   Produto,

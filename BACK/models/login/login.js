@@ -1,50 +1,44 @@
-import { Administrador, Funcionario } from "../../database/models/index.js"; 
+// ATENÇÃO: Confirme se o nome do seu model agora é "Usuario".
+// Se você manteve o nome "Funcionario" no arquivo, mude o import abaixo.
+import { Funcionario } from "../../database/models/index.js";
 import bcrypt from "bcryptjs";
-import { Op } from "sequelize";
+
 
 export async function login(email, senha) {
+  console.log("teste chegou no login model back", email, senha);
   try {
-    // Busca primeiro no Administrador
-    const administrador = await Administrador.findOne({
+    // 1. Busca o usuário único pelo email
+    const usuario = await Funcionario.findOne({
       where: { email },
-      attributes: ["id", "nome", "email", "senha"],
+      // É crucial trazer o campo "tipo" do banco de dados agora
+      attributes: ["id", "nome", "email", "senha", "tipo"],
     });
 
-    let usuario = administrador;
-
-    // Se não encontrou no Administrador, busca no Funcionario
+    // 2. Se não achou ninguém, retorna null
     if (!usuario) {
-      usuario = await Funcionario.findOne({
-        where: { email },
-        attributes: ["id", "nome", "email", "senha", "tipo"],
-      });
-
-      if (usuario) {
-        usuario.tipo = usuario.tipo || "funcionario"; // Define tipo padrão se não existir
-      }
-    } else {
-      usuario.tipo = "adm"; // Define tipo para administrador
+      return null;
     }
 
-    if (!usuario) {
-      return null; // Usuário não encontrado
-    }
-
-    // Verifica a senha
+    // 3. Verifica a senha
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
     if (!senhaValida) {
-      return null; // Senha incorreta
+      return null;
     }
 
-    // Retorna objeto com dados do usuário (sem a senha)
+    // 4. Prepara o objeto de retorno
+    // O .get({ plain: true }) limpa os metadados do Sequelize
+    const usuarioLimpo = usuario.get({ plain: true });
+
     return {
-      id: usuario.id,
-      nome: usuario.nome,
-      email: usuario.email,
-      tipo: usuario.tipo,
+      id: usuarioLimpo.id,
+      nome: usuarioLimpo.nome,
+      email: usuarioLimpo.email,
+      // Aqui ele pega o tipo (ex: 'adm', 'funcionario') direto do banco
+      tipo: usuarioLimpo.tipo || "funcionario",
     };
   } catch (error) {
     console.error("Erro no login:", error);
     throw error;
   }
+  
 }

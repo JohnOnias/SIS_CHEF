@@ -1,6 +1,6 @@
-import { ipcRenderer, contextBridge } from "electron";
+const { ipcRenderer, contextBridge } = require("electron");
 
-function funcionarioPreload() {
+module.exports = function funcionarioPreload() {
   try {
     const apiFuncionario = {
       cadastrarFuncionario: (nome, cpf, email, cargo, senha) =>
@@ -10,7 +10,7 @@ function funcionarioPreload() {
           cpf,
           email,
           cargo,
-          senha
+          senha,
         ),
       abrirTelaDeCadastroFuncionario: () =>
         ipcRenderer.invoke("abrirCadastroFuncionario"),
@@ -21,11 +21,11 @@ function funcionarioPreload() {
 
     console.log(
       "[preload-funcionario] API exposta com sucesso - keys:",
-      Object.keys(apiFuncionario)
+      Object.keys(apiFuncionario),
     );
   } catch (err) {
     console.error("[preload-funcionario] ERRO ao carregar preload:", err);
   }
-}
+};
 
-export default funcionarioPreload;
+

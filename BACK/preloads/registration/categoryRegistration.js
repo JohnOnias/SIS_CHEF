@@ -1,24 +1,12 @@
-import { ipcRenderer, contextBridge } from "electron";
+const { ipcRenderer } = require("electron");
 
-function categoriaPreload() {
-  try {
-    const apiCategoria = {
-      getCategorias: () => ipcRenderer.invoke("get-categorias"),
-      cadastrarCategoria: (nomeCategoria, status) =>
-        ipcRenderer.invoke("cadastrar-categoria", nomeCategoria, status),
-      abrirCadastroCategoria: () =>
-        ipcRenderer.invoke("abrirCadastroCategoria"),
-    };
+module.exports = function categoriaPreload() {
+  return {
+    getCategorias: () => ipcRenderer.invoke("get-categorias"),
 
-    contextBridge.exposeInMainWorld("apiCategoria", apiCategoria);
+    cadastrarCategoria: (nomeCategoria, status) =>
+      ipcRenderer.invoke("cadastrar-categoria", nomeCategoria, status),
 
-    console.log(
-      "[preload-categoria] API exposta com sucesso - keys:",
-      Object.keys(apiCategoria)
-    );
-  } catch (err) {
-    console.error("[preload-categoria] ERRO ao carregar preload:", err);
-  }
-}
-
-export default categoriaPreload;
+    abrirCadastroCategoria: () => ipcRenderer.invoke("abrirCadastroCategoria"),
+  };
+};

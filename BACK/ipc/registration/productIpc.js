@@ -1,19 +1,41 @@
-import { ipcMain } from "electron";
-import { criarTelaCadastroProduto } from '../../screens/cadastro/screenProduct.js';
-import { cadastrarProduto, getProdutosID } from '../../models/registration/product.js';
+const { ipcMain } = require("electron");
+const {
+  cadastrarProduto,
+  getProdutosID,
+} = require("../../models/registration/product.js");
+const {
+  getProdutosID: getProdutosIDUtils,
+  getTodosProdutos,
+} = require("../../models/utils/produto.js");
 
-export function productIpc() {
-  
-  ipcMain.handle("get-produtos-por-categoria", async (_, idCategoria) => {
-      return await getProdutosID(idCategoria);
-    });
+module.exports = function productIpc() {
+  ipcMain.handle(
+    "cadastrar-produto",
+    async (event, nome, preco, categoria, descricao) => {
+      // Corrigi os parâmetros - o primeiro é sempre o event
+      return await cadastrarProduto(nome, preco, categoria, descricao);
+    },
+  );
 
-    ipcMain.handle("cadastrarProduto", async (_, nome, preco, categoria_id, descricao) => {
-      return await cadastrarProduto(nome, preco, categoria_id, descricao);
-    });
+  // Pegar produtos de uma categoria
+  ipcMain.handle("getProdutosCategoria", async (event, categoriaId) => {
+    try {
+      // Aqui você precisa decidir qual getProdutosID usar
+      // Vou usar o da primeira importação, mas você escolha
+      return await getProdutosID(categoriaId);
+    } catch (error) {
+      console.error("Erro ao pegar produtos:", error);
+      return [];
+    }
+  });
 
-    ipcMain.handle("abrirCadastroProduto", async () => {
-      await criarTelaCadastroProduto();
-    });
+  ipcMain.handle("getTodosProdutos", async () => {
+    try {
+      return await getTodosProdutos();
+    } catch (error) {
+      console.error("Erro ao pegar produtos:", error);
+      return [];
+    }
+  });
+}
 
-};

@@ -1,19 +1,10 @@
-import { ipcMain } from 'electron';
-import { createWindow } from "../../screens/createBrowserWindow.js";
+const { ipcMain } = require ("electron");
 
 
-export function bartenderIpc() {
-    ipcMain.handle('abrirTelaGarcom', async () => {
-        try {
-            await createWindow();
 
-            if (loginWindow && !loginWindow.isDestroyed()) loginWindow.close();
-
-            return { success: true };
-        } catch (error) {
-            return { success: false, error: error.message };
-        }
-    });
-
-
+module.exports = function bartenderIpc() {
+    
+    
+    return null;
 }
+

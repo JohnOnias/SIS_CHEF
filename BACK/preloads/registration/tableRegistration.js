@@ -1,24 +1,12 @@
-import { ipcRenderer, contextBridge } from "electron";
+const { ipcRenderer } = require("electron");
 
-function mesasPreload() {
-  try {
-    const apiMesas = {
-      getMesas: () => ipcRenderer.invoke("get-mesas"),
-      abrirCadastroMesa: () => ipcRenderer.invoke("abrirCadastroMesa"),
-      cadastrarMesa: (numero_mesa, status, n_cadeiras) =>
-        ipcRenderer.invoke("cadastro-mesa", numero_mesa, status, n_cadeiras),
-    };
+module.exports = function mesasPreload() {
+  return {
+    getMesas: () => ipcRenderer.invoke("get-mesas"),
 
-    // Expõe em namespace próprio
-    contextBridge.exposeInMainWorld("apiMesas", apiMesas);
+    abrirCadastroMesa: () => ipcRenderer.invoke("abrirCadastroMesa"),
 
-    console.log(
-      "[preload-mesas] API exposta com sucesso - keys:",
-      Object.keys(apiMesas)
-    );
-  } catch (err) {
-    console.error("[preload-mesas] ERRO ao carregar preload:", err);
-  }
-}
-
-export default mesasPreload;
+    cadastrarMesa: (numero_mesa, status, n_cadeiras) =>
+      ipcRenderer.invoke("cadastro-mesa", numero_mesa, status, n_cadeiras),
+  };
+};

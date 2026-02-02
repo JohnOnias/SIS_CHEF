@@ -1,20 +1,26 @@
-import { ipcMain } from "electron";
-import { createWindow } from "../../screens/createBrowserWindow.js";
-import { cadastrarCategoria, getCategoria } from '../../models/registration/category.js';
+const { ipcMain } = require("electron");
+const {
+  cadastrarCategoria,
+  getCategoria,
+} = require("../../models/registration/category.js");
 
-
-export function categoryIpc() {
-
-  ipcMain.handle("abrirCadastroCategoria", async () => {
-    await createWindow();
-    return { success: true };
-  });
-
+module.exports = function categoryIpc() {
   ipcMain.handle("cadastrar-categoria", async (_, nomeCategoria, status) => {
     return await cadastrarCategoria(nomeCategoria, status);
   });
+
   ipcMain.handle("get-categorias", async () => {
     return await getCategoria();
   });
 
-};
+  // Pegar todas as categorias
+  ipcMain.handle("getTodasCategorias", async () => {
+    try {
+      return await getCategoria();
+    } catch (error) {
+      console.error("Erro ao pegar categorias:", error);
+      return [];
+    }
+  });
+}
+

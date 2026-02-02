@@ -29,7 +29,7 @@ const [openModal, setOpenModal] = useState(false);
     console.log("Fazendo login com os dados:", formulario);
     try {
       // Chama a API de login do Electron (façam try catch)
-      window.apiLogin.login(formulario);
+     window.apiLogin.login(formulario.email, formulario.senha);
 
     } catch (error) {
       console.error("Erro ao chamar a API de login:", error);

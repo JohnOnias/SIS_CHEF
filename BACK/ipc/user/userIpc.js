@@ -1,14 +1,13 @@
-import { ipcMain } from "electron";
+const { ipcMain } = require("electron");
+
 let currentUser = null;
 
-
-export function userIpc() {
-
-    ipcMain.handle("set-current-user", async (_, usuario) => {
+module.exports = function userIpc() {
+  ipcMain.handle("set-current-user", async (_, usuario) => {
     currentUser = usuario || null;
     return { success: true };
-    });
+  });
 
-    ipcMain.handle("get-current-user", async () => currentUser);
-    
-};
+  ipcMain.handle("get-current-user", async () => currentUser);
+}
+

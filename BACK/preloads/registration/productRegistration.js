@@ -1,32 +1,26 @@
-import { ipcRenderer, contextBridge } from "electron";
+const { ipcRenderer } = require("electron");
 
-function produtoPreload() {
-  try {
-    const apiProduto = {
-      getCategorias: () => ipcRenderer.invoke("get-categorias"),
-      cadastrarProduto: (nome, preco, categoria, descricao) =>
-        ipcRenderer.invoke(
-          "cadastrarProduto",
-          nome,
-          preco,
-          categoria,
-          descricao
-        ),
-      abrirCadastroProduto: () => ipcRenderer.invoke("abrirCadastroProduto"),
-      getProdutosPorCategoria: (idCategoria) =>
-        ipcRenderer.invoke("get-produtos-por-categoria", idCategoria),
-    };
+module.exports = function produtoPreload() {
+  return {
+    getCategorias: () => ipcRenderer.invoke("get-categorias"),
 
-    // Expõe em namespace próprio
-    contextBridge.exposeInMainWorld("apiProduto", apiProduto);
+    cadastrarProduto: (nome, preco, categoria, descricao) =>
+      ipcRenderer.invoke(
+        "cadastrar-produto",
+        nome,
+        preco,
+        categoria,
+        descricao,
+      ),
 
-    console.log(
-      "[preload-produto] API exposta com sucesso - keys:",
-      Object.keys(apiProduto)
-    );
-  } catch (err) {
-    console.error("[preload-produto] ERRO ao carregar preload:", err);
-  }
-}
+    abrirCadastroProduto: () => ipcRenderer.invoke("abrirCadastroProduto"),
 
-export default produtoPreload;
+    getProdutosPorCategoria: (idCategoria) =>
+      ipcRenderer.invoke("get-produtos-por-categoria", idCategoria),
+
+    getProdutosCategoria: (categoriaId) =>
+      ipcRenderer.invoke("getProdutosCategoria", categoriaId),
+
+    getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
+  };
+};

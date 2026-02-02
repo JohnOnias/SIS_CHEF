@@ -1,30 +1,36 @@
-import { contextBridge, ipcRenderer } from "electron";
-import admPreload from "./adm/adm.js";
-import categoriaPreload from "./cadastro/cadastroCategoria.js";
-import funcionarioPreload from "./cadastro/cadastroFuncionario.js";
-import mesasPreload from "./cadastro/cadastroMesas.js";
-import produtoPreload from "./cadastro/cadastroProduto.js";
-import gerentePreload from "./gerente/gerente.js";
-import loginPreload from "./login/login.js";
-import pedidoPreload from "./pedido/pedido.js";
-import userPreload from "./user/user.js";
+const { contextBridge, ipcRenderer } = require("electron");
 
+// Importar todos os preloads específicos
+const admPreload = require("./adm/adm.js");
+const categoriaPreload = require("./registration/categoryRegistration.js");
+const funcionarioPreload = require("./registration/employeeRegistration.js");
+const mesasPreload = require("./registration/tableRegistration.js");
+const produtoPreload = require("./registration/productRegistration.js");
+const gerentePreload = require("./manager/manager.js");
+const loginPreload = require("./login/login.js");
+const pedidoPreload = require("./order/order.js");
+const userPreload = require("./user/user.js");
 
+// API única
+const api = {
+  adm: admPreload(),
+  categoria: categoriaPreload(),
+  funcionario: funcionarioPreload(),
+  mesas: mesasPreload(),
+  produto: produtoPreload(),
+  gerente: gerentePreload(),
+  login: loginPreload(),
+  pedido: pedidoPreload(),
+  user: userPreload(),
 
-  categoriaPreload();
-  admPreload();
-  funcionarioPreload();
-  mesasPreload();
-  produtoPreload();
-  gerentePreload();
-  loginPreload();
-  pedidoPreload();
-  userPreload();
+  // Métodos  globais
+  testConnection: () => ipcRenderer.invoke("test-connection"),
+};
 
+// Exposição única
+contextBridge.exposeInMainWorld("api", api);
 
-
-console.log("Preloads carregados com sucesso.");
-
-contextBridge.exposeInMainWorld("api", {
-  getMsg: () => ipcRenderer.invoke("get-msg"),
-});
+console.log(
+  " Preload index carregado | módulos:",
+  Object.keys(api),
+);

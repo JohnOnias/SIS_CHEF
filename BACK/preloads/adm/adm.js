@@ -1,30 +1,15 @@
-import { contextBridge, ipcRenderer } from "electron";
+const { ipcRenderer } = require("electron");
 
-function admPreload() {
-  try {
-    const apiAdm = {
-      abrirTelaAdm: () => ipcRenderer.invoke("abrirTelaAdm"),
-      cadastrarFuncionario: (nome, cpf, email, cargo, senha) =>
-        ipcRenderer.invoke(
-          "cadastrar-funcionario",
-          nome,
-          cpf,
-          email,
-          cargo,
-          senha
-        ),
-      abrirTelaDeCadastroFuncionario: () =>
-        ipcRenderer.invoke("abrirCadastroFuncionario"),
-    };
-
-    contextBridge.exposeInMainWorld("api", apiAdm);
-    console.log(
-      "[preload-gerente] API exposta com sucesso - keys:",
-      Object.keys(apiAdm)
-    );
-  } catch (err) {
-    console.error("[preload-gerente] ERRO ao carregar preload:", err);
-  }
-}
-
-export default admPreload;
+module.exports = function admPreload() {
+  return {
+    cadastrarFuncionario: (nome, cpf, email, cargo, senha) =>
+      ipcRenderer.invoke(
+        "cadastrar-funcionario",
+        nome,
+        cpf,
+        email,
+        cargo,
+        senha,
+      ),
+  };
+};

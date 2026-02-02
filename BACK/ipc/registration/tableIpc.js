@@ -1,18 +1,31 @@
-import { ipcMain } from "electron";
-import { criarTelaCadastroMesa } from '../../screens/cadastro/screenTable.js';
-import { cadastrarMesa, getMesas } from '../../models/registration/table.js';
+const { ipcMain } = require("electron");
+const {
+  cadastrarMesa,
+  getMesas,
+  mudarStatus,
+} = require("../../models/registration/table.js");
 
-export function tableIpc() {
-   
-   ipcMain.handle("abrirCadastroMesa", async () => {
-      await criarTelaCadastroMesa();
-    });
-
-    ipcMain.handle("cadastro-mesa", async (_, numero_mesa, status, n_cadeiras) => {
+module.exports = function tableIpc() {
+  ipcMain.handle(
+    "cadastro-mesa",
+    async (_, numero_mesa, status, n_cadeiras) => {
       return await cadastrarMesa(numero_mesa, status, n_cadeiras);
-    });
+    },
+  );
 
-    ipcMain.handle("get-mesas", async () => {
-      return await getMesas();
-    });
-  };
+  ipcMain.handle("get-mesas", async () => {
+    return await getMesas();
+  });
+
+  // Mudar status da mesa
+  ipcMain.handle("mudar-status-mesa", async (event, numeroMesa) => {
+    try {
+      const resultado = await mudarStatus(numeroMesa);
+      return { success: true, data: resultado };
+    } catch (err) {
+      console.error("Erro ao mudar status da mesa:", err);
+      return { success: false, error: err.message };
+    }
+  });
+}
+

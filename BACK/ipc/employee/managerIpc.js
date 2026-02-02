@@ -1,19 +1,7 @@
-import { ipcMain } from 'electron';
-import { createWindow } from "../../screens/createBrowserWindow.js";
+const { ipcMain } = require( "electron");
+const { cadastrarCategoria } = require ("../../models/registration/category.js");
+const { cadastrarProduto } = require ("../../models/registration/product.js");
 
-
-export function managerIpc() {
-    ipcMain.handle('abrirTelaGerente', async () => {
-        try {
-            await createWindow();
-
-            if (loginWindow && !loginWindow.isDestroyed()) loginWindow.close();
-
-            return { success: true };
-        } catch (error) {
-            return { success: false, error: error.message };
-        }
-    });
-
-
+module.exports = function managerIpc() {
+  return null;
 }

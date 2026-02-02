@@ -1,0 +1,11 @@
+# login
+    - apiLogin.login = retorna objeto(id, nome, email, tipoUsuario)
+
+# reset senha
+    - 
+
+# cadastro Funcionario
+    - apiFuncionario.cadastrarFuncionario = sem retorno
+
+# cadastro Produto 
+    - 

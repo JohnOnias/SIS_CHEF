@@ -1,71 +1,79 @@
 // ============================================================
-// subdividir o main em controllers cada um com sua resposabilidade
+// subdividir o main em controllers cada um com sua responsabilidade
 // ============================================================
-import pkg from "electron"; //Alterei esse import J*
-const { app, ipcMain, BrowserWindow } = pkg;//Alterei esse import J*
- 
-import { createWindow } from "./screens/createBrowserWindow.js";
+const { app, ipcMain, BrowserWindow } = require("electron");
+const { createWindow } = require("./screens/createBrowserWindow.js");
 
 // ============================================================
-// Imports internos
+// importação dos IpcMains (colocado no topo para evitar hoisting issues)
 // ============================================================
-// home
+const loginIpc = require("./ipc/login/loginIpc.js");
+const categoryIpc = require("./ipc/registration/categoryIpc.js");
+//const productIpc = require('./ipc/registration/productIpc.js');
+//const employeeIpc = require('./ipc/registration/employeeIpc.js');
+const tableIpc = require("./ipc/registration/tableIpc.js");
+const resetIpc = require("./ipc/reset/resetIpc.js");
+const userIpc = require("./ipc/user/userIpc.js");
+const managerIpc = require("./ipc/employee/managerIpc.js");
+const admIpc = require("./ipc/adm/admIpc.js");
+const bartenderIpc = require("./ipc/employee/bartenderIpc.js");
+const orderIpc = require("./ipc/order/orderIpc.js");
 
+// ============================================================
+// Função para inicializar todos os IPC handlers
+// ============================================================
+function inicializarIpcHandlers() {
+  try {
+    loginIpc();
+    categoryIpc();
+    //produtoIpc();
+    //funcionarioIpc();
+    tableIpc();
+    resetIpc();
+    userIpc();
+    managerIpc();
+    admIpc();
+    bartenderIpc();
+    orderIpc();
+
+    console.log("Todos os IPC handlers foram inicializados com sucesso.");
+  } catch (error) {
+    console.error("Erro ao inicializar IPC handlers:", error);
+  }
+}
 
 // ============================================================
 // Inicialização do App
 // ============================================================
 app.whenReady().then(() => {
-  createWindow(); 
+  createWindow();
 
-
-// ============================================================
-// chamar os ipc
-//=============================================================
-  loginIpc();
-  categoryIpc();
-  produtoIpc();
-  funcionarioIpc();
-  tableIpc();
-  resetIpc();
-  userIpc();
-  managerIpc();
-  admIpc();
-  bartenderIpc(); 
-  orderIpc(); 
+  // ============================================================
+  // chamar os ipc
+  // ============================================================
+  inicializarIpcHandlers();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
-
 });
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
-
-
-
 // ============================================================
-// importação dos IpcMains
+// Exportações se necessário para outros módulos
 // ============================================================
-import { loginIpc } from './ipc/login/loginIpc.js';
-import {categoryIpc} from './ipc/registration/categoryIpc.js';  
-import { productIpc } from './ipc/registration/productIpc.js';
-import { employeeIpc } from './ipc/registration/employeeIpc.js';
-import { tableIpc } from './ipc/registration/tableIpc.js';
-import { resetIpc } from './ipc/reset/resetIpc.js';
-import { userIpc } from './ipc/user/userIpc.js';  
-import { managerIpc } from './ipc/employee/managerIpc.js';
-import { admIpc} from './ipc/adm/admIpc.js';
-import { bartenderIpc } from "./ipc/employee/bartenderIpc.js";
-import { orderIpc } from "./ipc/order/orderIpc.js";
-
-ipcMain.handle("get-msg", async () => {
-  console.log("get-msg chamado no Main");
-  return "Mensagem do Main para o Preload!";
-});
-
-
-
+module.exports = {
+  inicializarIpcHandlers,
+  loginIpc,
+  categoryIpc,
+  tableIpc,
+  resetIpc,
+  userIpc,
+  managerIpc,
+  admIpc,
+  bartenderIpc,
+  orderIpc,
+};

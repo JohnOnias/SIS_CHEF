@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import { Administrador, Funcionario } from "../../database/models/index.js";
+import { Funcionario } from "../../database/models/index.js";
 
 // --- Gerar token e expiração ---
 export function gerarToken() {
