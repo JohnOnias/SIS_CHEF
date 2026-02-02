@@ -25,7 +25,30 @@
         } catch (error) {
           console.error("Erro no login:", error);
         }
+         // teste cadastro funcionario
+      try {
+        const cadastroUsuario = await window.api.funcionario.cadastrarFuncionario("joao","123456", "joao@teste.com","123456789" );
+        console.log("Cadastro de usuário:", cadastroUsuario);
+      } catch (error) {
+        console.error("Erro ao cadastrar usuário:", error);
+      }
+
+      // teste cadastro produto
+      try {
+        const cadastroProduto = await window.api.produto.cadastrarProduto(
+          "Produto Teste",
+           19.99,
+           1,
+          "Descrição do produto teste");
+        console.log("Cadastro de produto:", cadastroProduto);
+      } catch (error) {
+        console.error("Erro ao cadastrar produto:", error);
+      }
       })();
+
+
+     
+
     </script>
   </body>
 </html>
