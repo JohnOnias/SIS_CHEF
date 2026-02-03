@@ -28,8 +28,22 @@ const [openModal, setOpenModal] = useState(false);
   const login = (formulario) => {
     console.log("Fazendo login com os dados:", formulario);
     try {
-      // Chama a API de login do Electron (façam try catch)
-     window.apiLogin.login(formulario.email, formulario.senha);
+
+      window.api.login.login(formulario.email, formulario.senha);
+     
+
+
+     if(window.api.login.login){
+        
+          console.log("Login bem-sucedido!");
+          //redirecionar para a proxima pagina coloque a rederecionamento aqui 
+
+          /////////
+     }
+     else{
+       alert("Erro ao fazer login, verifique suas credenciais.");
+     }
+
 
     } catch (error) {
       console.error("Erro ao chamar a API de login:", error);

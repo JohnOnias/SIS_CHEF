@@ -12,10 +12,10 @@ function ManagerView() {
     if (titulo) titulo.innerHTML = "Gerente!";
   }, []);
 
-  const getFuncionario = {
-    nome: "João",
-    tipo: "Gerente",
-  };
+
+
+  
+  const getFuncionario = window.api.user.getCurrentUser();
 
   return (
     <div className="container">
