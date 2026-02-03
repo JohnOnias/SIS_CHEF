@@ -10,7 +10,7 @@
 
     <script>
       (async () => {
-        try {
+        /* try {
           if (!window.api || !window.api.login) {
             console.error("API do Electron não disponível");
             return;
@@ -25,30 +25,101 @@
         } catch (error) {
           console.error("Erro no login:", error);
         }
-         // teste cadastro funcionario
-      try {
-        const cadastroUsuario = await window.api.funcionario.cadastrarFuncionario("joao","123456", "joao@teste.com","123456789" );
-        console.log("Cadastro de usuário:", cadastroUsuario);
-      } catch (error) {
-        console.error("Erro ao cadastrar usuário:", error);
-      }
 
-      // teste cadastro produto
-      try {
-        const cadastroProduto = await window.api.produto.cadastrarProduto(
-          "Produto Teste",
-           19.99,
-           1,
-          "Descrição do produto teste");
-        console.log("Cadastro de produto:", cadastroProduto);
-      } catch (error) {
-        console.error("Erro ao cadastrar produto:", error);
-      }
+        // teste cadastro funcionario
+        try {
+          const cadastroUsuario =
+            await window.api.funcionario.cadastrarFuncionario(
+              "joao",
+              "123456",
+              "joao@teste.com",
+              "123456789",
+              "Gerente",
+            );
+          console.log("Cadastro de usuário:", cadastroUsuario);
+        } catch (error) {
+          console.error("Erro ao cadastrar usuário:", error);
+        }
+
+        // teste cadastro produto
+        try {
+          const cadastroProduto = await window.api.produto.cadastrarProduto(
+            "Produto Teste",
+            19.99,
+            1,
+            "Descrição do produto teste",
+          );
+          console.log("Cadastro de produto:", cadastroProduto);
+        } catch (error) {
+          console.error("Erro ao cadastrar produto:", error);
+        }
+          
+
+
+          // teste cadastro categoria
+
+        try {
+          const cadastrarCategoria = await window.api.categoria.cadastrarCategoria("Teste Categoria", "ativa");
+          console.log("Cadastro de categoria:", cadastrarCategoria);
+        } catch (error) {
+          console.error("Erro ao cadastrar categoria:", error);
+        }
+
+         // teste listar categorias
+        try {
+          const listarCategorias = await window.api.categoria.listarCategorias();
+          console.log("Lista de categorias:", listarCategorias);
+        } catch (error) {
+          console.error("Erro ao listar categorias:", error);
+        }
+
+        // produto por categoria
+        try {
+          const produtosPorCategoria = await window.api.pedido.getProdutosCategoria(1);
+          console.log("Produtos por categoria:", produtosPorCategoria);
+        } catch (error) {
+          console.error("Erro ao buscar produtos por categoria:", error);
+        }
+
+
+        try {
+          const cadastrarMesas = await window.api.mesas.cadastrarMesas(2, "livre", 4);
+          console.log("Mesas cadastradas:", cadastrarMesas);
+        } catch (error) {
+          console.error("Erro ao cadastrar mesas:", error);
+        }
+        try {
+          const listarMesas = await window.api.mesas.ListarMesas();
+          console.log("Mesas listadas:", listarMesas);
+        } catch (error) {
+          console.error("Erro ao listar mesas:", error);
+        }
+*/
+        try {
+          const teste = await window.api.pedido.registrarPedido(1, 1);
+          console.log("Teste pedido:", teste);
+        } catch (error) {
+          console.error("Erro no teste do pedido:", error);
+        }
+
+        // teste cadastro garçom
+        try {
+          const cadastroUsuario =
+            await window.api.funcionario.cadastrarFuncionario(
+              "Pedro",
+              "123456",
+              "pedro@teste.com",
+              "987654321",
+              "Garçom",
+            );
+          console.log("Cadastro de usuário:", cadastroUsuario);
+        } catch (error) {
+          console.error("Erro ao cadastrar usuário:", error);
+        }
+
+
+
       })();
-
-
-     
-
     </script>
   </body>
 </html>

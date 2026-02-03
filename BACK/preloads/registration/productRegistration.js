@@ -13,8 +13,6 @@ module.exports = function produtoPreload() {
         descricao,
       ),
 
-    abrirCadastroProduto: () => ipcRenderer.invoke("abrirCadastroProduto"),
-
     getProdutosPorCategoria: (idCategoria) =>
       ipcRenderer.invoke("get-produtos-por-categoria", idCategoria),
 
