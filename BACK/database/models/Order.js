@@ -18,12 +18,12 @@ export default function PedidoModel(sequelize) {
         defaultValue: "aberto",
       },
       valor_total: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-      funcionario_id: { type: DataTypes.INTEGER, allowNull: false },
+      id_funcionario: { type: DataTypes.INTEGER, allowNull: false },
     },
     {
       tableName: "tb_pedidos",
       timestamps: false,
-    }
+    },
   );
 
   return Pedido;

@@ -114,6 +114,23 @@ export async function verificarMesaPedido(numero_mesa) {
     throw error;
   }
 }
+export async function listarPedidos(numero_mesa) {
+  try {
+    const pedidos = await Pedido.findAll({
+      where: {
+        mesa_numero: numero_mesa,
+        status: {
+          [Op.notIn]: ["finalizado", "cancelado"],
+        },
+      },
+    });
+
+    return pedidos;
+  } catch (error) {
+    console.error("Erro ao verificar pedidos da mesa:", error);
+    throw error;
+  }
+}
 
 export async function mudarStatus(numero_mesa, novoStatus = "Ocupada") {
   const transaction = await Mesa.sequelize.transaction();

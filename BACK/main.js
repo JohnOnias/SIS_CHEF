@@ -1,16 +1,15 @@
 // ============================================================
-// subdividir o main em controllers cada um com sua responsabilidade
 // ============================================================
 const { app, ipcMain, BrowserWindow } = require("electron");
 const { createWindow } = require("./screens/createBrowserWindow.js");
 
 // ============================================================
-// importação dos IpcMains (colocado no topo para evitar hoisting issues)
+// importação dos IpcMains dos diversos módulos
 // ============================================================
 const loginIpc = require("./ipc/login/loginIpc.js");
 const categoryIpc = require("./ipc/registration/categoryIpc.js");
-//const productIpc = require('./ipc/registration/productIpc.js');
-//const employeeIpc = require('./ipc/registration/employeeIpc.js');
+const productIpc = require('./ipc/registration/productIpc.js');
+const employeeIpc = require('./ipc/registration/employeeIpc.js');
 const tableIpc = require("./ipc/registration/tableIpc.js");
 const resetIpc = require("./ipc/reset/resetIpc.js");
 const userIpc = require("./ipc/user/userIpc.js");
@@ -26,8 +25,8 @@ function inicializarIpcHandlers() {
   try {
     loginIpc();
     categoryIpc();
-    //produtoIpc();
-    //funcionarioIpc();
+    productIpc();
+    employeeIpc();
     tableIpc();
     resetIpc();
     userIpc();

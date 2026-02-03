@@ -10,17 +10,21 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
+      mesa_numero: {
+        type: Sequelize.STRING,
+        defaultValue: "aberto",
+      },
 
-      data_hora: {
+      data_criacao: {
         type: Sequelize.DATE,
         allowNull: true,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
 
       status: {
-  type: Sequelize.STRING,
-  defaultValue: "aberto",
-},
+        type: Sequelize.STRING,
+        defaultValue: "aberto",
+      },
 
       valor_total: {
         type: Sequelize.DECIMAL(10, 2),

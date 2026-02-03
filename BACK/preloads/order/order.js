@@ -17,18 +17,8 @@ module.exports = function pedidoPreload() {
     setCurrentUser: (usuario) =>
       ipcRenderer.invoke("set-current-user", usuario),
 
-    abrirTelaPedido: () => ipcRenderer.invoke("abrirTelaPedido"),
-
-    fecharTelaPedido: () => ipcRenderer.invoke("fecharTelaPedido"),
-
     mudarStatus: (numeroMesa) =>
       ipcRenderer.invoke("mudar-status-mesa", numeroMesa),
-
-    abrirTelaSelecaoProdutos: () =>
-      ipcRenderer.invoke("abrirTelaSelecaoProdutos"),
-
-    fecharTelaSelecaoProdutos: () =>
-      ipcRenderer.invoke("fecharTelaSelecaoProdutos"),
 
     getDadosPedidoAtual: () => ipcRenderer.invoke("getDadosPedidoAtual"),
 
@@ -38,10 +28,10 @@ module.exports = function pedidoPreload() {
       ipcRenderer.invoke("getProdutosCategoria", categoriaId),
 
     getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
+      listarPedidos: (numeroMesa) => ipcRenderer.invoke("listarPedidos", numeroMesa),
 
     adicionarProdutosPedido: (pedido) =>
       ipcRenderer.invoke("adicionarProdutosPedido", pedido),
 
-    getTeste: () => ipcRenderer.invoke("get-teste"),
   };
 };

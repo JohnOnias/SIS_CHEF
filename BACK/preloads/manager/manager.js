@@ -14,10 +14,6 @@ module.exports = function gerentePreload() {
     cadastrarMesa: (numero_mesa, status, n_cadeiras) =>
       ipcRenderer.invoke("cadastro-mesa", numero_mesa, status, n_cadeiras),
 
-    abrirCadastroMesa: () => ipcRenderer.invoke("abrirCadastroMesa"),
-
-    abrirTelaPedido: () => ipcRenderer.invoke("abrirTelaPedido"),
-
     // Produto
     cadastrarProduto: (nome, preco, categoria, descricao) =>
       ipcRenderer.invoke(
