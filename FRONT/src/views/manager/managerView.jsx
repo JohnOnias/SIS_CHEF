@@ -1,62 +1,50 @@
 import React, { useState, useEffect } from "react";
 import "./styles/manager.css";
-import Menu from "../components/layouts/Menu";  
-
-// importando componentes de telas específicas
+import Menu from "../components/layouts/Menu";
 import Registration from "../components/layouts/Registrations";
 import Table from "../components/layouts/Tables";
-
-
 
 function ManagerView() {
   const [tela, setTela] = useState("Mesas");
 
-  // Define o título apenas quando o componente monta
   useEffect(() => {
     const titulo = document.getElementById("titulo");
-    if (titulo) {
-      titulo.innerHTML = "Gerente!";
-    }
+    if (titulo) titulo.innerHTML = "Gerente!";
   }, []);
- const getFuncionario = {
+
+  const getFuncionario = {
     nome: "João",
-    tipo: "Gerente"
- };
+    tipo: "Gerente",
+  };
 
   return (
-    <>
+    <div className="container">
       <Menu
         nomeFuncionario={getFuncionario.nome}
-        tipoFuncionario={getFuncionario.tipo}
+        TipoFuncionario={getFuncionario.tipo}
         setTela={setTela}
       />
 
-      <div className="container">
-        <main className="conteudo">
-          {/* TELA CATEGORIAS */}
-          {tela === "Categorias" && (
-            <div className="tela">
-              <h1>Categorias</h1>
-              <div
-                className="produtos-container"
-                id="categorias-container"
-              ></div>
-            </div>
-          )}
-          {tela === "Mesas" && (
-            <div className="tela">
-              <Table />
-            </div>
-          )}
+      <main className="conteudo">
+        {tela === "Categorias" && (
+          <div className="tela">
+            <h1>Categorias</h1>
+            <div className="produtos-container"></div>
+          </div>
+        )}
 
-          {tela === "Cadastros" && (
-            <div className="tela">
-              <Registration />
-            </div>
-          )}
-        </main>
-      </div>
-    </>
+        {tela === "Mesas" && <Table />}
+
+        {tela === "Cadastros" && (
+          <div className="tela">
+            <Registration />
+          </div>
+        )}
+
+        {tela === "Categorias" && <Categorias />}
+
+      </main>
+    </div>
   );
 }
 

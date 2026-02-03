@@ -1,0 +1,45 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 400px;
+  max-width: 90%;
+  position: relative;
+}
+
+.close-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  width: 25px;
+}
+
+.buttons-modal {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.categorias-list {
+  margin-top: 20px;
+  list-style: none;
+}
+
+.categorias-list li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}

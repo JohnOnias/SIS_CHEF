@@ -1,5 +1,4 @@
 import React from 'react';
-import './styles/orders.css';
 
 
 function OrderModal(isOpen, onClose) {

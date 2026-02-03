@@ -1,0 +1,74 @@
+/* Tela geral */
+.tela {
+  min-height: 100vh;
+  background-color: #f5f6fa;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+/* Container principal */
+.containerConteudo {
+  width: 100%;
+  max-width: 800px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Título */
+.containerConteudo h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Botão padrão verde */
+.bntPadraoGreen {
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.bntPadraoGreen:hover {
+  background-color: #27ae60;
+}
+
+/* Lista de categorias */
+.categorias-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Item da lista */
+.categorias-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 15px;
+  color: #444;
+  transition: background-color 0.2s ease;
+}
+
+.categorias-list li:hover {
+  background-color: #f1f1f1;
+}
+
+/* Status */
+.categorias-list strong {
+  color: #2ecc71;
+}
