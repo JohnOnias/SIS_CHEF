@@ -2,6 +2,9 @@ const { ipcMain } = require("electron");
 
 const { registrarPedido } = require("../../models/utils/registrarPedido.js");
 const {
+  listarPedidos
+} = require("../../models/registration/table.js");
+const {
   getProdutosID,
   adicionarProdutosPedido,
 } = require("../../models/utils/produto.js");
@@ -35,6 +38,14 @@ module.exports = function orderIpc() {
   ipcMain.handle("getDadosPedidoAtual", async () => {
     return pedidoAtual;
   });
+  
+  ipcMain.handle("listarPedidos", async (event, numeroMesa) => {
+     return listarPedidos(numeroMesa);
+  });
+    
+
+
+
 
   // Adicionar produtos ao pedido
   ipcMain.handle("adicionarProdutosPedido", async (event, pedido) => {

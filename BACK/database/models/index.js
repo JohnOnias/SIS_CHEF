@@ -35,20 +35,20 @@ const ItemPedido = ItemPedidoModel(sequelize, Sequelize.DataTypes);
 // --- Associações ---
 
 // Categoria ↔ Produto
-Categoria.hasMany(Produto, { foreignKey: "categoria_id" });
-Produto.belongsTo(Categoria, { foreignKey: "categoria_id" });
+Categoria.hasMany(Produto, { foreignKey: "id_categoria" });
+Produto.belongsTo(Categoria, { foreignKey: "id_categoria" });
 
 // Funcionario ↔ Pedido
-Funcionario.hasMany(Pedido, { foreignKey: "funcionario_id" });
-Pedido.belongsTo(Funcionario, { foreignKey: "funcionario_id" });
+Funcionario.hasMany(Pedido, { foreignKey: "id_funcionario" });
+Pedido.belongsTo(Funcionario, { foreignKey: "id_funcionario" });
 
 // Pedido ↔ ItemPedido
-Pedido.hasMany(ItemPedido, { foreignKey: "pedido_id" });
-ItemPedido.belongsTo(Pedido, { foreignKey: "pedido_id" });
+Pedido.hasMany(ItemPedido, { foreignKey: "id_pedido" });
+ItemPedido.belongsTo(Pedido, { foreignKey: "id_pedido" });
 
 // Produto ↔ ItemPedido
-Produto.hasMany(ItemPedido, { foreignKey: "produto_id" });
-ItemPedido.belongsTo(Produto, { foreignKey: "produto_id" });
+Produto.hasMany(ItemPedido, { foreignKey: "id_produto" });
+ItemPedido.belongsTo(Produto, { foreignKey: "id_produto" });
 
 // Exporta tudo
 export {
