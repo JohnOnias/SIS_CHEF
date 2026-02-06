@@ -14,14 +14,15 @@ function ManagerView() {
 
 
 
-  
-  const getFuncionario = window.api.user.getCurrentUser();
+  // pega o usuario atual 
+  const currentUser = window.api.user.getCurrentUser();
+
 
   return (
     <div className="container">
       <Menu
-        nomeFuncionario={getFuncionario.nome}
-        TipoFuncionario={getFuncionario.tipo}
+        nomeFuncionario={currentUser.nome}
+        TipoFuncionario={currentUser.tipo}
         setTela={setTela}
       />
 

@@ -51,7 +51,7 @@ module.exports = function orderIpc() {
   ipcMain.handle("adicionarProdutosPedido", async (event, pedido) => {
     try {
       const resultado = await adicionarProdutosPedido(
-        pedidoAtual.idPedido,
+        pedido.idPedido,
         pedido.produtos,
       );
       return { success: true, data: resultado };

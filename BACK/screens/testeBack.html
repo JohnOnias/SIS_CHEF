@@ -128,11 +128,18 @@
           }
  */
         try {
-          const removerItemPedido = await window.api.pedido.removerItemPedido(1, 2, 1);
-          console.log("Item removido do pedido:", removerItemPedido);  
+          //remover um item =  objeto com idpedido, idProduto e quantidade
+          pedidoItem = {
+            idPedido: 1,
+            idProduto: 2,
+            quantidade: 1
+          };
+          const removerItemPedido = await window.api.pedido.adicionarProdutosPedido(pedidoItem);
+
+          console.log("Item adicionado ao pedido:", removerItemPedido);  
         }
         catch (error) {
-            console.error("Erro ao remover item do pedido:", error);
+            console.error("Erro ao adicionar item ao pedido:", error);
         }
 
 
