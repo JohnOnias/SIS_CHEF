@@ -34,7 +34,7 @@ export async function login(email, senha) {
       nome: usuarioLimpo.nome,
       email: usuarioLimpo.email,
       // Aqui ele pega o tipo (ex: 'adm', 'funcionario') direto do banco
-      tipo: usuarioLimpo.tipo || "funcionario",
+      tipo: usuarioLimpo.tipo ,
     };
   } catch (error) {
     console.error("Erro no login:", error);

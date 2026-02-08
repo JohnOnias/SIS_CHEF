@@ -74,20 +74,7 @@
         }
 
 
-            // teste cadastro funcionario
-        try {
-          const cadastroUsuario =
-            await window.api.funcionario.cadastrarFuncionario(
-              "joao", // nome
-              "22222222222", // cpf
-              "joao@teste2.com", // email
-              "Gerente", // cargo
-              "123456789", //senha
-            );
-          console.log("Cadastro de usuário:", cadastroUsuario);
-        } catch (error) {
-          console.error("Erro ao cadastrar usuário:", error);
-        }
+       
 
           // cadastro de categoria
            try {
@@ -148,14 +135,45 @@
         } catch (error) {
           console.error("Erro ao listar mesas:", error);
         }
-           */
+        
+  }*/
 
+        // teste cadastro funcionario
+        try {
+          const cadastroUsuario =
+            await window.api.funcionario.cadastrarFuncionario(
+              "john", // nome
+              "66666666666", // cpf
+              "john2@adm.com", // email
+              "administrador", // cargo
+              "123456789", //senha
+            );
+          console.log("Cadastro de usuário:", cadastroUsuario);
+        } catch (error) {
+          console.error("Erro ao cadastrar usuário:", error);
+        }
 
-
-
-
-
-           
+        let formulario = {
+          email: "john2@adm.com",
+          senha: "123456789",
+        };
+        try {
+          const usuario = await window.api.login.login(
+            formulario.email,
+            formulario.senha,
+          );
+          if (!usuario) {
+            console.error(
+              "Login falhou: usuário não encontrado ou senha incorreta",
+            );
+            return;
+          } else {
+            console.log("Login bem-sucedido:", usuario);
+          }
+        } catch (error) {
+          console.error("Erro no login:", error);
+        }
+        
       })();
     </script>
   </body>

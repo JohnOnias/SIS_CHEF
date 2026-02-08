@@ -6,8 +6,8 @@ const {
 module.exports = function admIpc() {
   ipcMain.handle(
     "cadastrar-funcionario",
-    async (_, nome, cpf, email, senha, tipo) => {
-      return await cadastrarFuncionario(nome, cpf, email, senha, tipo);
+    async (_, nome, cpf, email, tipo, senha) => {
+      return await cadastrarFuncionario(nome, cpf, email, tipo, senha);
     },
   );
 }

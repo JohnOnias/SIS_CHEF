@@ -41,13 +41,16 @@ function ManagerView() {
   );
 
   const getFuncionario = window.api.user.getCurrentUser();
-  const getFuncionario = {
-    nome: "João",
-    tipo: "Gerente",
-  };
+
+  const currentUser = useMemo(() => {
+    if (getFuncionario) return getFuncionario;
+    return { nome: "Gerente", tipo: "manager" };
+  }, [getFuncionario]);
 
   return (
+    
     <div className="container">
+
       <Menu
         nomeFuncionario={currentUser.nome}
         TipoFuncionario={currentUser.tipo}

@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
-import RectangleImg from '../../assets/others/rectangle.png';
-import GroupImg from '../../assets/others/group.png';
-import {useNavigate} from 'react-router-dom';
+import RectangleImg from "../../assets/others/rectangle.png";
+import GroupImg from "../../assets/others/group.png";
+import { useNavigate } from "react-router-dom";
 
 //importa o css
-import './styles/login.css';
+import "./styles/login.css";
 
 //import modal reset senha
 import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
 
-
 function LoginView() {
   // hook de navegação
   const navigate = useNavigate();
-
 
   // altera o titulo da pagina
   useEffect(() => {
@@ -23,44 +21,40 @@ function LoginView() {
     }
   }, []);
 
-// set modal reset senha
-const [openModal, setOpenModal] = useState(false);
-// evento modal
+  // set modal reset senha
+  const [openModal, setOpenModal] = useState(false);
+  // evento modal
 
   // função de login
-  const login = (formulario) => {
+  const login = async (formulario) => {
     console.log("Fazendo login com os dados:", formulario);
-    
+ 
+
     try {
-              const usuario =  window.api.login.login(formulario.email, formulario.senha);
-              
-              if(!usuario){
-                  alert("Erro ao fazer login, verifique suas credenciais.");
-                
-              }
-              else{
-                  console.log("Login bem-sucedido:", usuario);
-                  if(usuario.tipo === 'administrador'){
-                        // redireciona para a tela de gerente
-                        navigate('/adm');
-                      }
-                  if(usuario.tipo === 'garçom'){
-                        // redireciona para a tela de garçom
-                        navigate('/bartender');
-                      }
-                  if(usuario.tipo === 'gerente'){
-                        // redireciona para a tela de gerente
-                        navigate('/manager');
-                      }
-                }
+      const usuario = window.api.login.login(formulario.email, formulario.senha
+      );
 
+      if (!usuario) {
+        alert("Erro ao fazer login, verifique suas credenciais.");
+      } else {
+  
+        console.log("Login bem-sucedido:", usuario);
+
+        if (usuario.tipo === "administrador") {
+          navigate("/adm");
+        } else if (usuario.tipo === "garçom") {
+          navigate("/bartender");
+        } else if (usuario.tipo === "gerente") {
+          navigate("/manager");
+        } else {
+          console.error("Tipo de usuário desconhecido:", usuario.tipo);
+        }
+      }
     } catch (error) {
-
       console.error("Erro ao chamar a API de login:", error);
       alert("Erro ao fazer login, por favor tente novamente mais tarde.");
     }
-  
-  }
+  };
   // mmodelo formulario/dados
   const modelo = {
     email: "",
@@ -76,7 +70,6 @@ const [openModal, setOpenModal] = useState(false);
 
     setFormulario({ ...formulario, [nome]: valor });
   };
-
 
   //retorno da função do componete
   return (
