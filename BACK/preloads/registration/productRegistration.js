@@ -1,24 +1,23 @@
 const { ipcRenderer } = require("electron");
+const { Produto } = require("../../database/models");
 
 module.exports = function produtoPreload() {
   return {
     getCategorias: () => ipcRenderer.invoke("get-categorias"),
 
-    cadastrarProduto: (nome, preco, categoria, descricao) =>
+    cadastrarProduto: (produto) =>
       ipcRenderer.invoke(
         "cadastrar-produto",
-        nome,
-        preco,
-        categoria,
-        descricao,
+       produto
       ),
 
     getProdutosPorCategoria: (idCategoria) =>
       ipcRenderer.invoke("get-produtos-por-categoria", idCategoria),
 
-    getProdutosCategoria: (categoriaId) =>
-      ipcRenderer.invoke("getProdutosCategoria", categoriaId),
+   
 
     getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
   };
 };
+ //getProdutosCategoria: (categoriaId) =>
+     // ipcRenderer.invoke("getProdutosCategoria", categoriaId),

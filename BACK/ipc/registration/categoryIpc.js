@@ -5,6 +5,7 @@ const {
 } = require("../../models/registration/category.js");
 
 module.exports = function categoryIpc() {
+  
   ipcMain.handle("cadastrar-categoria", async (_, nomeCategoria, status) => {
     return await cadastrarCategoria(nomeCategoria, status);
   });

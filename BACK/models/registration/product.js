@@ -1,15 +1,15 @@
 import { Produto } from "../../database/models/index.js"; // Importa do index.js central
 
 // Cadastrar um produto
-export async function cadastrarProduto(nome, preco, categoria_id, descricao) {
+export async function cadastrarProduto(produto) {
   try {
     await Produto.create({
-      nome,
-      preco,
-      categoria_id,
-      descricao,
+      nome: produto.nome,
+      preco: produto.preco,
+      categoria_id: produto.idCategoria,
+      descricao: produto.descricao,
     });
-    return true; // sucesso
+    return { success: true, message: "produto cadastrado com sucesso" }; // sucesso
   } catch (err) {
     console.error("Erro ao cadastrar produto:", err);
     return { success: false, error: err.message };

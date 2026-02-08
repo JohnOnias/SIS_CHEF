@@ -1,19 +1,19 @@
 import { Mesa, Pedido } from "../../database/models/index.js";
 import { Op } from "sequelize";
 
-export async function cadastrarMesa(numero_mesa, status, n_cadeiras) {
+export async function cadastrarMesa(mesa) {
   const transaction = await Mesa.sequelize.transaction();
 
   try {
     // Validação
-    if (!numero_mesa) {
+    if (!mesa.numero) {
       await transaction.rollback();
       return { success: false, error: "Número da mesa é obrigatório." };
     }
 
     // Verifica se mesa já existe
     const mesaExistente = await Mesa.findOne({
-      where: { numero: numero_mesa },
+      where: { numero: mesa.numero },
       transaction,
     });
 
@@ -23,11 +23,12 @@ export async function cadastrarMesa(numero_mesa, status, n_cadeiras) {
     }
 
     // Cria a mesa
-    const mesa = await Mesa.create(
+    const mesaCriada = await Mesa.create(
+
       {
-        numero: numero_mesa,
-        status: status || "livre", // Valor padrão
-        n_cadeiras: n_cadeiras || 4, // Valor padrão
+        numero: mesa.numero,
+        status: mesa.status || "livre", // Valor padrão
+        n_cadeiras: mesa.n_cadeiras || 4, // Valor padrão
       },
       { transaction }
     );
@@ -37,10 +38,10 @@ export async function cadastrarMesa(numero_mesa, status, n_cadeiras) {
     return {
       success: true,
       data: {
-        id: mesa.id,
-        numero: mesa.numero,
-        status: mesa.status,
-        n_cadeiras: mesa.n_cadeiras,
+        id: mesaCriada.id,
+        numero: mesaCriada.numero,
+        status: mesaCriada.status,
+        n_cadeiras: mesaCriada.n_cadeiras,
       },
     };
   } catch (error) {

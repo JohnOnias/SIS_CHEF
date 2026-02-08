@@ -35,19 +35,23 @@ function ManagerView() {
 
       navigate(`/manager?${params.toString()}`);
     },
-    [location.search, navigate]
+    [location.search, navigate],
   );
 
-  const getFuncionario = {
-    nome: "João",
-    tipo: "Gerente",
-  };
+  const getFuncionario = window.api.user.getCurrentUser();
+
+  const currentUser = useMemo(() => {
+    if (getFuncionario) return getFuncionario;
+    return { nome: "Gerente", tipo: "manager" };
+  }, [getFuncionario]);
 
   return (
+    
     <div className="container">
+
       <Menu
-        nomeFuncionario={getFuncionario.nome}
-        TipoFuncionario={getFuncionario.tipo}
+        nomeFuncionario={currentUser.nome}
+        TipoFuncionario={currentUser.tipo}
         setTela={setTela}
         showMesas
         showProdutos

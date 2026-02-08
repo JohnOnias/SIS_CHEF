@@ -3,7 +3,9 @@ import bcrypt from "bcryptjs";
 
 
 export async function login(email, senha) {
+  
   console.log("teste chegou no login model back", email, senha);
+
   try {
     // 1. Busca o usuário único pelo email
     const usuario = await Funcionario.findOne({
@@ -32,7 +34,7 @@ export async function login(email, senha) {
       nome: usuarioLimpo.nome,
       email: usuarioLimpo.email,
       // Aqui ele pega o tipo (ex: 'adm', 'funcionario') direto do banco
-      tipo: usuarioLimpo.tipo || "funcionario",
+      tipo: usuarioLimpo.tipo ,
     };
   } catch (error) {
     console.error("Erro no login:", error);
