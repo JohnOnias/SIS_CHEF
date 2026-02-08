@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./styles/manager.css";
 import Menu from "../components/layouts/Menu";
-import Registration from "../components/layouts/Registrations";
 import Table from "../components/layouts/Tables";
 import Categorias from "../components/modal/products/Categorias";
 
@@ -16,7 +15,7 @@ function ManagerView() {
     if (titulo) titulo.innerHTML = "Gerente!";
   }, []);
 
-  // ✅ Tela vem da URL (sem setState em effect)
+ 
   const tela = useMemo(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get("tab");
@@ -26,7 +25,6 @@ function ManagerView() {
     return "Mesas";
   }, [location.search]);
 
-  // ✅ Menu “setTela” agora navega para ?tab=...
   const setTela = useCallback(
     (novaTela) => {
       const params = new URLSearchParams(location.search);
@@ -61,12 +59,6 @@ function ManagerView() {
 
         {tela === "Categorias" && (
           <Categorias canManageCatalog={true} basePath="/manager" />
-        )}
-
-        {tela === "Cadastros" && (
-          <div className="tela">
-            <Registration />
-          </div>
         )}
       </main>
     </div>
