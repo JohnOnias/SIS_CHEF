@@ -4,7 +4,14 @@ import ProdutosIcon from "../../../assets/menu/produtos.png";
 import CadastroIcon from "../../../assets/menu/cadastro.png";
 import "./styles/menu.css";
 
-function Menu({ nomeFuncionario, TipoFuncionario, setTela }) {
+function Menu({
+  nomeFuncionario,
+  TipoFuncionario,
+  setTela,
+  showMesas = true,
+  showProdutos = true,
+  showCadastros = true,
+}) {
   return (
     <aside className="sidebar">
       <div className="perfil">
@@ -18,20 +25,26 @@ function Menu({ nomeFuncionario, TipoFuncionario, setTela }) {
 
       <nav>
         <ul>
-          <li className="menu">
-            <img src={PedidoIcon} alt="icone pedidos" />
-            <a onClick={() => setTela("Mesas")}>Mesas e Pedidos</a>
-          </li>
+          {showMesas && (
+            <li className="menu">
+              <img src={PedidoIcon} alt="icone pedidos" />
+              <a onClick={() => setTela("Mesas")}>Mesas e Pedidos</a>
+            </li>
+          )}
 
-          <li className="menu">
-            <img src={ProdutosIcon} alt="icone produtos" />
-            <a onClick={() => setTela("Categorias")}>Produtos</a>
-          </li>
+          {showProdutos && (
+            <li className="menu">
+              <img src={ProdutosIcon} alt="icone produtos" />
+              <a onClick={() => setTela("Categorias")}>Produtos</a>
+            </li>
+          )}
 
-          <li className="menu">
-            <img src={CadastroIcon} alt="icone cadastros" />
-            <a onClick={() => setTela("Cadastros")}>Cadastro</a>
-          </li>
+          {showCadastros && (
+            <li className="menu">
+              <img src={CadastroIcon} alt="icone cadastros" />
+              <a onClick={() => setTela("Cadastros")}>Histórico</a>
+            </li>
+          )}
         </ul>
       </nav>
     </aside>
