@@ -17,11 +17,11 @@ function Menu({
       <div className="perfil">
         <div className="icone"></div>
 
-        <p>Olá, {nomeFuncionario}.</p>
-        <p>
-          <strong>{TipoFuncionario}.</strong>
-        </p>
-      </div>
+              <p>Olá, {nomeFuncionario}.</p>
+              <p>
+                <strong>{TipoFuncionario}.</strong>
+              </p>
+            </div>
 
       <nav>
         <ul>

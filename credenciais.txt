@@ -1,0 +1,7 @@
+adm {
+"jose@adm.com", // email
+"Administrador", // cargo
+"123456789", //senha
+}
+
+

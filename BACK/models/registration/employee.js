@@ -8,8 +8,8 @@ export async function cadastrarFuncionario(
   nome,
   cpf,
   email,
-  senha,
-  tipoFuncionario
+  tipoFuncionario,
+  senha
 ) {
   // Inicia uma transação para garantir consistência
   const transaction = await Funcionario.sequelize.transaction();
@@ -63,14 +63,15 @@ export async function cadastrarFuncionario(
         nome,
         cpf,
         email,
-        senha: hash,
         tipo: tipoFuncionario,
+        senha: hash,
       },
-      { transaction }
+      { transaction },
     );
 
     // Confirma a transação
     await transaction.commit();
+
 
     return {
       success: true,
@@ -79,6 +80,7 @@ export async function cadastrarFuncionario(
         nome: funcionario.nome,
         email: funcionario.email,
         tipo: funcionario.tipo,
+        senha: true, // Indica que a senha foi armazenada com sucesso, mas não retorna o hash
       },
     };
   } catch (error) {
