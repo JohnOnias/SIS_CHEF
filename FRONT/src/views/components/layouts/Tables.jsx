@@ -35,7 +35,6 @@ function Table({ canManageMesas = true }) {
   return (
     <>
       <div className="tela">
-        {/* ✅ HEADER COM TÍTULO GARANTIDO */}
         <div className="tables-header">
           <div className="tables-title-area">
             <h1 className="tables-title">Mesas</h1>
