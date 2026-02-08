@@ -8,26 +8,18 @@ const {
   getTodosProdutos,
 } = require("../../models/utils/produto.js");
 
+
+
 module.exports = function productIpc() {
   ipcMain.handle(
     "cadastrar-produto",
-    async (event, nome, preco, categoria, descricao) => {
+    async (event, produto) => {
       // Corrigi os parâmetros - o primeiro é sempre o event
-      return await cadastrarProduto(nome, preco, categoria, descricao);
+      return await cadastrarProduto(produto);
     },
   );
 
-  // Pegar produtos de uma categoria
-  ipcMain.handle("getProdutosCategoria", async (event, categoriaId) => {
-    try {
-      // Aqui você precisa decidir qual getProdutosID usar
-      // Vou usar o da primeira importação, mas você escolha
-      return await getProdutosID(categoriaId);
-    } catch (error) {
-      console.error("Erro ao pegar produtos:", error);
-      return [];
-    }
-  });
+
 
   ipcMain.handle("getTodosProdutos", async () => {
     try {

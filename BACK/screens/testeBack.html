@@ -26,57 +26,6 @@
           console.error("Erro no login:", error);
         }
 
-    
-
-        // teste cadastro produto
-        try {
-          const cadastroProduto = await window.api.produto.cadastrarProduto(
-            "Produto Teste",
-            19.99,
-            1,
-            "Descrição do produto teste",
-          );
-          console.log("Cadastro de produto:", cadastroProduto);
-        } catch (error) {
-          console.error("Erro ao cadastrar produto:", error);
-        }
-          
-
-
-          // teste cadastro categoria
-
-        
-
-         // teste listar categorias
-        try {
-          const listarCategorias = await window.api.categoria.listarCategorias();
-          console.log("Lista de categorias:", listarCategorias);
-        } catch (error) {
-          console.error("Erro ao listar categorias:", error);
-        }
-
-        // produto por categoria
-        try {
-          const produtosPorCategoria = await window.api.pedido.getProdutosCategoria(1);
-          console.log("Produtos por categoria:", produtosPorCategoria);
-        } catch (error) {
-          console.error("Erro ao buscar produtos por categoria:", error);
-        }
-
-
-        try {
-          const cadastrarMesas = await window.api.mesas.cadastrarMesas(2, "livre", 4);
-          console.log("Mesas cadastradas:", cadastrarMesas);
-        } catch (error) {
-          console.error("Erro ao cadastrar mesas:", error);
-        }
-        try {
-          const listarMesas = await window.api.mesas.ListarMesas();
-          console.log("Mesas listadas:", listarMesas);
-        } catch (error) {
-          console.error("Erro ao listar mesas:", error);
-        }
-
         try {
           const teste = await window.api.pedido.registrarPedido(1, 1);
           console.log("Teste pedido:", teste);
@@ -139,15 +88,74 @@
         } catch (error) {
           console.error("Erro ao cadastrar usuário:", error);
         }
-           */
+
+          // cadastro de categoria
            try {
-          const cadastrarCategoria = await window.api.categoria.cadastrarCategoria("Teste Categoria 2", "ativa");
+          const cadastrarCategoria = await window.api.categoria.cadastrarCategoria("Teste Categoria 3", "ativa");
           console.log("Cadastro de categoria:", cadastrarCategoria);
         } catch (error) {
           console.error("Erro ao cadastrar categoria:", error);
+      }]
+    
+         
+
+            // produto por categoria
+        try {
+          const produtosPorCategoria = await window.api.pedido.getProdutosCategoria(1);
+          console.log("Produtos por categoria:", produtosPorCategoria);
+        } catch (error) {
+          console.error("Erro ao buscar produtos por categoria:", error);
+        }
+        
+         // teste listar categorias
+        try {
+          const listarCategorias = await window.api.categoria.listarCategorias();
+          console.log("Lista de categorias:", listarCategorias);
+        } catch (error) {
+          console.error("Erro ao listar categorias:", error);
+        }
+               
+             // teste cadastro produto
+             let produto = {
+              nome: "Produto Teste 5",
+              preco: 20.00,
+              idCategoria: 1,
+              descricao: "Descrição do produto teste"
+             };
+        try {
+          const cadastroProduto = await window.api.produto.cadastrarProduto(produto);
+          console.log("Cadastro de produto:", cadastroProduto);
+        } catch (error) {
+          console.error("Erro ao cadastrar produto:", error);
         }
 
+          // cadastro de mesas
+        let mesa = {
+          numero: 17,
+          status: "livre",
+          n_cadeiras: 4,
+        };
+        try {
+          const cadastrarMesas = await window.api.mesas.cadastrarMesas(mesa);
+          console.log("Mesas cadastradas:", cadastrarMesas);
+        } catch (error) {
+          console.error("Erro ao cadastrar mesas:", error);
+        }
 
+        try {
+          const listarMesas = await window.api.mesas.ListarMesas();
+          console.log("Mesas listadas:", listarMesas);
+        } catch (error) {
+          console.error("Erro ao listar mesas:", error);
+        }
+           */
+
+
+
+
+
+
+           
       })();
     </script>
   </body>
