@@ -1,64 +1,63 @@
 import React, { useState } from "react";
-import CloseIcon from "../../../assets/close.png";
-import "./style/resetSenha.css";
+import "./styles/categorias.css";
 
-function ModalCadastroCategoria({ isOpen, onClose, adicionarCategoria }) {
+function ModalCadastroCategoria({ isOpen, onClose, onSave, disabled = false }) {
   const [nome, setNome] = useState("");
-  const [status, setStatus] = useState("");
+  const [imagem, setImagem] = useState("");
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const salvar = (e) => {
     e.preventDefault();
-    if (!nome || !status) return;
+    if (disabled) return;
 
-    adicionarCategoria({ nome, status });
+    if (!nome.trim()) {
+      alert("Informe o nome da categoria.");
+      return;
+    }
+
+    const img =
+      imagem.trim() ||
+      "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=900&q=60";
+
+    onSave({ nome: nome.trim(), imagem: img });
     setNome("");
-    setStatus("");
+    setImagem("");
     onClose();
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <img
-          src={CloseIcon}
-          alt="Fechar"
-          className="close-icon"
-          onClick={onClose}
-        />
-
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>Cadastrar Categoria</h2>
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="nomeCategoria">Nome da Categoria</label>
+        <form onSubmit={salvar} style={{ display: "grid", gap: 10 }}>
+          <label>Nome</label>
           <input
-            type="text"
-            id="nomeCategoria"
-            placeholder="Categoria"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
-            required
+            placeholder="Ex: Entradas"
+            disabled={disabled}
           />
 
-          <label htmlFor="statusCategoria">Status:</label>
-          <select
-            id="statusCategoria"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            required
-          >
-            <option value="">Selecione</option>
-            <option value="Ativa">Ativa</option>
-            <option value="Inativa">Inativa</option>
-          </select>
+          <label>URL da imagem (opcional)</label>
+          <input
+            value={imagem}
+            onChange={(e) => setImagem(e.target.value)}
+            placeholder="https://..."
+            disabled={disabled}
+          />
 
           <div className="buttons-modal">
-            <button type="submit" className="bntPadraoGreen">
-              Cadastrar
-            </button>
             <button type="button" className="bntPadrao" onClick={onClose}>
               Cancelar
+            </button>
+            <button
+              type="submit"
+              className={`bntPadraoGreen ${disabled ? "disable" : ""}`}
+              disabled={disabled}
+            >
+              Salvar
             </button>
           </div>
         </form>
