@@ -3,7 +3,9 @@ import bcrypt from "bcryptjs";
 
 
 export async function login(email, senha) {
+  
   console.log("teste chegou no login model back", email, senha);
+
   try {
     // 1. Busca o usuário único pelo email
     const usuario = await Funcionario.findOne({

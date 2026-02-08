@@ -9,7 +9,7 @@ const {
   adicionarProdutosPedido,
 } = require("../../models/utils/produto.js");
 const { getCategoria } = require("../../models/registration/category.js");
-//const { inicializarTabelas } = require('../../database/db/inicializador.js');
+
 
 let pedidoAtual = {
   numeroMesa: null,
@@ -43,7 +43,17 @@ module.exports = function orderIpc() {
      return listarPedidos(numeroMesa);
   });
     
-
+  // Pegar produtos de uma categoria
+  ipcMain.handle("getProdutosCategoria", async (event, idCategoria) => {
+    try {
+      // Aqui você precisa decidir qual getProdutosID usar
+      // Vou usar o da primeira importação, mas você escolha
+      return await getProdutosID(idCategoria);
+    } catch (error) {
+      console.error("Erro ao pegar produtos:", error);
+      return [];
+    }
+  });
 
 
 
@@ -51,7 +61,7 @@ module.exports = function orderIpc() {
   ipcMain.handle("adicionarProdutosPedido", async (event, pedido) => {
     try {
       const resultado = await adicionarProdutosPedido(
-        pedidoAtual.idPedido,
+        pedido.idPedido,
         pedido.produtos,
       );
       return { success: true, data: resultado };

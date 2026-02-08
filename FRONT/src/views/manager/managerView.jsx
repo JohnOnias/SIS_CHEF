@@ -37,7 +37,7 @@ function ManagerView() {
 
       navigate(`/manager?${params.toString()}`);
     },
-    [location.search, navigate]
+    [location.search, navigate],
   );
 
   const getFuncionario = window.api.user.getCurrentUser();
@@ -49,8 +49,8 @@ function ManagerView() {
   return (
     <div className="container">
       <Menu
-        nomeFuncionario={getFuncionario.nome}
-        TipoFuncionario={getFuncionario.tipo}
+        nomeFuncionario={currentUser.nome}
+        TipoFuncionario={currentUser.tipo}
         setTela={setTela}
         showMesas
         showProdutos

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RectangleImg from '../../assets/others/rectangle.png';
 import GroupImg from '../../assets/others/group.png';
+import {useNavigate} from 'react-router-dom';
 
 //importa o css
 import './styles/login.css';
@@ -10,6 +11,10 @@ import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
 
 
 function LoginView() {
+  // hook de navegação
+  const navigate = useNavigate();
+
+
   // altera o titulo da pagina
   useEffect(() => {
     const tituloElement = document.getElementById("titulo");
@@ -22,34 +27,40 @@ function LoginView() {
 const [openModal, setOpenModal] = useState(false);
 // evento modal
 
-
-
   // função de login
   const login = (formulario) => {
     console.log("Fazendo login com os dados:", formulario);
+    
     try {
-
-      window.api.login.login(formulario.email, formulario.senha);
-     
-
-
-     if(window.api.login.login){
-        
-          console.log("Login bem-sucedido!");
-          //redirecionar para a proxima pagina coloque a rederecionamento aqui 
-
-          /////////
-     }
-     else{
-       alert("Erro ao fazer login, verifique suas credenciais.");
-     }
-
+              const usuario =  window.api.login.login(formulario.email, formulario.senha);
+              
+              if(!usuario){
+                  alert("Erro ao fazer login, verifique suas credenciais.");
+                
+              }
+              else{
+                  console.log("Login bem-sucedido:", usuario);
+                  if(usuario.tipo === 'administrador'){
+                        // redireciona para a tela de gerente
+                        navigate('/adm');
+                      }
+                  if(usuario.tipo === 'garçom'){
+                        // redireciona para a tela de garçom
+                        navigate('/bartender');
+                      }
+                  if(usuario.tipo === 'gerente'){
+                        // redireciona para a tela de gerente
+                        navigate('/manager');
+                      }
+                }
 
     } catch (error) {
-      console.error("Erro ao chamar a API de login:", error);
-    }
-  };
 
+      console.error("Erro ao chamar a API de login:", error);
+      alert("Erro ao fazer login, por favor tente novamente mais tarde.");
+    }
+  
+  }
   // mmodelo formulario/dados
   const modelo = {
     email: "",

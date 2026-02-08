@@ -24,8 +24,8 @@ module.exports = function pedidoPreload() {
 
     getTodasCategorias: () => ipcRenderer.invoke("getTodasCategorias"),
 
-    getProdutosCategoria: (categoriaId) =>
-      ipcRenderer.invoke("getProdutosCategoria", categoriaId),
+    getProdutosCategoria: (idCategoria) =>
+      ipcRenderer.invoke("getProdutosCategoria", idCategoria),
 
     getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
       listarPedidos: (numeroMesa) => ipcRenderer.invoke("listarPedidos", numeroMesa),

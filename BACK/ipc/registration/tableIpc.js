@@ -8,8 +8,8 @@ const {
 module.exports = function tableIpc() {
   ipcMain.handle(
     "cadastro-mesa",
-    async (_, numero_mesa, status, n_cadeiras) => {
-      return await cadastrarMesa(numero_mesa, status, n_cadeiras);
+    async (_, mesa) => {
+      return await cadastrarMesa(mesa);
     },
   );
 

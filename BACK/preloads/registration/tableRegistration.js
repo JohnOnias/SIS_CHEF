@@ -4,7 +4,7 @@ module.exports = function mesasPreload() {
   return {
     ListarMesas: () => ipcRenderer.invoke("get-mesas"),
 
-    cadastrarMesas: (numero_mesa, status, n_cadeiras) =>
-      ipcRenderer.invoke("cadastro-mesa", numero_mesa, status, n_cadeiras),
+    cadastrarMesas: (mesa) =>
+      ipcRenderer.invoke("cadastro-mesa", mesa),
   };
 };
