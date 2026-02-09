@@ -1,8 +1,10 @@
 const { ipcMain } = require("electron");
 
+console.log("Arquivo userIpc carregado");
 let currentUser = null;
 
 module.exports = function userIpc() {
+   console.log("userIpc() executado");
   
   ipcMain.handle("set-current-user", async (_, usuario) => {
     currentUser = usuario || null;

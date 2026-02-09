@@ -1,5 +1,4 @@
 const { ipcRenderer } = require("electron");
-const { Produto } = require("../../database/models");
 
 module.exports = function produtoPreload() {
   return {

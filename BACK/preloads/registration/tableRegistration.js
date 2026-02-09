@@ -1,5 +1,4 @@
 const { ipcRenderer } = require("electron");
-const { verificarMesa } = require("../../models/registration/table");
 
 module.exports = function mesasPreload() {
   return {

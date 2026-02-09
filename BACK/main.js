@@ -1,6 +1,6 @@
 // ============================================================
 // ============================================================
-const { app, ipcMain, BrowserWindow } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const { createWindow } = require("./screens/createBrowserWindow.js");
 
 // ============================================================
@@ -8,8 +8,8 @@ const { createWindow } = require("./screens/createBrowserWindow.js");
 // ============================================================
 const loginIpc = require("./ipc/login/loginIpc.js");
 const categoryIpc = require("./ipc/registration/categoryIpc.js");
-const productIpc = require('./ipc/registration/productIpc.js');
-const employeeIpc = require('./ipc/registration/employeeIpc.js');
+const productIpc = require("./ipc/registration/productIpc.js");
+const employeeIpc = require("./ipc/registration/employeeIpc.js");
 const tableIpc = require("./ipc/registration/tableIpc.js");
 const resetIpc = require("./ipc/reset/resetIpc.js");
 const userIpc = require("./ipc/user/userIpc.js");
@@ -45,12 +45,12 @@ function inicializarIpcHandlers() {
 // Inicialização do App
 // ============================================================
 app.whenReady().then(() => {
+  inicializarIpcHandlers();
   createWindow();
 
   // ============================================================
   // chamar os ipc
   // ============================================================
-  inicializarIpcHandlers();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

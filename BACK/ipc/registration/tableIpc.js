@@ -13,15 +13,7 @@ module.exports = function tableIpc() {
   ipcMain.handle("verificar-mesa-pedido", async (event, numeroMesa) => {
     return await verificarMesaPedido(numeroMesa);
   });
-ipcMain.handle("mudar-status-mesa", async (event, numeroMesa) => {
-    try {
-      const resultado = await mudarStatus(numeroMesa);
-      return { success: true, data: resultado };
-    } catch (err) {
-      console.error("Erro ao mudar status da mesa:", err);
-      return { success: false, error: err.message };
-    }
-  });
+
 
 
   ipcMain.handle(

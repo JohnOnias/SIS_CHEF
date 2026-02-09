@@ -1,4 +1,4 @@
-const { ipcRenderer, contextBridge } = require("electron");
+const { ipcRenderer} = require("electron");
 
 
 module.exports = function funcionarioPreload() {

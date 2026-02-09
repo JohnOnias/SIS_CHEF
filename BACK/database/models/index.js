@@ -42,9 +42,17 @@ Produto.belongsTo(Categoria, { foreignKey: "id_categoria" });
 Funcionario.hasMany(Pedido, { foreignKey: "id_funcionario" });
 Pedido.belongsTo(Funcionario, { foreignKey: "id_funcionario" });
 
+
 // Pedido ↔ ItemPedido
-Pedido.hasMany(ItemPedido, { foreignKey: "id_pedido" });
-ItemPedido.belongsTo(Pedido, { foreignKey: "id_pedido" });
+Pedido.hasMany(ItemPedido, { 
+  foreignKey: "id_pedido",
+  as: "itens"
+});
+
+ItemPedido.belongsTo(Pedido, { 
+  foreignKey: "id_pedido",
+  as: "pedido"
+});
 
 // Produto ↔ ItemPedido
 Produto.hasMany(ItemPedido, { foreignKey: "id_produto" });
