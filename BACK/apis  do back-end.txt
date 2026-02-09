@@ -1,0 +1,170 @@
+apis  do back-end:
+
+
+- api login 
+	window.api.login.login(email, senha); 
+	retorna um objeto com usuário(id, nome, email, tipo)
+(ao fazer login use a api setCurrentUser para settar  o usuário atual)
+	objeto "usuário"
+	window.api.user.setCurrentUser(usuario);
+		retorna true ou false
+	window.api.user.getCurrentUser(); 
+		retorna o objeto usuario
+
+- api cadastro de usuário
+	window.api.funcionario.cadastrarFuncionario(nome, cpf, email, cargo, senha)
+	retorna um objeto com usuário(id, nome, email, tipo, senha: true)
+- api get user citada no login
+
+
+- api cadastro de categoria 
+	window.api.categoria.cadastrarCategoria(nome, status)
+	retorna true ou false
+
+- api get categorias
+	window.api.categoria.getCategorias()
+	retorna um objeto com id, nome e status
+	ordenado pelo nome
+
+
+- api cadastro de produtos
+		objeto = {
+			nome,
+			preco,
+			idCategoria
+			descrição
+			}
+	window.api.categoria.cadastrarProduto(objeto);
+	retorna true ou false
+
+- api  get produtos pelo id categoria
+
+	window.api.produto.getProdutosPorCategoria(idCategoria); 
+		retorna um objeto com os  produtos(id, nome, preco, descrição)
+
+
+- api get todos os produtos
+	window.api.produto.getTodosProdutos();
+	retorna um objeto com todos os produtos(id, nome. preco, descrição, categoria_id)
+- api get funcionários
+	window.api.funcionario.getFuncionario(tipoFuncionario);
+	"Gerente" ou "Garçom"
+
+
+- api cadastrar mesas
+	objeto = {	numero: "",
+			status: "",
+			cadeiras: "" 
+			}
+	window.api.mesas.cadastrarMesas(objeto);
+		retorna true
+
+- api get mesas
+	window.api.mesas.listarMesas(); 
+		return um array de objetos, status, numero, n_cadeiras
+		
+- api verificar pedidos de uma mesa
+	window.api.mesas.verificarMesaPedido(numeroMesa);
+	return objeto pedido id, mesa_numero, data criação, status, valor total, id_funcionario
+
+
+- api criar pedido 
+		(verificação de mesa já existente na query)
+	window.api.pedido.registrarPedido(numeroMesa, idGarcom)
+		retorna true 
+
+- api adicionar produtos a um pedido
+			
+			produtos = {
+					id: id do produto
+					quantidade: quantidade de produtos
+					preco_unitario: preço por unidade}
+
+		window.api.pedido.adicionarProdutosPedido(pedidoId, produto); 
+				retorna true
+
+
+- api editar pedido 
+
+		window.api.pedido.editarPedido(idpedido, dadosAtualizados);
+	dadosAtualizados = {	
+				mesa_numero,
+     				status,
+     				valor_total,
+     				id_funcionario,
+				}
+		return true ou false
+
+
+- api excluir item do pedido 
+	
+		window.api.pedido.excluirIttemPedido(idPedido, idItem)
+
+		return true ou false
+
+
+- api listar pedidos pela mesa
+
+		window.api.pedido.listarPedidosMes(mesa_numero);
+		
+		return objeto
+
+
+
+- api fechar pedido 
+		
+		window.api.peido.fecharPedido(idpedido, valorTotal);
+		
+		return objeto pedido
+
+
+
+
+
+		
+			
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

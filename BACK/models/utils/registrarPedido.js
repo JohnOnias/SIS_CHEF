@@ -1,6 +1,9 @@
 import { Pedido, Mesa } from "../../database/models/index.js";
 
 // Registrar pedido
+
+
+
 export async function registrarPedido(numeroMesa, idGarcom) {
   try {
     console.log("Entrou no registrarPedido, mesa:", numeroMesa, idGarcom);
@@ -31,10 +34,10 @@ export async function registrarPedido(numeroMesa, idGarcom) {
     // Cria o pedido
     const pedido = await Pedido.create({
       mesa_numero: numeroMesa,
+      data_criacao: new Date(),
       status: "aberto",
-      funcionario_id: idGarcom,
-      data_criacao: new Date(), // ou Sequelize.NOW
-      valor_total: 0, // inicializa com 0
+      valor_total: 0,
+      id_funcionario: idGarcom,
     });
 
     return { success: true, id: pedido.id };

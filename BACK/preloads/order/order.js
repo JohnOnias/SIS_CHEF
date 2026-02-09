@@ -17,9 +17,6 @@ module.exports = function pedidoPreload() {
     setCurrentUser: (usuario) =>
       ipcRenderer.invoke("set-current-user", usuario),
 
-    mudarStatus: (numeroMesa) =>
-      ipcRenderer.invoke("mudar-status-mesa", numeroMesa),
-
     getDadosPedidoAtual: () => ipcRenderer.invoke("getDadosPedidoAtual"),
 
     getTodasCategorias: () => ipcRenderer.invoke("getTodasCategorias"),
@@ -30,8 +27,8 @@ module.exports = function pedidoPreload() {
     getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
       listarPedidos: (numeroMesa) => ipcRenderer.invoke("listarPedidos", numeroMesa),
 
-    adicionarProdutosPedido: (pedido) =>
-      ipcRenderer.invoke("adicionarProdutosPedido", pedido),
+    adicionarProdutosPedido: (idPedido, produto) =>
+      ipcRenderer.invoke("adicionarProdutosPedido", idPedido, produto),
 
   };
 };

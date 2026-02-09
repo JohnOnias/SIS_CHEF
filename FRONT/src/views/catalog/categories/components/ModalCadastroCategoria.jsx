@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./styles/categorias.css";
+import "../styles/categorias.css";
 
 function ModalCadastroCategoria({ isOpen, onClose, onSave, disabled = false }) {
   const [nome, setNome] = useState("");

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RectangleImg from "../../assets/others/rectangle.png";
 import GroupImg from "../../assets/others/group.png";
-import { useNavigate } from "react-router-dom";
+import { unstable_useRoute, useNavigate } from "react-router-dom";
 
 //importa o css
 import "./styles/login.css";
@@ -28,16 +28,18 @@ function LoginView() {
   // função de login
   const login = async (formulario) => {
     console.log("Fazendo login com os dados:", formulario);
- 
 
     try {
-      const usuario = window.api.login.login(formulario.email, formulario.senha
+      const usuario = await window.api.login.login(
+        formulario.email,
+        formulario.senha,
       );
 
       if (!usuario) {
         alert("Erro ao fazer login, verifique suas credenciais.");
       } else {
-  
+        await window.api.pedido.setCurrentUser(usuario);
+
         console.log("Login bem-sucedido:", usuario);
 
         if (usuario.tipo === "administrador") {
