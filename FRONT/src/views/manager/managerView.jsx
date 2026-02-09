@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./styles/manager.css";
 import Menu from "../components/layouts/Menu";
 import Table from "../components/layouts/Tables";
-import Categorias from "../components/modal/products/Categorias";
+import Categorias from "../catalog/categories/Categorias.jsx";
+
 
 function ManagerView() {
   const location = useLocation();

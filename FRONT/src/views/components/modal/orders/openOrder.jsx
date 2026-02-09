@@ -1,22 +1,18 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import PaymentModal from "./paymentModal.jsx";
-import {
-  ensureCatalogSeed,
-  getCategories,
-  getProductsByCategory,
-} from "../../../../services/catalogStorage";
 
-const KEY_WAITER_NAMES = "waiter_names_v1";
+import { listarCategorias } from "../../../../services/categoryService";
+import { listarProdutosPorCategoria } from "../../../../services/productService";
+import { isElectron } from "../../../../services/api";
 
-function readWaiterNames() {
-  try {
-    const raw = localStorage.getItem(KEY_WAITER_NAMES);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
+import { readWaiterNames } from "./openOrder/utils/waiterNames";
+import { formatMoney } from "./openOrder/utils/money";
+
+import OpenOrderShell from "./openOrder/components/OpenOrderShell";
+import OpenOrderHeader from "./openOrder/components/OpenOrderHeader";
+import CategoryTabs from "./openOrder/components/CategoryTabs";
+import ProductsList from "./openOrder/components/ProductsList";
+import OpenOrderFooter from "./openOrder/components/OpenOrderFooter";
 
 function OpenOrderModal({ isOpen, onClose, mesa }) {
   const [openPagamento, setOpenPagamento] = useState(false);
@@ -29,25 +25,51 @@ function OpenOrderModal({ isOpen, onClose, mesa }) {
   const [waiterNames] = useState(() => readWaiterNames());
   const [nomeGarcom, setNomeGarcom] = useState("");
 
+  const [categorias, setCategorias] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
+
+  const [produtos, setProdutos] = useState([]);
+  const [loadingCats, setLoadingCats] = useState(true);
+  const [loadingProds, setLoadingProds] = useState(true);
 
   // carrinho: { [idProduto]: { id, nome, preco, qtd } }
   const [carrinho, setCarrinho] = useState({});
 
-  const categorias = useMemo(() => {
-    ensureCatalogSeed();
-    return getCategories();
-  }, []);
+  useEffect(() => {
+    if (!isOpen) return;
 
-  const categoriaAtual = useMemo(() => {
-    if (categoriaSelecionada) return categoriaSelecionada;
-    return categorias.length > 0 ? categorias[0] : null;
-  }, [categoriaSelecionada, categorias]);
+    (async () => {
+      setLoadingCats(true);
+      try {
+        const cats = await listarCategorias();
+        setCategorias(cats || []);
+        setCategoriaSelecionada((prev) => prev || (cats?.[0] ?? null));
+      } catch (e) {
+        console.error(e);
+        setCategorias([]);
+      } finally {
+        setLoadingCats(false);
+      }
+    })();
+  }, [isOpen]);
 
-  const produtos = useMemo(() => {
-    if (!categoriaAtual) return [];
-    return getProductsByCategory(categoriaAtual.id);
-  }, [categoriaAtual]);
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!categoriaSelecionada?.id) return;
+
+    (async () => {
+      setLoadingProds(true);
+      try {
+        const prods = await listarProdutosPorCategoria(categoriaSelecionada.id);
+        setProdutos(prods || []);
+      } catch (e) {
+        console.error(e);
+        setProdutos([]);
+      } finally {
+        setLoadingProds(false);
+      }
+    })();
+  }, [isOpen, categoriaSelecionada?.id]);
 
   const itensCarrinho = useMemo(() => Object.values(carrinho), [carrinho]);
 
@@ -68,297 +90,70 @@ function OpenOrderModal({ isOpen, onClose, mesa }) {
     });
   };
 
-  const subQtd = (p) => {
+  const removeQtd = (p) => {
     setCarrinho((prev) => {
       const atual = prev[p.id];
       if (!atual) return prev;
-
-      const novaQtd = atual.qtd - 1;
-      if (novaQtd <= 0) {
+      const qtd = atual.qtd - 1;
+      if (qtd <= 0) {
         const copy = { ...prev };
         delete copy[p.id];
         return copy;
       }
-      return { ...prev, [p.id]: { ...atual, qtd: novaQtd } };
+      return { ...prev, [p.id]: { ...atual, qtd } };
     });
   };
 
   return (
     <>
-      {/* OVERLAY */}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(0,0,0,0.55)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 99999,
-          padding: 16,
-        }}
-        onClick={onClose}
-      >
-        {/* MODAL */}
-        <div
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            width: "min(980px, 96vw)",
-            height: "min(92vh, 760px)",
-            background: "#f5f6fa",
-            borderRadius: 16,
-            padding: 18,
-            display: "flex",
-            flexDirection: "column",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.45)",
-          }}
-        >
-          {/* HEADER */}
+      <OpenOrderShell onClose={onClose}>
+        <OpenOrderHeader
+          mesa={mesa}
+          isManager={isManager}
+          nomeGarcom={nomeGarcom}
+          setNomeGarcom={setNomeGarcom}
+          waiterNames={waiterNames}
+        />
+
+        {!isElectron && (
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 10,
+              padding: 10,
+              background: "#fff3cd",
+              borderRadius: 8,
+              marginBottom: 12,
             }}
           >
-            <h2 style={{ margin: 0 }}>Mesa {mesa}</h2>
-
-            <button className="bntPadrao" onClick={onClose} type="button">
-              Fechar
-            </button>
+            Você está no Chrome (sem Electron). O BACK via IPC (window.api) não funciona aqui.
           </div>
+        )}
 
-          {/* CONTEÚDO */}
-          <div
-            style={{
-              flex: 1,
-              display: "grid",
-              gridTemplateColumns: "260px 1fr",
-              gap: 16,
-              overflow: "hidden",
-            }}
-          >
-            {/* CATEGORIAS */}
-            <div
-              style={{
-                background: "#fff",
-                borderRadius: 12,
-                padding: 12,
-                overflowY: "auto",
-              }}
-            >
-              <strong>Categorias</strong>
+        <CategoryTabs
+          categorias={categorias}
+          categoriaAtual={categoriaSelecionada}
+          onSelect={(c) => setCategoriaSelecionada(c)}
+          loading={loadingCats}
+        />
 
-              <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
-                {categorias.map((c) => (
-                  <div
-                    key={c.id}
-                    onClick={() => setCategoriaSelecionada(c)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: 8,
-                      borderRadius: 10,
-                      cursor: "pointer",
-                      background:
-                        categoriaAtual?.id === c.id ? "#e8f5e9" : "#f9fafb",
-                      border:
-                        categoriaAtual?.id === c.id
-                          ? "2px solid #2f9e41"
-                          : "1px solid #e5e7eb",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 8,
-                        backgroundImage: `url(${c.imagem})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                    <strong>{c.nome}</strong>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <ProductsList
+          produtos={produtos}
+          loading={loadingProds}
+          onAdd={addQtd}
+          onRemove={removeQtd}
+          carrinho={carrinho}
+        />
 
-            {/* PRODUTOS */}
-            <div
-              style={{
-                background: "#fff",
-                borderRadius: 12,
-                padding: 12,
-                display: "flex",
-                flexDirection: "column",
-                overflow: "hidden",
-              }}
-            >
-              <strong style={{ marginBottom: 10 }}>
-                {categoriaAtual?.nome || "Produtos"}
-              </strong>
+        <OpenOrderFooter
+          itens={itensCarrinho}
+          total={formatMoney(total)}
+          onPagamento={() => setOpenPagamento(true)}
+        />
+      </OpenOrderShell>
 
-              <div style={{ flex: 1, overflowY: "auto", paddingRight: 6 }}>
-                {produtos.length === 0 ? (
-                  <div
-                    style={{
-                      padding: 14,
-                      borderRadius: 10,
-                      border: "1px solid #e5e5e5",
-                      fontWeight: 700,
-                    }}
-                  >
-                    Nenhum produto cadastrado
-                  </div>
-                ) : (
-                  <div style={{ display: "grid", gap: 10 }}>
-                    {produtos.map((p) => {
-                      const qtd = carrinho[p.id]?.qtd || 0;
-
-                      return (
-                        <div
-                          key={p.id}
-                          style={{
-                            border: "1px solid #e5e5e5",
-                            borderRadius: 10,
-                            padding: 12,
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: 12,
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontWeight: 800 }}>{p.nome}</div>
-                            <div style={{ fontWeight: 700, color: "#555" }}>
-                              R$ {Number(p.preco).toFixed(2)}
-                            </div>
-                            {p.descricao && (
-                              <div style={{ fontSize: 13, color: "#666" }}>
-                                {p.descricao}
-                              </div>
-                            )}
-                          </div>
-
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 8,
-                            }}
-                          >
-                            <button
-                              className="bntPadraoGreen"
-                              style={{ width: 40, height: 40 }}
-                              onClick={() => subQtd(p)}
-                              type="button"
-                            >
-                              −
-                            </button>
-
-                            <strong>{qtd}</strong>
-
-                            <button
-                              className="bntPadraoGreen"
-                              style={{ width: 40, height: 40 }}
-                              onClick={() => addQtd(p)}
-                              type="button"
-                            >
-                              +
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* RODAPÉ */}
-              <div
-                style={{
-                  borderTop: "1px solid #e5e7eb",
-                  marginTop: 10,
-                  paddingTop: 10,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-              >
-                <strong>Total: R$ {total.toFixed(2)}</strong>
-
-                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  {/* 🔐 SELECT SÓ PARA GERENTE */}
-                  {isManager && (
-                    <select
-                      value={nomeGarcom}
-                      onChange={(e) => setNomeGarcom(e.target.value)}
-                      style={{
-                        height: 44,
-                        minWidth: 240,
-                        padding: "0 12px",
-                        borderRadius: 8,
-                        border: "1px solid #ccc",
-                        fontWeight: 700,
-                        background: "#fff",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <option value="">Garçom</option>
-                      {waiterNames.map((nome) => (
-                        <option key={nome} value={nome}>
-                          {nome}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-
-                  <button
-                    className="bntPadraoGreen"
-                    disabled={itensCarrinho.length === 0}
-                    onClick={() => setOpenPagamento(true)}
-                    style={{
-                      height: 44,
-                      minWidth: 180,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 900,
-                    }}
-                    type="button"
-                  >
-                    Finalizar Pedido
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* PAGAMENTO */}
       <PaymentModal
-        isOpen={openPagamento}
-        total={total}
+        open={openPagamento}
         onClose={() => setOpenPagamento(false)}
-        onConfirm={(forma) => {
-          // 🔜 pronto pro back
-          console.log("Pedido:", {
-            mesa,
-            garcom: isManager ? nomeGarcom : undefined,
-            itens: itensCarrinho,
-            total,
-            formaPagamento: forma,
-          });
-
-          setCarrinho({});
-          setOpenPagamento(false);
-          onClose();
-        }}
+        total={total}
       />
     </>
   );

@@ -1,8 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import "./styles/adm.css";
 
-import CadastroIcon from "../../assets/menu/cadastro.png";
-
 import {
   getUsers,
   addUser,
@@ -11,51 +9,11 @@ import {
   ensureUsersSeed,
 } from "../../services/usersStorage";
 
-// --------- validações ----------
-function isValidEmail(email) {
-  const e = String(email || "")
-    .trim()
-    .toLowerCase();
-  // simples e eficaz para front (não tenta cobrir todos os casos do RFC)
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e);
-}
+import AdmSidebar from "./components/AdmSidebar";
+import RoleTable from "./components/RoleTable";
+import UserModal from "./components/UserModal";
 
-function onlyDigits(value) {
-  return String(value || "").replace(/\D/g, "");
-}
-
-function isValidCPF(cpf) {
-  const c = onlyDigits(cpf);
-
-  if (c.length !== 11) return false;
-  if (/^(\d)\1{10}$/.test(c)) return false; // 000.. 111.. etc
-
-  // cálculo dígitos verificadores
-  let sum = 0;
-  for (let i = 0; i < 9; i++) sum += Number(c[i]) * (10 - i);
-  let d1 = (sum * 10) % 11;
-  if (d1 === 10) d1 = 0;
-  if (d1 !== Number(c[9])) return false;
-
-  sum = 0;
-  for (let i = 0; i < 10; i++) sum += Number(c[i]) * (11 - i);
-  let d2 = (sum * 10) % 11;
-  if (d2 === 10) d2 = 0;
-  if (d2 !== Number(c[10])) return false;
-
-  return true;
-}
-// chamada das apis do Back
-
-
-function formatCPF(value) {
-  const c = onlyDigits(value).slice(0, 11);
-  if (c.length <= 3) return c;
-  if (c.length <= 6) return `${c.slice(0, 3)}.${c.slice(3)}`;
-  if (c.length <= 9) return `${c.slice(0, 3)}.${c.slice(3, 6)}.${c.slice(6)}`;
-  return `${c.slice(0, 3)}.${c.slice(3, 6)}.${c.slice(6, 9)}-${c.slice(9)}`;
-}
-// -------------------------------
+import { isValidEmail, isValidCPF, onlyDigits, formatCPF } from "./utils/cpfEmail";
 
 function AdmView() {
   
@@ -219,42 +177,10 @@ function AdmView() {
     setRefresh((r) => r + 1);
   };
 
-  // ícones (iguais ao que eu já tinha)
-  const PencilIcon = () => (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm2.92 2.83H5v-.92l9.06-9.06.92.92L5.92 20.08zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
-    </svg>
-  );
-
-  const TrashIcon = () => (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M6 7h12l-1 14H7L6 7zm3-3h6l1 2H8l1-2z" />
-    </svg>
-  );
-
   return (
     <div className="container">
       {/* Menu lateral */}
-      <aside className="sidebar">
-        <div className="perfil">
-          <div className="icone"></div>
-
-          <p style={{ fontSize: 18, marginTop: 6 }}>
-            {currentUser && <strong> {currentUser.tipo}</strong>}
-            <br />
-            {currentUser && <p> {currentUser.nome}</p>}
-          </p>
-        </div>
-
-        <nav>
-          <ul>
-            <li className="menu">
-              <img src={CadastroIcon} alt="icone cadastros" />
-              <a onClick={() => setTela("Cadastros")}>Cadastros</a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
+      <AdmSidebar setTela={setTela} />
 
       {/* Conteúdo */}
       <main className="conteudo">
@@ -272,187 +198,42 @@ function AdmView() {
               </button>
             </div>
 
-            {/* GERENTE */}
-            <div className="role-section">
-              <div className="role-title">Gerente</div>
-              <table className="role-table">
-                <tbody>
-                  {gerentes.map((u) => (
-                    <tr key={u.id}>
-                      <td>{u.nome}</td>
-                      <td>
-                        <div className="actions">
-                          <button
-                            className="icon-btn icon-edit"
-                            title="Editar"
-                            onClick={() => abrirEdicao(u)}
-                          >
-                            <PencilIcon />
-                          </button>
-                          <button
-                            className="icon-btn icon-del"
-                            title="Excluir"
-                            onClick={() => excluir(u.id)}
-                          >
-                            <TrashIcon />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {gerentes.length === 0 && (
-                    <tr>
-                      <td style={{ color: "#667085" }}>
-                        Nenhum gerente cadastrado.
-                      </td>
-                      <td />
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <RoleTable
+              title="Gerente"
+              users={gerentes}
+              emptyText="Nenhum gerente cadastrado."
+              onEdit={abrirEdicao}
+              onDelete={excluir}
+            />
 
-            {/* GARÇONS */}
-            <div className="role-section" style={{ marginTop: 14 }}>
-              <div className="role-title">Garçons</div>
-              <table className="role-table">
-                <tbody>
-                  {garcons.map((u) => (
-                    <tr key={u.id}>
-                      <td>{u.nome}</td>
-                      <td>
-                        <div className="actions">
-                          <button
-                            className="icon-btn icon-edit"
-                            title="Editar"
-                            onClick={() => abrirEdicao(u)}
-                          >
-                            <PencilIcon />
-                          </button>
-                          <button
-                            className="icon-btn icon-del"
-                            title="Excluir"
-                            onClick={() => excluir(u.id)}
-                          >
-                            <TrashIcon />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {garcons.length === 0 && (
-                    <tr>
-                      <td style={{ color: "#667085" }}>
-                        Nenhum garçom cadastrado.
-                      </td>
-                      <td />
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <RoleTable
+              title="Garçons"
+              users={garcons}
+              emptyText="Nenhum garçom cadastrado."
+              onEdit={abrirEdicao}
+              onDelete={excluir}
+              style={{ marginTop: 14 }}
+            />
 
-            {/* MODAL */}
-            {open && (
-              <div className="adm-modal-overlay" onClick={() => setOpen(false)}>
-                <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
-                  <h2>Cadastro</h2>
-
-                  <div className="adm-form">
-                    <select
-                      className="adm-input"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                    >
-                      <option value="manager">Gerente</option>
-                      <option value="waiter">Garçom</option>
-                    </select>
-
-                    <div style={{ display: "grid", gap: 6 }}>
-                      <input
-                        className="adm-input"
-                        placeholder="Nome"
-                        value={nome}
-                        onChange={(e) => setNome(e.target.value)}
-                      />
-                      {errors.nome && (
-                        <small style={{ color: "#e03131", fontWeight: 700 }}>
-                          {errors.nome}
-                        </small>
-                      )}
-                    </div>
-
-                    <div style={{ display: "grid", gap: 6 }}>
-                      <input
-                        className="adm-input"
-                        placeholder="CPF"
-                        value={cpf}
-                        onChange={(e) => setCpf(formatCPF(e.target.value))}
-                      />
-                      {errors.cpf && (
-                        <small style={{ color: "#e03131", fontWeight: 700 }}>
-                          {errors.cpf}
-                        </small>
-                      )}
-                    </div>
-
-                    <div style={{ display: "grid", gap: 6 }}>
-                      <input
-                        className="adm-input"
-                        placeholder="E-mail"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                      {errors.email && (
-                        <small style={{ color: "#e03131", fontWeight: 700 }}>
-                          {errors.email}
-                        </small>
-                      )}
-                    </div>
-
-                    <div style={{ display: "grid", gap: 6 }}>
-                      <input
-                        className="adm-input"
-                        placeholder="Senha"
-                        type="password"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                      />
-                      {errors.senha && (
-                        <small style={{ color: "#e03131", fontWeight: 700 }}>
-                          {errors.senha}
-                        </small>
-                      )}
-                    </div>
-
-                    <div style={{ display: "grid", gap: 6 }}>
-                      <input
-                        className="adm-input"
-                        placeholder="Confirmação da Senha"
-                        type="password"
-                        value={confirmSenha}
-                        onChange={(e) => setConfirmSenha(e.target.value)}
-                      />
-                      {errors.confirmSenha && (
-                        <small style={{ color: "#e03131", fontWeight: 700 }}>
-                          {errors.confirmSenha}
-                        </small>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="adm-actions">
-                    <button className="adm-submit" onClick={salvar}>
-                      {mode === "create" ? "Cadastrar" : "Salvar"}
-                    </button>
-                  </div>
-
-                  <button className="adm-cancel" onClick={() => setOpen(false)}>
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            )}
+            <UserModal
+              open={open}
+              onClose={() => setOpen(false)}
+              mode={mode}
+              role={role}
+              setRole={setRole}
+              nome={nome}
+              setNome={setNome}
+              cpf={cpf}
+              setCpf={setCpf}
+              email={email}
+              setEmail={setEmail}
+              senha={senha}
+              setSenha={setSenha}
+              confirmSenha={confirmSenha}
+              setConfirmSenha={setConfirmSenha}
+              errors={errors}
+              onSave={salvar}
+            />
           </div>
         )}
       </main>
