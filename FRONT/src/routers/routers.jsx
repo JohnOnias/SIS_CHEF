@@ -5,7 +5,8 @@ import LoginView from "../views/login/loginView";
 import ManagerView from "../views/manager/managerView";
 import AdmView from "../views/adm/adm";
 import BartenderView from "../views/bartender/bartenderView";
-import SelectProductsView from "../views/order/selectProducts";
+import SelectProductsView from "../views/catalog/products/selectProducts.jsx";
+
 
 
 const Router = createHashRouter([

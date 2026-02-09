@@ -19,8 +19,8 @@ function createWindow() {
   });
 
   // Carrega sua aplicação React no Vite dev server
-  // win.loadURL("http://localhost:5173/#garcom");
-  win.loadFile(join(__dirname, "testeBack.html"));
+  win.loadURL("http://localhost:5173/manager");
+  //win.loadFile(join(__dirname, "testeBack.html"));
 
   win.on("closed", () => {
     win = null; // libera a referência quando a janela é fechada
