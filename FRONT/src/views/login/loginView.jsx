@@ -31,14 +31,16 @@ function LoginView() {
  
 
     try {
-      const usuario = window.api.login.login(formulario.email, formulario.senha
+      const usuario = await window.api.login.login(formulario.email, formulario.senha
       );
 
       if (!usuario) {
         alert("Erro ao fazer login, verifique suas credenciais.");
       } else {
-  
         console.log("Login bem-sucedido:", usuario);
+        // setta o usuario logado no contexto global da aplicação
+        let setUsuario = await window.api.user.setCurrentUser(usuario);
+        console.log("Usuário atual definido no contexto global:", setUsuario);
 
         if (usuario.tipo === "administrador") {
           navigate("/adm");

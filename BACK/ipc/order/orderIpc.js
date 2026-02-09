@@ -18,7 +18,10 @@ let pedidoAtual = {
 };
 
 module.exports = function orderIpc() {
-  // Registrar pedido com verificação de erros
+
+
+
+  // Registrar pedido 
   ipcMain.handle("registrarPedido", async (event, numeroMesa, idGarcom) => {
     try {
       const resultado = await registrarPedido(numeroMesa, idGarcom);
@@ -58,11 +61,11 @@ module.exports = function orderIpc() {
 
 
   // Adicionar produtos ao pedido
-  ipcMain.handle("adicionarProdutosPedido", async (event, pedido) => {
+  ipcMain.handle("adicionarProdutosPedido", async (event, idPedido, produto) => {
     try {
       const resultado = await adicionarProdutosPedido(
-        pedido.idPedido,
-        pedido.produtos,
+        idPedido,
+        produto,
       );
       return { success: true, data: resultado };
     } catch (err) {

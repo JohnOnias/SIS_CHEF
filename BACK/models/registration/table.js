@@ -36,14 +36,7 @@ export async function cadastrarMesa(mesa) {
     await transaction.commit();
 
     return {
-      success: true,
-      data: {
-        id: mesaCriada.id,
-        numero: mesaCriada.numero,
-        status: mesaCriada.status,
-        n_cadeiras: mesaCriada.n_cadeiras,
-      },
-    };
+      success: true,};
   } catch (error) {
     if (transaction && !transaction.finished) {
       await transaction.rollback();
@@ -57,7 +50,6 @@ export async function cadastrarMesa(mesa) {
 export async function getMesas(filtros = {}) {
   try {
     const where = {};
-
     // Filtros opcionais
     if (filtros.status) {
       where.status = filtros.status;
@@ -81,6 +73,31 @@ export async function getMesas(filtros = {}) {
     return mesas;
   } catch (error) {
     console.error("Erro ao buscar mesas:", error);
+    throw error;
+  }
+}
+export async function deletarMesa(numero_mesa) {
+  
+  const transaction = await Mesa.sequelize.transaction();
+
+  try {
+    const deletedRows = await Mesa.destroy({
+      where: { numero: numero_mesa },
+      transaction,
+    });
+
+    await transaction.commit();
+
+    return {
+      success: true,
+      deletedRows,
+    };
+  } catch (error) {
+    if (transaction && !transaction.finished) {
+      await transaction.rollback();
+    }
+
+    console.error("Erro ao deletar mesa:", error);
     throw error;
   }
 }
@@ -115,6 +132,7 @@ export async function verificarMesaPedido(numero_mesa) {
     throw error;
   }
 }
+
 export async function listarPedidos(numero_mesa) {
   try {
     const pedidos = await Pedido.findAll({

@@ -135,25 +135,8 @@
         } catch (error) {
           console.error("Erro ao listar mesas:", error);
         }
-        
-  }*/
 
-        // teste cadastro funcionario
-        try {
-          const cadastroUsuario =
-            await window.api.funcionario.cadastrarFuncionario(
-              "john", // nome
-              "66666666666", // cpf
-              "john2@adm.com", // email
-              "administrador", // cargo
-              "123456789", //senha
-            );
-          console.log("Cadastro de usuário:", cadastroUsuario);
-        } catch (error) {
-          console.error("Erro ao cadastrar usuário:", error);
-        }
-
-        let formulario = {
+         let formulario = {
           email: "john2@adm.com",
           senha: "123456789",
         };
@@ -174,6 +157,39 @@
           console.error("Erro no login:", error);
         }
         
+        
+  }
+
+        // teste cadastro funcionario
+        try {
+          const cadastroUsuario = await window.api.funcionario.cadastrarFuncionario(
+            "john Adm", // nome
+            "77777777777", // cpf
+            "john3@adm.com", // email
+            "administrador", // cargo
+            "123456789", //senha
+          );
+          console.log("Cadastro de usuário:", cadastroUsuario);
+        } catch (error) {
+          console.error("Erro ao cadastrar usuário:", error);
+        }
+        const usuario = await window.api.funcionario.getFuncionario("administrador"); 
+        console.log("Resultado do getFuncionario:", usuario);
+     */
+        const setUsuario = window.api.user.setCurrentUser({
+          id: 1,
+          nome: "John Doe",
+          email: "john@adm.com",
+        });
+        const currentUser = await window.api.user.getCurrentUser();
+        const gerentes = await window.api.funcionario.getFuncionario("Gerente");
+        const garcons = await window.api.funcionario.getFuncionario("Garçom");
+
+        console.log("Usuário definido:", setUsuario);
+        console.log("Usuário atual:", currentUser);
+        console.log(window.api);
+        console.log(window.api.funcionario);
+        console.log(window.api.funcionario?.getFuncionario);
       })();
     </script>
   </body>

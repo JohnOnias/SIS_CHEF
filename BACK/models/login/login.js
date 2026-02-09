@@ -33,8 +33,8 @@ export async function login(email, senha) {
       id: usuarioLimpo.id,
       nome: usuarioLimpo.nome,
       email: usuarioLimpo.email,
-      // Aqui ele pega o tipo (ex: 'adm', 'funcionario') direto do banco
       tipo: usuarioLimpo.tipo ,
+      
     };
   } catch (error) {
     console.error("Erro no login:", error);

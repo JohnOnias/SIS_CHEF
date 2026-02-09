@@ -5,7 +5,7 @@ export async function getFuncionario(tipoFuncionario) {
   try {
     const funcionarios = await Funcionario.findAll({
       where: { tipo: tipoFuncionario },
-      attributes: ["id", "nome"], // só retorna id e nome
+      attributes: ["id", "nome", "email"], // só retorna id,  nome e email para evitar expor dados sensíveis como senha
     });
 
     return funcionarios; // retorna array de funcionários

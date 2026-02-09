@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import "./styles/adm.css";
 
 import CadastroIcon from "../../assets/menu/cadastro.png";
@@ -13,7 +13,9 @@ import {
 
 // --------- validações ----------
 function isValidEmail(email) {
-  const e = String(email || "").trim().toLowerCase();
+  const e = String(email || "")
+    .trim()
+    .toLowerCase();
   // simples e eficaz para front (não tenta cobrir todos os casos do RFC)
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e);
 }
@@ -43,6 +45,8 @@ function isValidCPF(cpf) {
 
   return true;
 }
+// chamada das apis do Back
+
 
 function formatCPF(value) {
   const c = onlyDigits(value).slice(0, 11);
@@ -54,6 +58,35 @@ function formatCPF(value) {
 // -------------------------------
 
 function AdmView() {
+  
+  
+    // aqui carrega os dados inicias do usuário, gerentes e garçons
+       const fetchData = async () => {
+        const currentUser =  await window.api.user.getCurrentUser();
+        const gerentes =  await window.api.funcionario.getFuncionario("Gerente");
+        const garcons =  await window.api.funcionario.getFuncionario("Garçom");
+        return { currentUser, gerentes, garcons };
+       }
+       const [currentUser, setCurrentUser] = useState(null);
+       const [gerentes, setGerentes] = useState([]);
+       const [garcons, setGarcons] = useState([]);
+       // aqui setta quando os dados forem carregados
+       useEffect(() => {
+         const load = async () => {
+           const data = await fetchData();
+           setCurrentUser(data.currentUser);
+           setGerentes(data.gerentes);
+           setGarcons(data.garcons);
+           console.log("Dados carregados:", data);
+         };
+
+         load();
+       }, []);
+   
+
+
+
+
   const titulo = document.getElementById("titulo");
   if (titulo) titulo.innerHTML = "Administrador!";
 
@@ -81,9 +114,6 @@ function AdmView() {
     ensureUsersSeed();
     return getUsers();
   }, [refresh]);
-
-  const gerentes = users.filter((u) => u.role === "manager");
-  const garcons = users.filter((u) => u.role === "waiter");
 
   const limparForm = () => {
     setRole("waiter");
@@ -133,9 +163,11 @@ function AdmView() {
 
     // senha
     if (!senha) e.senha = "Informe a senha.";
-    else if (String(senha).length < 4) e.senha = "Senha deve ter ao menos 4 caracteres.";
+    else if (String(senha).length < 4)
+      e.senha = "Senha deve ter ao menos 4 caracteres.";
 
-    if (senha !== confirmSenha) e.confirmSenha = "Senha e confirmação não conferem.";
+    if (senha !== confirmSenha)
+      e.confirmSenha = "Senha e confirmação não conferem.";
 
     // (opcional) evitar email duplicado
     const emailLower = emailV.toLowerCase();
@@ -208,9 +240,9 @@ function AdmView() {
           <div className="icone"></div>
 
           <p style={{ fontSize: 18, marginTop: 6 }}>
-            <strong>Administrador</strong>
+            {currentUser && <strong> {currentUser.tipo}</strong>}
             <br />
-            Francisco
+            {currentUser && <p> {currentUser.nome}</p>}
           </p>
         </div>
 
@@ -270,7 +302,9 @@ function AdmView() {
                   ))}
                   {gerentes.length === 0 && (
                     <tr>
-                      <td style={{ color: "#667085" }}>Nenhum gerente cadastrado.</td>
+                      <td style={{ color: "#667085" }}>
+                        Nenhum gerente cadastrado.
+                      </td>
                       <td />
                     </tr>
                   )}
@@ -308,7 +342,9 @@ function AdmView() {
                   ))}
                   {garcons.length === 0 && (
                     <tr>
-                      <td style={{ color: "#667085" }}>Nenhum garçom cadastrado.</td>
+                      <td style={{ color: "#667085" }}>
+                        Nenhum garçom cadastrado.
+                      </td>
                       <td />
                     </tr>
                   )}
