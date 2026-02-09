@@ -84,7 +84,48 @@ apis  do back-end:
 				retorna true
 
 
-- api 
+- api editar pedido 
+
+		window.api.pedido.editarPedido(idpedido, dadosAtualizados);
+	dadosAtualizados = {	
+				mesa_numero,
+     				status,
+     				valor_total,
+     				id_funcionario,
+				}
+		return true ou false
+
+
+- api excluir item do pedido 
+	
+		window.api.pedido.excluirIttemPedido(idPedido, idItem)
+
+		return true ou false
+
+
+- api listar pedidos pela mesa
+
+		window.api.pedido.listarPedidosMes(mesa_numero);
+		
+		return objeto
+
+
+
+- api fechar pedido 
+		
+		window.api.peido.fecharPedido(idpedido, valorTotal);
+		
+		return objeto pedido
+
+
+
+
+
+		
+			
+	
+
+		
 
 
 
