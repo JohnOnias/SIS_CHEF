@@ -29,5 +29,14 @@ module.exports = function productIpc() {
       return [];
     }
   });
+  ipcMain.handle("get-produtos-por-categoria", async (event, idCategoria) => {
+    try {
+      return await getProdutosID(idCategoria);
+    } catch (error) {
+      console.error("Erro ao pegar produtos por categoria:", error);
+      return [];
+    }  });
+
+
 }
 

@@ -11,6 +11,7 @@ apis  do back-end:
 	window.api.user.getCurrentUser(); 
 		retorna o objeto usuario
 
+
 - api cadastro de usuário
 	window.api.funcionario.cadastrarFuncionario(nome, cpf, email, cargo, senha)
 	retorna um objeto com usuário(id, nome, email, tipo, senha: true)
@@ -97,32 +98,58 @@ apis  do back-end:
 
 
 - api excluir item do pedido 
-	
 		window.api.pedido.excluirIttemPedido(idPedido, idItem)
 
 		return true ou false
 
 
 - api listar pedidos pela mesa
-
 		window.api.pedido.listarPedidosMes(mesa_numero);
 		
 		return objeto
 
 
-
 - api fechar pedido 
-		
-		window.api.peido.fecharPedido(idpedido, valorTotal);
+		window.api.pedido.fecharPedido(idpedido, valorTotal);
 		
 		return objeto pedido
 
 
+- api fazer pagamento 
+		window.api.pagamento.cadastrarPagamento(idPedido, tipoPagamento, dividido, valorPago);
+		idpedido = id do pedido fechardo 
+		tipoPagamento = "dinheiro', "debito", "credito" ou "pix"
+		dividido: true ou false, (se o pagamento foi dividido)
+		valorPago: valor pago 
+
+			retorna o objeto pagamento(id, pedido_id, tipo_pagamento, dividido, valorPago,)
 
 
 
+- api todos os pagamento (pra um historio ou algo assim)
+		window.api.pagamento.todosOsPagamentos();
+			retorna um array com cada objeto (id, pedido_id, tipo_pagamento, dividido, valor_pago )
 		
-			
+
+
+- api buscarPagamentoPorId do pedido
+
+		window.api.buscarPagamentoPorPedidoId(id_pedido);
+			return objeto pedido(id, pedido_id, tipo_pagamento, dividido, valor_pago)  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 
 		
