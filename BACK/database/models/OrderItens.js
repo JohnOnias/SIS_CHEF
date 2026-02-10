@@ -20,7 +20,7 @@ export default function ItemPedidoModel(sequelize) {
       },
       quantidade: { type: DataTypes.INTEGER, allowNull: false },
       preco_unitario: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
-      data_criacao: { type: DataTypes.DATE, allowNull: false },
+      data_criacao: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     },
     {
       tableName: "tb_itens_pedidos",

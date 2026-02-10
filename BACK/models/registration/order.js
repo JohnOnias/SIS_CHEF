@@ -1,22 +1,5 @@
-import { Pedido } from "../../database/models/index.js";
+import {Produto ,Pedido, ItemPedido} from "../../database/models/index.js";
 
-export async function cadastrarPedido(pedido) {
-
-
-  try {
-    await Pedido.create({   
-        mesa_numero: pedido.numeroMesa,
-        status: pedido.status || "aberto", 
-        total: pedido.total || 0, 
-        id_funcionario: pedido.idFuncionario,
-    });
-    return { success: true, message: "Pedido cadastrado com sucesso" }; 
-  }
-    catch (error) {
-    console.error("Erro ao cadastrar pedido:", error);
-    return { success: false, error: error.message };
-  }
-}
 
 
 export async function getPedidos() {
@@ -40,15 +23,15 @@ export async function editarPedido(idPedido, dadosAtualizados) {
       return { success: false, error: "Pedido não encontrado." };
     }
 
-    const { mesa_numero, status, valor_total, id_funcionario } =
+    const { mesa_numero, status, id_funcionario } =
       dadosAtualizados;
 
     await pedido.update({
       mesa_numero,
       status,
-      valor_total,
       id_funcionario,
     });
+
 
     return { success: true, message: "Pedido atualizado com sucesso" };
   } catch (error) {
@@ -58,25 +41,165 @@ export async function editarPedido(idPedido, dadosAtualizados) {
 }
 
 
-export async function excluirItemPedido(idPedido, idItem) {
+export async function registrarPedido(numeroMesa, idGarcom) {
   try {
-    const pedido = await Pedido.findByPk(idPedido);
+    console.log("Entrou no registrarPedido, mesa:", numeroMesa, idGarcom);
 
-    if (!pedido) {
-      return { success: false, error: "Pedido não encontrado." };
-    } 
-    const item = await pedido.getItens({ where: { id: idItem } });
+    // Verifica se a mesa existe
+    const mesa = await Mesa.findOne({ where: { numero: numeroMesa } });
+    if (!mesa) {
+      throw new Error("Numeração de mesa não cadastrada!");
+    }
 
-    if (item.length === 0) {
-      return { success: false, error: "Item não encontrado no pedido." };
-    }     
-    await item[0].destroy();
-    return { success: true, message: "Item excluído do pedido com sucesso" };
-  } catch (error) {
-    console.error("Erro ao excluir item do pedido:", error);
-    return { success: false, error: error.message };
-  } 
+    if (mesa.status.toLowerCase() === "ocupada") {
+      throw new Error("Mesa já ocupada.");
+    }
+
+    // Verifica se já existe um pedido para essa mesa aberto
+    const pedidoExistente = await Pedido.findOne({
+      where: { mesa_numero: numeroMesa, status: "aberto" },
+    });
+
+    if (pedidoExistente) {
+      throw new Error("Mesa já tem um pedido.");
+    }
+
+    // Muda o status da mesa para "ocupada"
+    mesa.status = "ocupada";
+    await mesa.save();
+
+    // Cria o pedido
+    const pedido = await Pedido.create({
+      mesa_numero: numeroMesa,
+      data_criacao: new Date(),
+      status: "aberto",
+      valor_total: 0,
+      id_funcionario: idGarcom,
+    });
+
+    return { success: true, id: pedido.id };
+  } catch (err) {
+    console.error("Erro no registrarPedido:", err);
+    throw err;
+  }
 }
+
+
+
+
+
+
+
+
+
+// Buscar todos os produtos
+export async function getTodosProdutos() {
+  try {
+    const produtos = await Produto.findAll({
+      attributes: ["id", "nome", "preco", "descricao", "categoria_id"],
+    });
+    return produtos;
+  } catch (err) {
+    console.error("Erro ao buscar todos os produtos:", err);
+    throw err;
+  }
+}
+
+
+// Adicionar produtos a um pedido
+export async function adicionarProdutosPedido(
+  idPedido,
+  idProduto,
+  quantidade,
+) {
+  let preco_unidade = 0;
+  try {
+    const produto = await Produto.findByPk(idProduto);
+    if (!produto) {
+      throw new Error("Produto não encontrado");
+    } else {
+      valorUnidade = produto.preco;
+    }
+  } catch (err) {
+    console.error("Erro ao buscar produto:", err);
+    throw err;
+   }
+
+  let pedido = null;
+  try {
+    pedido = await Pedido.findByPk(idPedido);
+    if (!pedido) {
+      throw new Error("Pedido não encontrado");
+    }
+  } catch (error) {
+    throw error;
+  }
+
+  try {
+    if (pedido.status !== "aberto") {
+      throw new Error(
+        "Não é possível adicionar produtos a um pedido que não está aberto",
+      );
+    } else {
+      const item = await ItemPedido.create({
+        pedido_id: idPedido,
+        produto_id: idProduto,
+        quantidade: quantidade,
+        preco_unidade: valorUnidade,
+      });
+      return item;
+    }
+  } catch (err) {
+    console.error("Erro ao adicionar produto ao pedido:", err);
+    throw err;
+  }
+}
+
+export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
+  try {
+    const item = await ItemPedido.findOne({
+      where: { pedido_id: idPedido, produto_id: idProduto },
+    }); 
+    if (!item) {
+      throw new Error("Produto não encontrado no pedido");
+    }
+    if (item.quantidade < quantidade) {
+      throw new Error("Quantidade a remover é maior do que a quantidade no pedido");
+    }
+    item.quantidade -= quantidade;
+    if (item.quantidade === 0) {
+      await item.destroy();
+
+      return { success: true, message: "Produto removido do pedido" };
+    } else {
+      await item.save();
+      return { success: true, message: "Quantidade do produto atualizada no pedido" };
+    }
+  } catch (err) {
+    console.error("Erro ao remover produto do pedido:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+
+export async function listarItensPedido(idPedido) {
+  try {
+    const itens = await ItemPedido.findAll({  
+      where: { pedido_id: idPedido },
+      include: {
+        model: Produto,
+        attributes: ["id", "nome", "preco", "descricao"],
+      },
+    });
+    return itens;
+  } catch (err) {
+    console.error("Erro ao listar itens do pedido:", err);
+    throw err;
+  }
+}
+
+
+
 
 export async function listarPedidosMesa(MesaNumero){
 try {
@@ -91,6 +214,7 @@ try {
   throw error;
 } 
 }
+
 export async function fecharPedido(idPedido, valorTotal) {
   try {
     const pedido = await Pedido.findByPk(idPedido); 

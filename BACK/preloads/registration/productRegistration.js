@@ -14,8 +14,8 @@ module.exports = function produtoPreload() {
       ipcRenderer.invoke("get-produtos-por-categoria", idCategoria),
 
    
-
     getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
+
   };
 };
  //getProdutosCategoria: (categoriaId) =>

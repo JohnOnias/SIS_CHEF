@@ -35,8 +35,10 @@ apis  do back-end:
 			idCategoria
 			descrição
 			}
-	window.api.categoria.cadastrarProduto(objeto);
+	window.api.produto.cadastrarProduto(objeto);
 	retorna true ou false
+
+
 
 - api  get produtos pelo id categoria
 
@@ -47,6 +49,8 @@ apis  do back-end:
 - api get todos os produtos
 	window.api.produto.getTodosProdutos();
 	retorna um objeto com todos os produtos(id, nome. preco, descrição, categoria_id)
+
+
 - api get funcionários
 	window.api.funcionario.getFuncionario(tipoFuncionario);
 	"Gerente" ou "Garçom"
@@ -60,9 +64,11 @@ apis  do back-end:
 	window.api.mesas.cadastrarMesas(objeto);
 		retorna true
 
+
 - api get mesas
 	window.api.mesas.listarMesas(); 
 		return um array de objetos, status, numero, n_cadeiras
+
 		
 - api verificar pedidos de uma mesa
 	window.api.mesas.verificarMesaPedido(numeroMesa);
@@ -74,50 +80,59 @@ apis  do back-end:
 	window.api.pedido.registrarPedido(numeroMesa, idGarcom)
 		retorna true 
 
+
+
+##### erro aqui #### 
+
+
 - api adicionar produtos a um pedido
 			
-			produtos = {
-					id: id do produto
-					quantidade: quantidade de produtos
-					preco_unitario: preço por unidade}
+		window.api.pedido.adicionarProdutosPedido(idPedido, idProduto, quantidade); 
 
-		window.api.pedido.adicionarProdutosPedido(pedidoId, produto); 
-				retorna true
+				retorna objeto item =  {
+					pedido_id,
+        			produto_id,
+        			quantidade,
+				}
+
+- api listar itens do pedido 
+		window.api.pedido.listarItensPedido(id_pedido);
+			retorna um array de objetos {
+						id, nome, preco, descrição
+							}
+							(qualquer coisa da um console.log pra ver o tipo de retorno)
+
 
 
 - api editar pedido 
 
 		window.api.pedido.editarPedido(idpedido, dadosAtualizados);
+
 	dadosAtualizados = {	
-				mesa_numero,
+				 	mesa_numero,
      				status,
-     				valor_total,
-     				id_funcionario,
+      				id_funcionario,
 				}
+
 		return true ou false
 
 
 - api excluir item do pedido 
-		window.api.pedido.excluirIttemPedido(idPedido, idItem)
+		window.api.pedido.removerItem(idPedido, idProduto, quantidade)
 
 		return true ou false
 
 
-- api listar pedidos pela mesa
-		window.api.pedido.listarPedidosMes(mesa_numero);
-		
-		return objeto
-
 
 - api fechar pedido 
-		window.api.pedido.fecharPedido(idpedido, valorTotal);
+		window.api.pedido.fecharPedido(idpedido, valor_total);
 		
 		return objeto pedido
 
 
 - api fazer pagamento 
 		window.api.pagamento.cadastrarPagamento(idPedido, tipoPagamento, dividido, valorPago);
-		idpedido = id do pedido fechardo 
+		idpedido = id do pedido fechado 
 		tipoPagamento = "dinheiro', "debito", "credito" ou "pix"
 		dividido: true ou false, (se o pagamento foi dividido)
 		valorPago: valor pago 
@@ -134,8 +149,10 @@ apis  do back-end:
 
 - api buscarPagamentoPorId do pedido
 
-		window.api.buscarPagamentoPorPedidoId(id_pedido);
+		window.api.pagamento.buscarPagamentoPorPedidoId(id_pedido);
 			return objeto pedido(id, pedido_id, tipo_pagamento, dividido, valor_pago)  
+
+
 
 
 

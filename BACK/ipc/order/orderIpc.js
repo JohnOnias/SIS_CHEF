@@ -1,14 +1,18 @@
 const { ipcMain } = require("electron");
 
-const { registrarPedido } = require("../../models/utils/registrarPedido.js");
+const { registrarPedido, editarPedido, fecharPedido, listarItensPedido} = require("../../models/registration/order.js");
 const {
   listarPedidos
 } = require("../../models/registration/table.js");
+
+
+const { adicionarProdutosPedido } = require("../../models/registration/order.js");
 const {
   getProdutosID,
-  adicionarProdutosPedido,
+
 } = require("../../models/utils/produto.js");
-const { getCategoria } = require("../../models/registration/category.js");
+
+
 
 
 let pedidoAtual = {
@@ -18,7 +22,6 @@ let pedidoAtual = {
 };
 
 module.exports = function orderIpc() {
-
 
 
   // Registrar pedido 
@@ -57,19 +60,53 @@ module.exports = function orderIpc() {
       return [];
     }
   });
-
+  ipcMain.handle("editarPedido", async (event, idPedido, dadosAtualizados) => {
+    try {
+        return await editarPedido(idPedido, dadosAtualizados);
+    } catch (error) {
+        console.error("Erro ao editar pedido:", error);
+        return { success: false, error: error.message };
+    } 
+  });
 
 
   // Adicionar produtos ao pedido
-  ipcMain.handle("adicionarProdutosPedido", async (event, idPedido, produto) => {
+  ipcMain.handle("adicionarProdutosPedido", async (event, idPedido, idProduto, quantidade) => {
     try {
       const resultado = await adicionarProdutosPedido(
         idPedido,
-        produto,
+        idProduto,
+        quantidade
       );
       return { success: true, data: resultado };
     } catch (err) {
       console.error("Erro ao adicionar produtos:", err);
+      return { success: false, error: err.message };
+    }
+  });
+
+   ipcMain.handle(
+     "removerProdutoPedido",
+     async (event, idPedido, idItem, quantidade) => {
+       return await removerProdutoPedido(idPedido, idItem, quantidade);
+     },
+   );
+
+   ipcMain.handle("fecharPedido", async (event, idPedido) => {
+     try {
+       const resultado = await fecharPedido(idPedido);
+       return { success: true, data: resultado };
+     } catch (err) {
+       console.error("Erro ao fechar pedido:", err);
+       return { success: false, error: err.message };
+     }
+});
+
+  ipcMain.handle("listarItensPedido", async (event, idPedido) => {  
+    try {      const resultado = await listarItensPedido(idPedido);
+      return { success: true, data: resultado };
+    } catch (err) {
+      console.error("Erro ao listar itens do pedido:", err);
       return { success: false, error: err.message };
     }
   });

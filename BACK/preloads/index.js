@@ -11,6 +11,7 @@ const loginPreload = require("./login/login.js");
 const pedidoPreload = require("./order/order.js");
 const userPreload = require("./user/user.js");
 const paymantPreload = require("./paymant/paymant.js");
+const itemPreload = require("./order/item.js");
 
 // API única
 const api = {
@@ -24,6 +25,7 @@ const api = {
   pedido: pedidoPreload(),
   user: userPreload(),
   pagamento: paymantPreload(),
+  item: itemPreload(),
 
   // Métodos  globais
   testConnection: () => ipcRenderer.invoke("test-connection"),
