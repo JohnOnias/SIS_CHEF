@@ -1,16 +1,19 @@
-import React from "react";
+
 import CadastroIcon from "../../../assets/menu/cadastro.png";
 
-function AdmSidebar({ setTela }) {
+function AdmSidebar({ setTela, User }) {
+  const tipo = User?.tipo ? User.tipo : "Tipo não informado";
+  const nome = User?.nome ? User.nome : "Nome não informado";
+
   return (
     <aside className="sidebar">
       <div className="perfil">
         <div className="icone"></div>
 
         <p style={{ fontSize: 18, marginTop: 6 }}>
-          <strong>Administrador</strong>
+          <strong>{tipo}</strong>
           <br />
-          Francisco
+          {nome}
         </p>
       </div>
 

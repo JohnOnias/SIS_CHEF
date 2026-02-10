@@ -10,23 +10,23 @@ import UserModal from "./components/UserModal";
 import { isValidEmail, isValidCPF, onlyDigits, formatCPF } from "./utils/cpfEmail";
 
 function AdmView() {
-  
+      const [user, setUser] = useState(null);
+       const [gerentes, setGerentes] = useState([]);
+       const [garcons, setGarcons] = useState([]);
   
     // aqui carrega os dados inicias do usuário, gerentes e garçons
        const fetchData = async () => {
         const currentUser =  await window.api.user.getCurrentUser();
-        const gerentes =  await window.api.funcionario.getFuncionario("Gerente");
-        const garcons =  await window.api.funcionario.getFuncionario("Garçom");
+        const gerentes =  await window.api.funcionario.getFuncionario("gerente");
+        const garcons =  await window.api.funcionario.getFuncionario("garçom");
         return { currentUser, gerentes, garcons };
        }
-       const [currentUser, setCurrentUser] = useState(null);
-       const [gerentes, setGerentes] = useState([]);
-       const [garcons, setGarcons] = useState([]);
+       
        // aqui setta quando os dados forem carregados
        useEffect(() => {
          const load = async () => {
            const data = await fetchData();
-           setCurrentUser(data.currentUser);
+           setUser(data.currentUser);
            setGerentes(data.gerentes);
            setGarcons(data.garcons);
            console.log("Dados carregados:", data);
@@ -35,9 +35,6 @@ function AdmView() {
          load();
        }, []);
    
-
-
-
 
   const titulo = document.getElementById("titulo");
   if (titulo) titulo.innerHTML = "Administrador!";
@@ -184,7 +181,7 @@ function AdmView() {
 
   return (
     <div className="container">
-      <AdmSidebar setTela={setTela} />
+      <AdmSidebar setTela={setTela}  User={user} />
 
       <main className="conteudo">
         {tela === "Cadastros" && (

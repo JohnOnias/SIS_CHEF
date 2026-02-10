@@ -106,57 +106,47 @@ export async function getTodosProdutos() {
 }
 
 
-// Adicionar produtos a um pedido
 export async function adicionarProdutosPedido(
   idPedido,
   idProduto,
   quantidade,
 ) {
-  let preco_unidade = 0;
-  try {
-    const produto = await Produto.findByPk(idProduto);
-    if (!produto) {
-      throw new Error("Produto não encontrado");
-    } else {
-      valorUnidade = produto.preco;
-    }
-    if (produto.status.toLowerCase() !== "disponivel") {
-      throw new Error("Produto inativo, não pode ser adicionado ao pedido");
-    }
-  } catch (err) {
-    console.error("Erro ao buscar produto:", err);
-    throw err;
-   }
-
-  let pedido = null;
-  try {
-    pedido = await Pedido.findByPk(idPedido);
-    if (!pedido) {
-      throw new Error("Pedido não encontrado");
-    }
-  } catch (error) {
-    throw error;
+  // Buscar produto
+  const produto = await Produto.findByPk(idProduto);
+  if (!produto) {
+    throw new Error("Produto não encontrado");
   }
 
-  try {
-    if (pedido.status !== "aberto") {
-      throw new Error(
-        "Não é possível adicionar produtos a um pedido que não está aberto",
-      );
-    } else {
-      const item = await ItemPedido.create({
-        id_pedido: idPedido,
-        id_produto: idProduto,
-        quantidade: quantidade,
-        preco_unitario: valorUnidade,
-      });
-      return item;
-    }
-  } catch (err) {
-    console.error("Erro ao adicionar produto ao pedido:", err);
-    throw err;
+  const statusProduto = produto.status?.toLowerCase();
+  if (statusProduto !== "disponivel") {
+    throw new Error("Produto inativo, não pode ser adicionado ao pedido");
   }
+
+  const valorUnidade = produto.preco;
+
+  // Buscar pedido
+  const pedido = await Pedido.findByPk(idPedido);
+  if (!pedido) {
+    throw new Error("Pedido não encontrado");
+  }
+
+  if (pedido.status !== "aberto") {
+    throw new Error(
+      "Não é possível adicionar produtos a um pedido que não está aberto",
+    );
+  }
+
+  // Criar item do pedido
+  const item = await ItemPedido.create({
+    id_pedido: idPedido,
+    id_produto: idProduto,
+    quantidade,
+    preco_unitario: valorUnidade,
+  });
+
+  return item;
 }
+
 
 export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
   try {

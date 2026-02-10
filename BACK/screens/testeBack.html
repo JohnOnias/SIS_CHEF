@@ -12,18 +12,7 @@
       (async () => {
         console.log("Iniciando testes...");
    /*
-        console.log("Testando login...");
-        try {
-          let usuario = {
-            email: "john3@adm.com",
-            senha: "123456789",
-          };
-
-          const loginResult = await window.api.login.login(usuario);
-          console.log("Resultado do login:", loginResult);
-        } catch (error) {
-          console.error("Erro durante o login:", error);
-        }
+       
 
         console.log("Testando cadastro de funcionários...");
         try {
@@ -151,12 +140,63 @@
         } catch (error) {
           console.error("Erro ao obter funcionarios:", error);
         }
-*/
 
 
+console.log("Testando cadastro de funcionários...");
+        try {
+          let user = {
+            nome: "lucas silva",
+            cpf: "222.222.222.22",
+            email: "lucas@garçom.com",
+            cargo: "garçom",
+            senha: "123456789",
+          };
+          const cadastroResult =
+            await window.api.funcionario.cadastrarFuncionario(
+              user.nome,
+              user.cpf,
+              user.email,
+              user.cargo,
+              user.senha,
+            );
+          console.log("Resultado do cadastro:", cadastroResult);
+        } catch (error) {
+          console.error("Erro durante o cadastro:", error);
+        }
+          try {
+          let user = {
+            nome: "rafael silva",
+            cpf: "333.444.222.22",
+            email: "rafael@garcom.com",
+            cargo: "garçom",
+            senha: "123456789",
+          };
+          const cadastroResult =
+            await window.api.funcionario.cadastrarFuncionario(
+              user.nome,
+              user.cpf,
+              user.email,
+              user.cargo,
+              user.senha,
+            );
+          console.log("Resultado do cadastro:", cadastroResult);
+        } catch (error) {
+          console.error("Erro durante o cadastro:", error);
+        }
 
 
+ console.log("Testando login...");
+        try {
+          let usuario = {
+            email: "john@adm.com",
+            senha: "123456789",
+          };
 
+          const loginResult = await window.api.login.login(usuario);
+          console.log("Resultado do login:", loginResult);
+        } catch (error) {
+          console.error("Erro durante o login:", error);
+        }
 
         console.log("testar cadastro mesa");
         try {
@@ -232,9 +272,9 @@
         console.log("adcionar produtos a um pedido");
         try {
           const adicionarProdutoResult =
-            await window.api.pedido.adicionarProdutoPedido(
+            await window.api.pedido.adicionarProdutosPedido(
               1, // ID do pedido
-              1, // ID do produto
+              4, // ID do produto
               2, // Quantidade
             );
           console.log("Produto adicionado ao pedido:", adicionarProdutoResult);
@@ -249,6 +289,31 @@
         } catch (error) {
           console.error("Erro ao obter detalhes do pedido:", error);
         }
+          */
+
+             try {
+          let user = {
+            nome: "Rafel Alves",
+            cpf: "333.444.222.59",
+            email: "rafael@garçom.com",
+            cargo: "garçom",
+            senha: "123456789",
+          };
+          const cadastroResult =
+            await window.api.funcionario.cadastrarFuncionario(
+              user.nome,
+              user.cpf,
+              user.email,
+              user.cargo,
+              user.senha,
+            );
+          console.log("Resultado do cadastro:", cadastroResult);
+        } catch (error) {
+          console.error("Erro durante o cadastro:", error);
+        }
+
+
+
       })();
     </script>
   </body>

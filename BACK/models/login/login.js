@@ -2,16 +2,16 @@ import { Funcionario } from "../../database/models/index.js";
 import bcrypt from "bcryptjs";
 
 
-export async function login(objetoLogin) {
-  const { email, senha } = objetoLogin;
-
+export async function login(email, senha) {
   console.log("teste chegou no login model back", email, senha);
 
   try {
-    const emailLower = email.toLowerCase();
+    if(!email || !senha){
+      return error
+    }
 
     const usuario = await Funcionario.findOne({
-      where: { email: emailLower },
+      where: { email: email },
       attributes: ["id", "nome", "email", "senha", "tipo"],
     });
 
