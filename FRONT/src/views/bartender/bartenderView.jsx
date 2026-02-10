@@ -1,21 +1,32 @@
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo, useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../manager/styles/manager.css";
 import Menu from "../components/layouts/Menu";
 import Table from "../components/layouts/Tables";
 import Categorias from "../catalog/categories/Categorias";
+import { getCurrentUser } from "../../services/authService";
+import { isElectron } from "../../services/api";
 
 function BartenderView() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem("user_role", "waiter");
     const titulo = document.getElementById("titulo");
     if (titulo) titulo.innerHTML = "Garçom!";
-  }, []);
 
-  // ✅ Tela vem da URL (sem setState em effect)
+    (async () => {
+      if (!isElectron) return;
+      const u = await getCurrentUser();
+      if (!u) {
+        navigate("/", { replace: true });
+        return;
+      }
+      setUsuario(u);
+    })();
+  }, [navigate]);
+
   const tela = useMemo(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get("tab");
@@ -24,7 +35,6 @@ function BartenderView() {
     return "Mesas";
   }, [location.search]);
 
-  // ✅ Menu “setTela” agora navega para ?tab=...
   const setTela = useCallback(
     (novaTela) => {
       const params = new URLSearchParams(location.search);
@@ -37,16 +47,14 @@ function BartenderView() {
     [location.search, navigate]
   );
 
-  const getFuncionario = {
-    nome: "João",
-    tipo: "Garçom",
-  };
+  // garçom não gerencia
+  const canManage = false;
 
   return (
     <div className="container">
       <Menu
-        nomeFuncionario={getFuncionario.nome}
-        TipoFuncionario={getFuncionario.tipo}
+        nomeFuncionario={usuario?.nome || ""}
+        TipoFuncionario={usuario?.tipo || ""}
         setTela={setTela}
         showMesas
         showProdutos
@@ -54,10 +62,10 @@ function BartenderView() {
       />
 
       <main className="conteudo">
-        {tela === "Mesas" && <Table canManageMesas={false} />}
+        {tela === "Mesas" && <Table canManageMesas={canManage} />}
 
         {tela === "Categorias" && (
-          <Categorias canManageCatalog={false} basePath="/bartender" />
+          <Categorias canManageCatalog={canManage} basePath="/bartender" />
         )}
       </main>
     </div>

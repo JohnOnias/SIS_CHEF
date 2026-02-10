@@ -1,67 +1,62 @@
 import React, { useEffect, useState } from "react";
-import RectangleImg from '../../assets/others/rectangle.png';
-import GroupImg from '../../assets/others/group.png';
+import { useNavigate } from "react-router-dom";
 
-//importa o css
-import './styles/login.css';
+import RectangleImg from "../../assets/others/rectangle.png";
+import GroupImg from "../../assets/others/group.png";
+import "./styles/login.css";
 
-//import modal reset senha
 import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
-
+import { login as loginService } from "../../services/authService";
+import { isElectron } from "../../services/api";
 
 function LoginView() {
-  // altera o titulo da pagina
+  const navigate = useNavigate();
+
   useEffect(() => {
     const tituloElement = document.getElementById("titulo");
-    if (tituloElement) {
-      tituloElement.innerHTML = "Login!";
-    }
+    if (tituloElement) tituloElement.innerHTML = "Login!";
   }, []);
 
-// set modal reset senha
-const [openModal, setOpenModal] = useState(false);
-// evento modal
+  const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const [formulario, setFormulario] = useState({
+    email: "",
+    senha: "",
+  });
 
+  const evento = (event) => {
+    const { name, value } = event.target;
+    setFormulario((prev) => ({ ...prev, [name]: value }));
+  };
 
-  // função de login
-  const login = (formulario) => {
-    console.log("Fazendo login com os dados:", formulario);
+  const routeByTipo = (tipo) => {
+    const t = String(tipo || "").toLowerCase();
+    if (t.includes("adm") || t.includes("administrador")) return "/adm";
+    if (t.includes("gerente")) return "/manager";
+    if (t.includes("gar") || t.includes("garç") || t.includes("bart") || t.includes("barman"))
+      return "/bartender";
+    return "/manager";
+  };
+
+  const login = async () => {
     try {
-      // Chama a API de login do Electron (façam try catch)
-     window.apiLogin.login(formulario.email, formulario.senha);
-
+      setLoading(true);
+      const usuario = await loginService(formulario.email, formulario.senha);
+      navigate(routeByTipo(usuario.tipo));
     } catch (error) {
-      console.error("Erro ao chamar a API de login:", error);
+      console.error(error);
+      alert(error?.message || "Erro ao fazer login");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // mmodelo formulario/dados
-  const modelo = {
-    email: "",
-    senha: "",
-  };
-
-  const [formulario, setFormulario] = useState(modelo);
-
-  // evento
-  const evento = (event) => {
-    let nome = event.target.name;
-    let valor = event.target.value;
-
-    setFormulario({ ...formulario, [nome]: valor });
-  };
-
-
-  //retorno da função do componete
   return (
     <>
       <div className="container">
         <div className="leftSide">
-          <img
-            src={RectangleImg}
-            alt="imagem de pratos suculentos a esquerda"
-          />
+          <img src={RectangleImg} alt="imagem de pratos suculentos a esquerda" />
         </div>
 
         <div className="rightSide">
@@ -70,30 +65,45 @@ const [openModal, setOpenModal] = useState(false);
               <img src={GroupImg} alt="perfil icone" />
             </div>
 
-            <input
-              placeholder="Email"
-              type="text"
-              id="email"
-              name="email"
-              required
-              onChange={evento}
-            />
-            <input
-              placeholder="Senha"
-              type="password"
-              name="senha"
-              id="senha"
-              required
-              minLength={6}
-              maxLength={12}
-              onChange={evento}
-            />
-            <button id="entrar" type="submit" onClick={() => login(formulario)}>
-              Entrar
-            </button>
-            <a href="#" id="esqueci" onClick={() => setOpenModal(true)}>
-              Esqueci minha senha!
-            </a>
+            {!isElectron && (
+              <div style={{ padding: 10, background: "#fff3cd", borderRadius: 8, marginBottom: 12 }}>
+                Você está no Chrome (sem Electron). O login via window.api não funciona aqui.
+              </div>
+            )}
+
+            <h1>Bem-vindo</h1>
+            <p>Entre com suas credenciais</p>
+
+            <div className="inputs">
+              <input
+                placeholder="Email"
+                name="email"
+                value={formulario.email}
+                onChange={evento}
+              />
+
+              <input
+                placeholder="Senha"
+                name="senha"
+                type="password"
+                value={formulario.senha}
+                onChange={evento}
+              />
+            </div>
+
+            <div className="containerButton">
+              <button
+                className="buttonLogin"
+                onClick={login}
+                disabled={loading || !isElectron}
+              >
+                {loading ? "Entrando..." : "Entrar"}
+              </button>
+
+              <button className="buttonRegister" onClick={() => setOpenModal(true)}>
+                Esqueci a senha
+              </button>
+            </div>
           </div>
         </div>
       </div>

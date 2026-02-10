@@ -6,7 +6,7 @@ import { listarProdutosPorCategoria } from "../../../../services/productService"
 import { isElectron } from "../../../../services/api";
 
 import { readWaiterNames } from "./openOrder/utils/waiterNames";
-import { formatMoney } from "./openOrder/utils/money";
+import { formatMoney } from "./openOrder/utils/money.js";
 
 import OpenOrderShell from "./openOrder/components/OpenOrderShell";
 import OpenOrderHeader from "./openOrder/components/OpenOrderHeader";

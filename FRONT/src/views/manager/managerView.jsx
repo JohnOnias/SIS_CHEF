@@ -1,22 +1,32 @@
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo, useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./styles/manager.css";
 import Menu from "../components/layouts/Menu";
 import Table from "../components/layouts/Tables";
 import Categorias from "../catalog/categories/Categorias.jsx";
-
+import { getCurrentUser } from "../../services/authService";
+import { isElectron } from "../../services/api";
 
 function ManagerView() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem("user_role", "manager");
     const titulo = document.getElementById("titulo");
     if (titulo) titulo.innerHTML = "Gerente!";
-  }, []);
 
- 
+    (async () => {
+      if (!isElectron) return;
+      const u = await getCurrentUser();
+      if (!u) {
+        navigate("/", { replace: true });
+        return;
+      }
+      setUsuario(u);
+    })();
+  }, [navigate]);
+
   const tela = useMemo(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get("tab");
@@ -39,16 +49,15 @@ function ManagerView() {
     [location.search, navigate]
   );
 
-  const getFuncionario = {
-    nome: "João",
-    tipo: "Gerente",
-  };
+  // permissões pelo tipo do usuário
+  const tipoLower = String(usuario?.tipo || "").toLowerCase();
+  const canManage = tipoLower.includes("gerente") || tipoLower.includes("adm") || tipoLower.includes("administrador");
 
   return (
     <div className="container">
       <Menu
-        nomeFuncionario={getFuncionario.nome}
-        TipoFuncionario={getFuncionario.tipo}
+        nomeFuncionario={usuario?.nome || ""}
+        TipoFuncionario={usuario?.tipo || ""}
         setTela={setTela}
         showMesas
         showProdutos
@@ -56,10 +65,10 @@ function ManagerView() {
       />
 
       <main className="conteudo">
-        {tela === "Mesas" && <Table canManageMesas={true} />}
+        {tela === "Mesas" && <Table canManageMesas={canManage} />}
 
         {tela === "Categorias" && (
-          <Categorias canManageCatalog={true} basePath="/manager" />
+          <Categorias canManageCatalog={canManage} basePath="/manager" />
         )}
       </main>
     </div>
