@@ -1,32 +1,44 @@
+// src/services/categoryService.js
 import { api, isElectron } from "./api";
 
-// enquanto o back não tiver coluna "imagem" para categoria,
-// a UI usa uma imagem padrão:
-const DEFAULT_IMAGE =
-  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=60";
+function resolveId(c) {
+  return c?.id ?? c?.ID ?? c?.categoria_id ?? c?.categoriaId ?? c?.category_id ?? null;
+}
 
-export async function listarCategorias() {
+export async function getCategorias() {
   if (!isElectron) return [];
+  if (!api?.categoria?.getCategorias) return [];
 
-  const categorias = await api.categoria.listarCategorias();
-
+  const categorias = await api.categoria.getCategorias(); // deveria vir [{id,nome,status}]
   return (categorias || []).map((c) => ({
-    id: c.id,
-    nome: c.nome,
-    status: c.status,
-    imagem: DEFAULT_IMAGE,
+    id: resolveId(c),
+    nome: c?.nome,
+    status: c?.status,
   }));
 }
 
-export async function cadastrarCategoria({ nome /*, imagem */ }, status = 1) {
-  if (!isElectron) {
-    throw new Error("Cadastro de categoria só funciona no Electron (window.api).");
-  }
+export async function listarCategorias() {
+  return await getCategorias();
+}
 
-  if (!nome || !String(nome).trim()) {
-    throw new Error("Informe o nome da categoria.");
-  }
+export async function cadastrarCategoria(nome, status = 1) {
+  if (!isElectron) throw new Error("Electron necessário (window.api).");
+  if (!api?.categoria?.cadastrarCategoria) throw new Error("Preload não expõe categoria.cadastrarCategoria.");
 
-  // preload espera (nomeCategoria, status)
-  return await api.categoria.cadastrarCategoria(String(nome).trim(), status);
+  if (!nome || !String(nome).trim()) throw new Error("Informe o nome da categoria.");
+
+  const ok = await api.categoria.cadastrarCategoria(String(nome).trim(), status);
+  if (!ok) throw new Error("Backend retornou false ao cadastrar categoria.");
+
+  return true;
+}
+
+// “quietos” (você pediu não testar agora)
+export async function atualizarCategoria() {
+  console.warn("[categoryService] atualizarCategoria não existe no BACK/preload. Ignorando chamada.");
+  return false;
+}
+export async function removerCategoria() {
+  console.warn("[categoryService] removerCategoria não existe no BACK/preload. Ignorando chamada.");
+  return false;
 }

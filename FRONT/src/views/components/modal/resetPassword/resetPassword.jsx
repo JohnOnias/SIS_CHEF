@@ -1,66 +1,86 @@
-import React from 'react'
+import React, { useState } from "react";
 import "../styles/resetPassword.css";
 import CloseIcon from "../../../../assets/modal/close.png";
-import { useState } from 'react';
-import ModalVerifyToken from './verifyToken';
+import ModalVerifyToken from "./verifyToken";
+import { api, isElectron } from "../../../../services/api";
+import { useForm } from "react-hook-form";
 
 function ModalResetSenha({ isOpen, onClose }) {
-// set modal reset senha
-const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { email: "" },
+    mode: "onSubmit",
+  });
 
-  const [email, setEmail] = useState('');
-
-  const handleChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  function enviarEmail(email) {
-      // Lógica para enviar o email de recuperação
-      console.log("Enviando email de recuperação para:", email);
-      //emailVerificado = await window.apiEmail.enviarEmail(email);
+  const enviarEmail = async ({ email }) => {
+    if (!isElectron) {
+      alert("Reset de senha só funciona no Electron (window.api).");
+      return;
     }
-  
+
+    setLoading(true);
+    try {
+      const ok = await api.login.gerarEEnviarToken(String(email).trim());
+      if (!ok) throw new Error("Falha ao enviar o token.");
+      setOpenModal(true);
+    } catch (e) {
+      console.error(e);
+      alert(e?.message || "Erro ao enviar token");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isOpen) return null;
 
+  return (
+    <>
+      <div className="backgroundResetSenha">
+        <div id="formResetSenha">
+          <div id="formCentre">
+            <img src={CloseIcon} id="closeIcon" alt="Fechar" onClick={onClose} />
+            <h1>Recuperar Acesso</h1>
 
-     return (
-       <>
-         <div className="backgroundResetSenha">
-           <div id="formResetSenha">
-             <div id="formCentre">
-               <img
-                 src={CloseIcon}
-                 id="closeIcon"
-                 alt="Fechar"
-                 onClick={onClose}
-               />
-               <h1>Recuperar Acesso</h1>
-               <label id="labelEmail" for="email">
-                 Digite o Email cadastrado!
-               </label>
-               <input
-                 type="text"
-                 id="emailResetTest"
-                 name="email"
-                 placeholder="Email"
-                 value={email}
-                 onChange={handleChange}
-               ></input>
-               <button id="enviar" onClick={() => enviarEmail(email)}>Enviar código</button>
-             </div>
-           </div>
+            <label id="labelEmail" htmlFor="emailResetTest">
+              Digite o Email cadastrado!
+            </label>
 
-          <ModalVerifyToken
-            isOpen={openModal}
-            onClose={() => setOpenModal(false)}
-          />
+            <form onSubmit={handleSubmit(enviarEmail)}>
+              <input
+                type="text"
+                id="emailResetTest"
+                placeholder="Email"
+                {...register("email", { required: "Informe o email" })}
+              />
+              {errors.email && (
+                <small style={{ display: "block", marginTop: 6, color: "#b42318" }}>
+                  {errors.email.message}
+                </small>
+              )}
 
-         </div>
-       </>
-     );
+              <button id="enviar" type="submit" disabled={loading}>
+                {loading ? "Enviando..." : "Enviar código"}
+              </button>
+            </form>
+          </div>
+        </div>
 
- }
+        <ModalVerifyToken
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          // mantém o email disponível, caso você queira exibir/usar no modal 2
+          email={getValues("email")}
+        />
+      </div>
+    </>
+  );
+}
 
 export default ModalResetSenha;

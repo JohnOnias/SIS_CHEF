@@ -1,87 +1,62 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import RectangleImg from "../../assets/others/rectangle.png";
 import GroupImg from "../../assets/others/group.png";
-import { unstable_useRoute, useNavigate } from "react-router-dom";
-
-//importa o css
 import "./styles/login.css";
 
-//import modal reset senha
 import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
+import { login as loginService } from "../../services/authService";
+import { isElectron } from "../../services/api";
 
 function LoginView() {
-  // hook de navegação
   const navigate = useNavigate();
 
-  // altera o titulo da pagina
   useEffect(() => {
     const tituloElement = document.getElementById("titulo");
-    if (tituloElement) {
-      tituloElement.innerHTML = "Login!";
-    }
+    if (tituloElement) tituloElement.innerHTML = "Login!";
   }, []);
 
-  // set modal reset senha
   const [openModal, setOpenModal] = useState(false);
-  // evento modal
+  const [loading, setLoading] = useState(false);
 
-  // função de login
-  const login = async (formulario) => {
-    console.log("Fazendo login com os dados:", formulario);
-
-    try {
-      const usuario = await window.api.login.login(
-        formulario.email,
-        formulario.senha,
-      );
-
-      if (!usuario) {
-        alert("Erro ao fazer login, verifique suas credenciais.");
-      } else {
-        await window.api.pedido.setCurrentUser(usuario);
-
-        console.log("Login bem-sucedido:", usuario);
-
-        if (usuario.tipo === "administrador") {
-          navigate("/adm");
-        } else if (usuario.tipo === "garçom") {
-          navigate("/bartender");
-        } else if (usuario.tipo === "gerente") {
-          navigate("/manager");
-        } else {
-          console.error("Tipo de usuário desconhecido:", usuario.tipo);
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao chamar a API de login:", error);
-      alert("Erro ao fazer login, por favor tente novamente mais tarde.");
-    }
-  };
-  // mmodelo formulario/dados
-  const modelo = {
+  const [formulario, setFormulario] = useState({
     email: "",
     senha: "",
-  };
+  });
 
-  const [formulario, setFormulario] = useState(modelo);
-
-  // evento
   const evento = (event) => {
-    let nome = event.target.name;
-    let valor = event.target.value;
-
-    setFormulario({ ...formulario, [nome]: valor });
+    const { name, value } = event.target;
+    setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
-  //retorno da função do componete
+  const routeByTipo = (tipo) => {
+    const t = String(tipo || "").toLowerCase();
+    if (t.includes("adm") || t.includes("administrador")) return "/adm";
+    if (t.includes("gerente")) return "/manager";
+    if (t.includes("gar") || t.includes("garç") || t.includes("bart") || t.includes("barman"))
+      return "/bartender";
+    return "/manager";
+  };
+
+  const login = async () => {
+    try {
+      setLoading(true);
+      const usuario = await loginService(formulario.email, formulario.senha);
+      navigate(routeByTipo(usuario.tipo));
+    } catch (error) {
+      console.error(error);
+      alert(error?.message || "Erro ao fazer login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="container">
         <div className="leftSide">
-          <img
-            src={RectangleImg}
-            alt="imagem de pratos suculentos a esquerda"
-          />
+          <img src={RectangleImg} alt="imagem de pratos suculentos a esquerda" />
         </div>
 
         <div className="rightSide">
@@ -90,30 +65,45 @@ function LoginView() {
               <img src={GroupImg} alt="perfil icone" />
             </div>
 
-            <input
-              placeholder="Email"
-              type="text"
-              id="email"
-              name="email"
-              required
-              onChange={evento}
-            />
-            <input
-              placeholder="Senha"
-              type="password"
-              name="senha"
-              id="senha"
-              required
-              minLength={6}
-              maxLength={12}
-              onChange={evento}
-            />
-            <button id="entrar" type="submit" onClick={() => login(formulario)}>
-              Entrar
-            </button>
-            <a href="#" id="esqueci" onClick={() => setOpenModal(true)}>
-              Esqueci minha senha!
-            </a>
+            {!isElectron && (
+              <div style={{ padding: 10, background: "#fff3cd", borderRadius: 8, marginBottom: 12 }}>
+                Você está no Chrome (sem Electron). O login via window.api não funciona aqui.
+              </div>
+            )}
+
+            <h1>Bem-vindo</h1>
+            <p>Entre com suas credenciais</p>
+
+            <div className="inputs">
+              <input
+                placeholder="Email"
+                name="email"
+                value={formulario.email}
+                onChange={evento}
+              />
+
+              <input
+                placeholder="Senha"
+                name="senha"
+                type="password"
+                value={formulario.senha}
+                onChange={evento}
+              />
+            </div>
+
+            <div className="containerButton">
+              <button
+                className="buttonLogin"
+                onClick={login}
+                disabled={loading || !isElectron}
+              >
+                {loading ? "Entrando..." : "Entrar"}
+              </button>
+
+              <button className="buttonRegister" onClick={() => setOpenModal(true)}>
+                Esqueci a senha
+              </button>
+            </div>
           </div>
         </div>
       </div>

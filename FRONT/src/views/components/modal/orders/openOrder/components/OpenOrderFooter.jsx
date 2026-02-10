@@ -1,14 +1,12 @@
 import React from "react";
 
 function OpenOrderFooter({
-  total,
   isManager,
   nomeGarcom,
   setNomeGarcom,
   waiterNames,
   itensCarrinhoCount,
   onFinish,
-  formatMoney,
 }) {
   return (
     <div
@@ -22,7 +20,6 @@ function OpenOrderFooter({
         gap: 10,
       }}
     >
-      <strong>Total: R$ {formatMoney(total)}</strong>
 
       <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
         {/* 🔐 SELECT SÓ PARA GERENTE */}

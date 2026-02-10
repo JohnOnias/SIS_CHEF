@@ -15,7 +15,6 @@ function SelectProductsView() {
   const categoria = state?.categoria ?? null;
   const backTo = state?.backTo || null;
 
-  // (por enquanto mantém seu controle de permissão do front)
   const role = localStorage.getItem("user_role") || "manager";
   const canManageCatalog = role !== "waiter";
 
@@ -28,12 +27,22 @@ function SelectProductsView() {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ normaliza id da categoria (caso venha como categoria_id/ID etc.)
+  const categoriaId =
+    categoria?.id ??
+    categoria?.ID ??
+    categoria?.categoria_id ??
+    categoria?.categoriaId ??
+    categoria?.category_id ??
+    null;
+
   async function carregar() {
-    if (!categoria) return;
+    if (!categoriaId) return;
+
     setLoading(true);
     try {
-      const data = await listarProdutosPorCategoria(categoria.id);
-      setProdutos(data || []);
+      const data = await listarProdutosPorCategoria(Number(categoriaId));
+      setProdutos(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
       alert(e?.message || "Erro ao listar produtos");
@@ -45,7 +54,8 @@ function SelectProductsView() {
 
   useEffect(() => {
     carregar();
-  }, [categoria?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoriaId]);
 
   const voltarParaCategorias = () => {
     if (backTo) navigate(backTo);
@@ -61,11 +71,16 @@ function SelectProductsView() {
 
   const salvarModal = async () => {
     try {
+      if (!categoriaId) {
+        alert("Categoria inválida. Volte e abra a categoria novamente.");
+        return;
+      }
+
       await cadastrarProduto({
         nome,
         preco,
         descricao,
-        categoria_id: categoria.id,
+        idCategoria: Number(categoriaId), // ✅ AQUI é o ponto principal
       });
 
       setOpenModal(false);
@@ -80,7 +95,7 @@ function SelectProductsView() {
     return (
       <div style={{ padding: 24 }}>
         <h1>Produtos</h1>
-        <button className="bntPadrao" onClick={voltarParaCategorias}>
+        <button className="bntPadrao" onClick={voltarParaCategorias} type="button">
           Voltar para Categorias
         </button>
       </div>
@@ -138,11 +153,11 @@ function SelectProductsView() {
         </div>
       ) : (
         <div style={{ display: "grid", gap: 12, maxWidth: 900 }}>
-          {produtos.map((p) => (
+          {produtos.map((p, idx) => (
             <ProductCard
-              key={p.id}
+              key={p?.id != null ? String(p.id) : `prod-${idx}`}
               produto={p}
-              canManageCatalog={false /* sem editar/excluir ainda no BACK */}
+              canManageCatalog={false}
               onEdit={() => {}}
               onDelete={() => {}}
             />

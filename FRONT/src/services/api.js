@@ -1,4 +1,5 @@
-// FRONT/src/services/api.js
-export const api = (typeof window !== "undefined" && window.api) ? window.api : null;
+// src/services/api.js
 
-export const isElectron = !!api;
+export const isElectron = !!(window?.api);
+
+export const api = isElectron ? window.api : null;
