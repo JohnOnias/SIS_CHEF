@@ -11,17 +11,6 @@ module.exports = {
         primaryKey: true,
       },
 
-      id_mesa: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-          model: "tb_mesas",
-          key: "id",
-        },
-        // SQL não define CASCADE
-      },
-
       status: {
         type: Sequelize.STRING(50),
         allowNull: false,
@@ -38,7 +27,7 @@ module.exports = {
         allowNull: false,
       },
 
-      categoria_id: {
+      id_categoria: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -57,13 +46,10 @@ module.exports = {
     });
 
     // Índices conforme o SQL
-    await queryInterface.addIndex("tb_produtos", ["categoria_id"], {
+    await queryInterface.addIndex("tb_produtos", ["id_categoria"], {
       name: "fk_produto_categoria",
     });
 
-    await queryInterface.addIndex("tb_produtos", ["id_mesa"], {
-      name: "fk_mesa_produto",
-    });
   },
 
   async down(queryInterface, Sequelize) {

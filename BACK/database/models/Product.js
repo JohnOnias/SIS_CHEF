@@ -12,7 +12,6 @@ export default function ProdutoModel(sequelize) {
       },
       nome: { type: DataTypes.STRING, allowNull: false },
       preco: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-      categoria_id: { type: DataTypes.INTEGER, allowNull: false },
       descricao: { type: DataTypes.TEXT, allowNull: false },
     },
     {

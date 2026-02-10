@@ -18,7 +18,7 @@ export async function cadastrarProduto(data) {
   const {
     nome,
     preco,
-    categoria_id,
+    id_categoria,
     descricao = "",
     status = 1,
   } = data;
@@ -26,7 +26,7 @@ export async function cadastrarProduto(data) {
   return await api.produto.cadastrarProduto(
     nome,
     preco,
-    categoria_id,
+    id_categoria,
     descricao,
     status
   );

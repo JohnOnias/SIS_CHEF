@@ -35,7 +35,7 @@ export async function cadastrarMesa(mesa) {
     await transaction.commit();
 
     return {
-      success: true,
+      mesaCriada
     };
   } catch (error) {
     if (transaction && !transaction.finished) {
@@ -47,22 +47,9 @@ export async function cadastrarMesa(mesa) {
   }
 }
 
+
 export async function getMesas(filtros = {}) {
   try {
-    const where = {};
-    // Filtros opcionais
-    if (filtros.status) {
-      where.status = filtros.status;
-    }
-
-    if (filtros.numero) {
-      where.numero = filtros.numero;
-    }
-
-    if (filtros.n_cadeiras) {
-      where.n_cadeiras = filtros.n_cadeiras;
-    }
-
     const mesas = await Mesa.findAll({
       attributes: ["id", "numero", "status", "n_cadeiras"],
       where: Object.keys(where).length > 0 ? where : undefined,
@@ -154,7 +141,7 @@ export async function verificarMesaPedido(numero_mesa) {
       where: {
         mesa_numero: numero_mesa,
         status: {
-          [Op.notIn]: ["finalizado", "cancelado"], // Considera apenas pedidos ativos
+          [Op.notIn]: ["finalizado", "cancelado"],
         },
       },
     });
@@ -216,66 +203,8 @@ export async function mudarStatus(numero_mesa, novoStatus = "Ocupada") {
   }
 }
 
-// Funções adicionais úteis
 
-export async function getMesaById(id) {
-  try {
-    const mesa = await Mesa.findByPk(id, {
-      attributes: ["id", "numero", "status", "n_cadeiras"],
-    });
 
-    return mesa;
-  } catch (error) {
-    console.error("Erro ao buscar mesa por ID:", error);
-    throw error;
-  }
-}
-
-export async function atualizarMesa(id, dados) {
-  const transaction = await Mesa.sequelize.transaction();
-
-  try {
-    const mesa = await Mesa.findByPk(id, { transaction });
-
-    if (!mesa) {
-      await transaction.rollback();
-      return { success: false, error: "Mesa não encontrada." };
-    }
-
-    // Se for atualizar o número, verifica se já existe
-    if (dados.numero && dados.numero !== mesa.numero) {
-      const mesaComNumero = await Mesa.findOne({
-        where: { numero: dados.numero },
-        transaction,
-      });
-
-      if (mesaComNumero) {
-        await transaction.rollback();
-        return { success: false, error: "Número da mesa já está em uso." };
-      }
-    }
-
-    await mesa.update(dados, { transaction });
-    await transaction.commit();
-
-    return {
-      success: true,
-      data: {
-        id: mesa.id,
-        numero: mesa.numero,
-        status: mesa.status,
-        n_cadeiras: mesa.n_cadeiras,
-      },
-    };
-  } catch (error) {
-    if (transaction && !transaction.finished) {
-      await transaction.rollback();
-    }
-
-    console.error("Erro ao atualizar mesa:", error);
-    return handleSequelizeError(error);
-  }
-}
 
 export async function excluirMesa(numero_mesa) {
   const transaction = await Mesa.sequelize.transaction();
@@ -314,6 +243,20 @@ export async function excluirMesa(numero_mesa) {
 
     console.error("Erro ao excluir mesa:", error);
     return handleSequelizeError(error);
+  }
+}
+export async function listarMesas() {
+
+  try {
+    const mesas = await Mesa.findAll({
+      attributes: ["id", "numero", "status", "n_cadeiras"],
+      order: [["numero", "ASC"]],
+      raw: true, // Retorna objetos simples
+    });
+    return mesas;
+  } catch (error) {
+    console.error("Erro ao listar mesas:", error);
+    throw error;
   }
 }
 

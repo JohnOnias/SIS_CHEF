@@ -11,7 +11,7 @@ module.exports = {
         primaryKey: true,
       },
 
-      pedido_id: {
+      id_pedido: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -21,7 +21,7 @@ module.exports = {
         // SQL não define CASCADE, então não adicionamos
       },
 
-      produto_id: {
+      id_produto: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -49,11 +49,11 @@ module.exports = {
     });
 
     // Índices conforme o SQL
-    await queryInterface.addIndex("tb_itens_pedidos", ["pedido_id"], {
+    await queryInterface.addIndex("tb_itens_pedidos", ["id_pedido"], {
       name: "fk_item_pedido",
     });
 
-    await queryInterface.addIndex("tb_itens_pedidos", ["produto_id"], {
+    await queryInterface.addIndex("tb_itens_pedidos", ["id_produto"], {
       name: "fk_item_produto",
     });
   },

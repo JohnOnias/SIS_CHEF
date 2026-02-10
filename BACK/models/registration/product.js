@@ -1,4 +1,4 @@
-import { Produto } from "../../database/models/index.js"; // Importa do index.js central
+import { Produto } from "../../database/models/index.js";
 
 // Cadastrar um produto
 export async function cadastrarProduto(produto) {
@@ -6,7 +6,7 @@ export async function cadastrarProduto(produto) {
     await Produto.create({
       nome: produto.nome,
       preco: produto.preco,
-      categoria_id: produto.idCategoria,
+      id_categoria: produto.idCategoria,
       descricao: produto.descricao,
     });
     return { success: true, message: "produto cadastrado com sucesso" }; // sucesso
@@ -20,8 +20,15 @@ export async function cadastrarProduto(produto) {
 export async function getProdutosID(idCategoria) {
   try {
     const produtos = await Produto.findAll({
-      attributes: ["id", "nome", "preco", "descricao"],
-      where: { categoria_id: idCategoria },
+      attributes: [
+        "id",
+        "nome",
+        "preco",
+        "id_categoria",
+        "descricao",
+        "status",
+      ],
+      where: { id_categoria: idCategoria },
     });
     return produtos;
   } catch (err) {
@@ -32,15 +39,47 @@ export async function getProdutosID(idCategoria) {
 
 export async function mudarStatus(idProduto) {
   try {
-    const produto = await Produto.findByPk(idProduto);
+    const produto = await Produto.findOne({ where: { id: idProduto } });
+
     if (!produto) {
       throw new Error("Produto não encontrado");
     }
-    produto.status = produto.status.toLowerCase() === "disponivel" ? "indisponivel" : "disponivel";
+
+    if (!produto.status) {
+      produto.status = "disponivel";
+    }
+
+    produto.status =
+      produto.status.toLowerCase() === "disponivel"
+        ? "indisponivel"
+        : "disponivel";
+
     await produto.save();
-    return produto; 
-  }catch (err) {
+    return produto;
+  } catch (err) {
     console.error("Erro ao mudar status do produto:", err);
+    throw err;
+  }
+}
+
+
+
+
+export async function getTodosProdutos() {
+  try {
+    const produtos = await Produto.findAll({
+      attributes: [
+        "id",
+        "nome",
+        "preco",
+        "id_categoria",
+        "descricao",
+        "status",
+      ],
+    });
+    return produtos;
+  } catch (err) {
+    console.error("Erro ao buscar todos os produtos:", err);
     throw err;
   }
 }

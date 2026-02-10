@@ -10,7 +10,7 @@ export default function PagamentoModel(sequelize) {
             autoIncrement: true,
             allowNull: false,   
         },
-        pedido_id: {    
+        id_pedido: {    
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {

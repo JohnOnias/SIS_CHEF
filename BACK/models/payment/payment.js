@@ -4,7 +4,7 @@ import { Pagamento } from "../../database/models/index.js";
 export async function cadastrarPagamento(pedidoId, tipoPagamento, dividido,valorPago) {
   try {
     const pagamento = await Pagamento.create({
-      pedido_id: pedidoId,
+      id_pedido: pedidoId,
       tipo_pagamento: tipoPagamento,
       dividido: dividido,
       valor_pago: valorPago,
@@ -20,8 +20,8 @@ export async function cadastrarPagamento(pedidoId, tipoPagamento, dividido,valor
 export async function buscarPagamentoPorPedidoId(pedidoId) {
   try {
     const pagamento = await Pagamento.findOne({
-      where: { pedido_id: pedidoId },
-      attributes: ["id", "pedido_id", "tipo_pagamento", "dividido", "valor_pago"],
+      where: { id_pedido: pedidoId },
+      attributes: ["id", "id_pedido", "tipo_pagamento", "dividido", "valor_pago"],
     });
     return pagamento;
   } catch (error) {
@@ -34,7 +34,7 @@ export async function buscarPagamentoPorPedidoId(pedidoId) {
 export async function todosOsPagamentos() {
   try {
     const pagamentos = await Pagamento.findAll({
-      attributes: ["id", "pedido_id", "tipo_pagamento", "dividido", "valor_pago"],
+      attributes: ["id", "id_pedido", "tipo_pagamento", "dividido", "valor_pago"],
       order: [["id", "ASC"]], // Ordena por ID (opcional)
     }); 
     return pagamentos;

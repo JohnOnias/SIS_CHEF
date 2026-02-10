@@ -1,12 +1,10 @@
 const { ipcMain } = require("electron");
 const {
   cadastrarProduto,
-  getProdutosID, mudarStatus
-} = require("../../models/registration/product.js");
-const {
-  getProdutosID: getProdutosIDUtils,
+  getProdutosID,
+  mudarStatus,
   getTodosProdutos,
-} = require("../../models/utils/produto.js");
+} = require("../../models/registration/product.js");
 
 
 

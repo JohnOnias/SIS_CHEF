@@ -11,7 +11,7 @@ module.exports = {
         primaryKey: true,
       },
 
-      pedido_id: {
+      id_pedido: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -38,7 +38,7 @@ module.exports = {
     });
 
     // Índice conforme o SQL
-    await queryInterface.addIndex("tb_pagamentos", ["pedido_id"], {
+    await queryInterface.addIndex("tb_pagamentos", ["id_pedido"], {
       name: "fk_id_pedido",
     });
   },

@@ -1,5 +1,5 @@
 const { ipcRenderer } = require("electron");
-const { mudarStatus } = require("../../models/registration/table");
+
 
 module.exports = function produtoPreload() {
   return {

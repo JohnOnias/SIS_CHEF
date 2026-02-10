@@ -10,11 +10,11 @@ export default function ItemPedidoModel(sequelize) {
         autoIncrement: true,
         allowNull: false,
       },
-      pedido_id: {
+      id_pedido: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      produto_id: {
+      id_produto: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

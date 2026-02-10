@@ -1,5 +1,5 @@
 const {ipcRenderer} = require('electron');
-const { todosOsPagamentos } = require('../../models/payment/payment');
+
 
 
 module.exports = function paymantPreload() {

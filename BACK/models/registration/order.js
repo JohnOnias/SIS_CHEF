@@ -1,4 +1,4 @@
-import {Produto ,Pedido, ItemPedido} from "../../database/models/index.js";
+import {Produto , Pedido , ItemPedido} from "../../database/models/index.js";
 
 
 
@@ -96,7 +96,7 @@ export async function registrarPedido(numeroMesa, idGarcom) {
 export async function getTodosProdutos() {
   try {
     const produtos = await Produto.findAll({
-      attributes: ["id", "nome", "preco", "descricao", "categoria_id"],
+      attributes: ["id", "nome", "preco", "descricao", "id_categoria", "status"],
     });
     return produtos;
   } catch (err) {
@@ -145,10 +145,10 @@ export async function adicionarProdutosPedido(
       );
     } else {
       const item = await ItemPedido.create({
-        pedido_id: idPedido,
-        produto_id: idProduto,
+        id_pedido: idPedido,
+        id_produto: idProduto,
         quantidade: quantidade,
-        preco_unidade: valorUnidade,
+        preco_unitario: valorUnidade,
       });
       return item;
     }
@@ -161,7 +161,7 @@ export async function adicionarProdutosPedido(
 export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
   try {
     const item = await ItemPedido.findOne({
-      where: { pedido_id: idPedido, produto_id: idProduto },
+      where: { id_pedido: idPedido, id_produto: idProduto },
     }); 
     if (!item) {
       throw new Error("Produto não encontrado no pedido");
@@ -188,7 +188,7 @@ export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
 export async function listarItensPedido(idPedido) {
   try {
     const itens = await ItemPedido.findAll({  
-      where: { pedido_id: idPedido },
+      where: { id_pedido: idPedido },
       include: {
         model: Produto,
         attributes: ["id", "nome", "preco", "descricao"],
