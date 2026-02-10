@@ -12,9 +12,7 @@ module.exports = function funcionarioPreload() {
         cargo,
         senha,
       ),
-
-    getGarcons: () => ipcRenderer.invoke("get-garcons"),
-    getGerentes: () => ipcRenderer.invoke("get-gerentes"),
+      
     getFuncionario: (tipoFuncionario) =>
       ipcRenderer.invoke("get-funcionario", tipoFuncionario),
   };

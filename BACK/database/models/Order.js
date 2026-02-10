@@ -11,7 +11,7 @@ export default function PedidoModel(sequelize) {
         allowNull: false,
       },
       mesa_numero: { type: DataTypes.INTEGER, allowNull: false },
-      data_criacao: { type: DataTypes.DATE, allowNull: false },
+      data_criacao: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
       status: {
         type: DataTypes.STRING,
         allowNull: false,

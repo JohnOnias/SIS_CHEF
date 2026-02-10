@@ -6,6 +6,8 @@ import ProdutoModel from "./Product.js";
 import MesaModel from "./Table.js";
 import PedidoModel from "./Order.js";
 import ItemPedidoModel from "./OrderItens.js";
+import PagamentoModel from "./Payment.js";
+
 dotenv.config({
   path: ".env", // opcional: especificar o caminho
   quiet: true, // <-- Isso remove o aviso do dotenv
@@ -31,6 +33,7 @@ const Produto = ProdutoModel(sequelize, Sequelize.DataTypes);
 const Mesa = MesaModel(sequelize, Sequelize.DataTypes);
 const Pedido = PedidoModel(sequelize, Sequelize.DataTypes);
 const ItemPedido = ItemPedidoModel(sequelize, Sequelize.DataTypes);
+const Pagamento = PagamentoModel(sequelize, Sequelize.DataTypes);
 
 // --- Associações ---
 
@@ -58,6 +61,14 @@ ItemPedido.belongsTo(Pedido, {
 Produto.hasMany(ItemPedido, { foreignKey: "id_produto" });
 ItemPedido.belongsTo(Produto, { foreignKey: "id_produto" });
 
+// Pagamento ↔ Pedido
+Pedido.hasOne(Pagamento, {
+   foreignKey: "id_pedido",
+   as: "pagamento"});
+Pagamento.belongsTo(Pedido, { 
+  foreignKey: "id_pedido",
+  as: "pedido"});
+
 // Exporta tudo
 export {
   sequelize,
@@ -68,4 +79,5 @@ export {
   Mesa,
   Pedido,
   ItemPedido,
+  Pagamento,
 };

@@ -2,11 +2,9 @@ const { ipcMain } = require("electron");
 const {
   cadastrarProduto,
   getProdutosID,
-} = require("../../models/registration/product.js");
-const {
-  getProdutosID: getProdutosIDUtils,
+  mudarStatus,
   getTodosProdutos,
-} = require("../../models/utils/produto.js");
+} = require("../../models/registration/product.js");
 
 
 
@@ -19,6 +17,15 @@ module.exports = function productIpc() {
     },
   );
 
+ipcMain.handle("mudar-status", async (event, idProduto) => {
+    try {
+      const resultado = await mudarStatus(idProduto); 
+      return { success: true, data: resultado };
+    } catch (err) {
+      console.error("Erro ao mudar status do produto:", err);
+      return { success: false, error: err.message };
+    } 
+  });
 
 
   ipcMain.handle("getTodosProdutos", async () => {
@@ -29,5 +36,14 @@ module.exports = function productIpc() {
       return [];
     }
   });
+  ipcMain.handle("get-produtos-por-categoria", async (event, idCategoria) => {
+    try {
+      return await getProdutosID(idCategoria);
+    } catch (error) {
+      console.error("Erro ao pegar produtos por categoria:", error);
+      return [];
+    }  });
+
+
 }
 

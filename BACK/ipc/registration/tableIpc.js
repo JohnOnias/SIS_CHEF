@@ -1,7 +1,7 @@
 const { ipcMain } = require("electron");
 const {
   cadastrarMesa,
-  getMesas,
+  listarMesas,
   mudarStatus,
   deletarMesa,
   verificarMesaPedido,
@@ -24,9 +24,10 @@ module.exports = function tableIpc() {
   );
 
   ipcMain.handle("get-mesas", async () => {
-    return await getMesas();
+    return await listarMesas();
   });
 
+  
   // Mudar status da mesa
   ipcMain.handle("mudar-status-mesa", async (event, numeroMesa) => {
     try {

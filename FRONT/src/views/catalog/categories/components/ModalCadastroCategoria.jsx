@@ -1,63 +1,102 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import "../styles/categorias.css";
 
-function ModalCadastroCategoria({ isOpen, onClose, onSave, disabled = false }) {
-  const [nome, setNome] = useState("");
-  const [imagem, setImagem] = useState("");
+function ModalCadastroCategoria({
+  isOpen,
+  onClose,
+  onSave,
+  disabled = false,
+  initialNome = "",
+  isEdit = false,
+  anchorRect = null, // ✅ novo: posição do popat
+}) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { nome: "" },
+    mode: "onSubmit",
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+    reset({ nome: initialNome || "" });
+  }, [isOpen, initialNome, reset]);
 
   if (!isOpen) return null;
 
-  const salvar = (e) => {
-    e.preventDefault();
-    if (disabled) return;
+  const calcStyle = () => {
+    if (!anchorRect) return { right: 18, top: 130 };
 
-    if (!nome.trim()) {
-      alert("Informe o nome da categoria.");
-      return;
-    }
+    const width = 360;
+    const margin = 8;
 
-    const img =
-      imagem.trim() ||
-      "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=900&q=60";
+    const maxLeft = window.innerWidth - width - margin;
+    const left = Math.min(Math.max(anchorRect.left, margin), maxLeft);
+    const top = anchorRect.bottom + 8;
 
-    onSave({ nome: nome.trim(), imagem: img });
-    setNome("");
-    setImagem("");
-    onClose();
+    return { left, top };
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>Cadastrar Categoria</h2>
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 10001,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: "fixed",
+          width: 360,
+          background: "#fff",
+          border: "1px solid #e5e7eb",
+          borderRadius: 12,
+          boxShadow: "0 18px 40px rgba(0,0,0,0.18)",
+          padding: 14,
+          ...calcStyle(),
+        }}
+      >
+        <div className="modal-header">
+          <h2 style={{ margin: 0 }}>{isEdit ? "Editar Categoria" : "Cadastrar Categoria"}</h2>
+          <button type="button" onClick={onClose} className="modal-close">
+            ✕
+          </button>
+        </div>
 
-        <form onSubmit={salvar} style={{ display: "grid", gap: 10 }}>
-          <label>Nome</label>
+        <form
+          onSubmit={handleSubmit(onSave)}
+          style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}
+        >
+          <label style={{ fontWeight: 700 }}>Nome da categoria</label>
+
           <input
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            placeholder="Ex: Entradas"
+            type="text"
+            placeholder="Ex: Bebidas"
+            {...register("nome", {
+              required: "Informe o nome",
+              minLength: { value: 2, message: "Mínimo 2 caracteres" },
+            })}
             disabled={disabled}
           />
 
-          <label>URL da imagem (opcional)</label>
-          <input
-            value={imagem}
-            onChange={(e) => setImagem(e.target.value)}
-            placeholder="https://..."
-            disabled={disabled}
-          />
+          {errors.nome && (
+            <small style={{ color: "#b42318", fontWeight: 600 }}>{errors.nome.message}</small>
+          )}
 
-          <div className="buttons-modal">
+          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 10 }}>
             <button type="button" className="bntPadrao" onClick={onClose}>
               Cancelar
             </button>
-            <button
-              type="submit"
-              className={`bntPadraoGreen ${disabled ? "disable" : ""}`}
-              disabled={disabled}
-            >
-              Salvar
+
+            <button type="submit" className="bntPadraoGreen" disabled={disabled}>
+              {isEdit ? "Salvar" : "Cadastrar"}
             </button>
           </div>
         </form>

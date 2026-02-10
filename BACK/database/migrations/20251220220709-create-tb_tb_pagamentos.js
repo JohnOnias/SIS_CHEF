@@ -11,7 +11,7 @@ module.exports = {
         primaryKey: true,
       },
 
-      pedido_id: {
+      id_pedido: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -20,16 +20,25 @@ module.exports = {
         },
         // SQL não define CASCADE
       },
-
       tipo_pagamento: {
         type: Sequelize.STRING(50),
         allowNull: true,
         defaultValue: "dinheiro",
       },
+      dividido: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+      },
+      valor_pago: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true,
+      },
+
     });
 
     // Índice conforme o SQL
-    await queryInterface.addIndex("tb_pagamentos", ["pedido_id"], {
+    await queryInterface.addIndex("tb_pagamentos", ["id_pedido"], {
       name: "fk_id_pedido",
     });
   },
