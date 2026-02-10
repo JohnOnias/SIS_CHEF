@@ -29,3 +29,18 @@ export async function getProdutosID(idCategoria) {
     throw err;
   }
 }
+
+export async function mudarStatus(idProduto) {
+  try {
+    const produto = await Produto.findByPk(idProduto);
+    if (!produto) {
+      throw new Error("Produto não encontrado");
+    }
+    produto.status = produto.status.toLowerCase() === "disponivel" ? "indisponivel" : "disponivel";
+    await produto.save();
+    return produto; 
+  }catch (err) {
+    console.error("Erro ao mudar status do produto:", err);
+    throw err;
+  }
+}

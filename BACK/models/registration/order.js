@@ -120,6 +120,9 @@ export async function adicionarProdutosPedido(
     } else {
       valorUnidade = produto.preco;
     }
+    if (produto.status.toLowerCase() !== "disponivel") {
+      throw new Error("Produto inativo, não pode ser adicionado ao pedido");
+    }
   } catch (err) {
     console.error("Erro ao buscar produto:", err);
     throw err;
@@ -227,4 +230,19 @@ export async function fecharPedido(idPedido, valorTotal) {
     console.error("Erro ao fechar pedido:", error);
     return { success: false, error: error.message };
   }   
+}
+
+export async function cancelarPedido(idPedido) {
+  try {
+    const pedido = await Pedido.findByPk(idPedido);
+    if (!pedido) {
+      return { success: false, error: "Pedido não encontrado." };
+    }
+    await pedido.update({ status: "cancelado" });
+
+    return pedido;
+  } catch (error) {
+    console.error("Erro ao cancelar pedido:", error);
+    return { success: false, error: error.message };
+  }
 }

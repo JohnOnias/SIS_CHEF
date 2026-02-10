@@ -1,6 +1,6 @@
 const { ipcMain } = require("electron");
 
-const { registrarPedido, editarPedido, fecharPedido, listarItensPedido} = require("../../models/registration/order.js");
+const { registrarPedido, editarPedido, fecharPedido, listarItensPedido, cancelarPedido} = require("../../models/registration/order.js");
 const {
   listarPedidos
 } = require("../../models/registration/table.js");
@@ -84,6 +84,20 @@ module.exports = function orderIpc() {
       return { success: false, error: err.message };
     }
   });
+  ipcMain.handle("cancelarPedido", async (event, idPedido) => {
+    try {
+      const resultado = await cancelarPedido(idPedido);
+      return { success: true, data: resultado };
+    } catch (err) {
+      console.error("Erro ao cancelar pedido:", err);
+      return { success: false, error: err.message };
+    }
+  });
+
+
+
+
+
 
    ipcMain.handle(
      "removerProdutoPedido",

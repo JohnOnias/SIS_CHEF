@@ -53,6 +53,7 @@ module.exports = {
         allowNull: true,
         defaultValue: null,
       },
+    
     });
 
     // Índices conforme o SQL

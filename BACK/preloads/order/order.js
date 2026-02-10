@@ -11,6 +11,7 @@ module.exports = function pedidoPreload() {
       ipcRenderer.invoke("removerProdutoPedido", idPedido, idProduto, quantidade),
     fecharPedido: (idPedido) => ipcRenderer.invoke("fecharPedido", idPedido),
     listarItensPedido: (idPedido) => ipcRenderer.invoke("listarItensPedido", idPedido),
+    cancelarPedido: (idPedido) => ipcRenderer.invoke("cancelarPedido", idPedido),
 
 
     getMesas: () => ipcRenderer.invoke("get-mesas"),

@@ -24,19 +24,19 @@ export async function cadastrarMesa(mesa) {
 
     // Cria a mesa
     const mesaCriada = await Mesa.create(
-
       {
         numero: mesa.numero,
         status: mesa.status || "livre", // Valor padrão
         n_cadeiras: mesa.n_cadeiras || 4, // Valor padrão
       },
-      { transaction }
+      { transaction },
     );
 
     await transaction.commit();
 
     return {
-      success: true,};
+      success: true,
+    };
   } catch (error) {
     if (transaction && !transaction.finished) {
       await transaction.rollback();
@@ -76,11 +76,47 @@ export async function getMesas(filtros = {}) {
     throw error;
   }
 }
+
 export async function deletarMesa(numero_mesa) {
-  
   const transaction = await Mesa.sequelize.transaction();
 
   try {
+    const mesa = await Mesa.findOne({
+      where: { numero: numero_mesa },
+      transaction,
+      lock: transaction.LOCK.UPDATE,
+    });
+
+    if (!mesa) {
+      await transaction.rollback();
+      return { success: false, error: "Mesa não encontrada." };
+    }
+
+    if (mesa.status.toLowerCase() === "ocupada") {
+      await transaction.rollback();
+      return {
+        success: false,
+        error: "Não é possível excluir a mesa. Ela está ocupada.",
+      };
+    }
+
+    const pedidoMesa = await Pedido.findOne({
+      where: {
+        mesa_numero: numero_mesa,
+        status: "ativo",
+      },
+      transaction,
+      lock: transaction.LOCK.UPDATE,
+    });
+
+    if (pedidoMesa) {
+      await transaction.rollback();
+      return {
+        success: false,
+        error: "Não é possível excluir a mesa. Ela possui pedidos ativos.",
+      };
+    }
+
     const deletedRows = await Mesa.destroy({
       where: { numero: numero_mesa },
       transaction,
@@ -93,10 +129,7 @@ export async function deletarMesa(numero_mesa) {
       deletedRows,
     };
   } catch (error) {
-    if (transaction && !transaction.finished) {
-      await transaction.rollback();
-    }
-
+    await transaction.rollback();
     console.error("Erro ao deletar mesa:", error);
     throw error;
   }
@@ -160,7 +193,7 @@ export async function mudarStatus(numero_mesa, novoStatus = "Ocupada") {
       {
         where: { numero: numero_mesa },
         transaction,
-      }
+      },
     );
 
     await transaction.commit();

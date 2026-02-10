@@ -45,6 +45,10 @@ apis  do back-end:
 	window.api.produto.getProdutosPorCategoria(idCategoria); 
 		retorna um objeto com os  produtos(id, nome, preco, descrição)
 
+- api atualizar status produto	
+	
+		window.api.produto.mudarStatus(idProduto);
+			retorna o produto atualizado
 
 - api get todos os produtos
 	window.api.produto.getTodosProdutos();
@@ -69,6 +73,10 @@ apis  do back-end:
 	window.api.mesas.listarMesas(); 
 		return um array de objetos, status, numero, n_cadeiras
 
+- api remover mesa 
+		window.api.mesa.remover(mesa_numero);
+		return true
+
 		
 - api verificar pedidos de uma mesa
 	window.api.mesas.verificarMesaPedido(numeroMesa);
@@ -80,9 +88,6 @@ apis  do back-end:
 	window.api.pedido.registrarPedido(numeroMesa, idGarcom)
 		retorna true 
 
-
-
-##### erro aqui #### 
 
 
 - api adicionar produtos a um pedido

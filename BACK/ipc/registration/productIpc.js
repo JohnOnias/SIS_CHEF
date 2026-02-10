@@ -1,7 +1,7 @@
 const { ipcMain } = require("electron");
 const {
   cadastrarProduto,
-  getProdutosID,
+  getProdutosID, mudarStatus
 } = require("../../models/registration/product.js");
 const {
   getProdutosID: getProdutosIDUtils,
@@ -19,6 +19,15 @@ module.exports = function productIpc() {
     },
   );
 
+ipcMain.handle("mudar-status", async (event, idProduto) => {
+    try {
+      const resultado = await mudarStatus(idProduto); 
+      return { success: true, data: resultado };
+    } catch (err) {
+      console.error("Erro ao mudar status do produto:", err);
+      return { success: false, error: err.message };
+    } 
+  });
 
 
   ipcMain.handle("getTodosProdutos", async () => {

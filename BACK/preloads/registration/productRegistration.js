@@ -1,4 +1,5 @@
 const { ipcRenderer } = require("electron");
+const { mudarStatus } = require("../../models/registration/table");
 
 module.exports = function produtoPreload() {
   return {
@@ -15,6 +16,7 @@ module.exports = function produtoPreload() {
 
    
     getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
+    mudarStatus: (idProduto) => ipcRenderer.invoke("mudar-status", idProduto),
 
   };
 };
