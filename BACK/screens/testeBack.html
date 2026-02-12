@@ -7,313 +7,130 @@
   </head>
   <body>
     <h1>Testes do Back-end</h1>
+    <h3>Form teste login</h3>
+
+    <form action="#" method="post">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+      <br />
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password" required />
+      <br />
+      <button type="submit">Enviar</button>
+    </form>
+    <p>login: <strong id="resultadoLogin"></strong></p>
+    <p>Usuário atual: <strong id="currentUser"></strong></p>
+
+    <hr />
+
+    <h3>cadastro usuario</h3>
+
+    <form action="#" method="post" id="cadastroFuncionario">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nomeFuncionario" name="nome" required />
+      <br />
+      <label for="email">Email:</label>
+      <input type="email" id="emailFuncionario" name="email" required />
+      <br />
+      <label for="password">Senha:</label>
+      <input
+        type="text"
+        id="passwordFuncionario"
+        name="password"
+        required
+        minlength="8"
+      />
+      <br />
+      <label for="cpf">CPF:</label>
+      <input
+        type="text"
+        id="cpfFuncionario"
+        name="cpf"
+        required
+        pattern="\d{11}"
+        title="Digite um CPF válido com 11 dígitos"
+      />
+      <br />
+      <select name="cargo" id="cargoFuncionario">
+        <option value="garçom">Garçom</option>
+        <option value="gerente">Gerente</option>
+        <option value="administrador">Administrador</option>
+      </select>
+      <br />
+
+      <button type="submit">Cadastrar</button>
+    </form>
+    <p id="cadastroResultado"></p>
 
     <script>
       (async () => {
-        console.log("Iniciando testes...");
-   /*
-       
+        // teste de login
+        let currentUser = null;
 
-        console.log("Testando cadastro de funcionários...");
-        try {
-          let user = {
-            nome: "jose silva",
-            cpf: "98765432100",
-            email: "jose@garcom.com",
-            cargo: "garçom",
-            senha: "senha123",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
-        try {
-          let user = {
-            nome: "miguel silva",
-            cpf: "98765432122",
-            email: "miguel@gerente.com",
-            cargo: "gerente",
-            senha: "senha123",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
-     
-        console.log("Testando cadastro de categorias...");
+        const form = document.querySelector("form");
+        const resultadoLogin = document.getElementById("resultadoLogin");
+        const currentUserElement = document.getElementById("currentUser");
 
-        try {
-          let categoria = {
-            nome: "Bebidas",
-            status: "ativa",
-          };
-          window.api.categoria.cadastrarCategoria(
-            categoria.nome,
-            categoria.status,
-          );
-          console.log("Categoria cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da categoria:", error);
-        }
-        console.log("Testando obtenção de categorias...");
-        try {
-          const categorias = await window.api.categoria.getCategorias();
-          console.log("Categorias:", categorias);
-        } catch (error) {
-          console.error("Erro ao obter categorias:", error);
-        }
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
 
-        console.log("Testando cadastro de produtos...");
-        try {
-          let produto = {
-            nome: "Refrigerante",
-            preco: 5.0,
-            idCategoria: 1,
-            status: "disponível",
-            descricao: "Refrigerante sabor cola",
-          };
-          window.api.produto.cadastrarProduto(produto);
-          console.log("Produto cadastrado com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro do produto:", error);
-        }
-        try {
-          let produto = {
-            nome: "Agua Mineral",
-            preco: 3.0,
-            idCategoria: 1,
-            status: "disponível",
-            descricao: "Água mineral sem gás",
-          };
-          window.api.produto.cadastrarProduto(produto);
-          console.log("Produto cadastrado com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro do produto:", error);
-        }
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
 
-        console.log("Testando obtenção de produtos por categoria...");
-        try {
-          const produtos = await window.api.produto.getProdutosPorCategoria(1);
-          console.log("Produtos:", produtos);
-        } catch (error) {
-          console.error("Erro ao obter produtos:", error);
-        }
-
-        console.log("Testando mudança de status do produto...");
-        try {
-          const produtoStatus = await window.api.produto.mudarStatus(1);
-          console.log("Produto atualizado:", produtoStatus);
-        } catch (error) {
-          console.error("Erro ao atualizar status do produto:", error);
-        }
-
-        console.log("Testando obtenção de todos os produtos...");
-        try {
-          const todosProdutos = await window.api.produto.getTodosProdutos();
-          console.log("Todos os Produtos:", todosProdutos);
-        } catch (error) {
-          console.error("Erro ao obter todos os produtos:", error);
-        }
-
-        console.log("Testando obtenção de funcionários por cargo...");
-        try {
-          const garcom = await window.api.funcionario.getFuncionario("garçom");
-          const gerentes =
-            await window.api.funcionario.getFuncionario("gerente");
-          console.log("Funcionarios:", garcom, gerentes);
-        } catch (error) {
-          console.error("Erro ao obter funcionarios:", error);
-        }
-
-
-console.log("Testando cadastro de funcionários...");
-        try {
-          let user = {
-            nome: "lucas silva",
-            cpf: "222.222.222.22",
-            email: "lucas@garçom.com",
-            cargo: "garçom",
-            senha: "123456789",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
           try {
-          let user = {
-            nome: "rafael silva",
-            cpf: "333.444.222.22",
-            email: "rafael@garcom.com",
-            cargo: "garçom",
-            senha: "123456789",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
+            const response = await window.api.login.login(email, password);
 
+            if (response) {
+              resultadoLogin.textContent = `Login bem-sucedido! Token: ${response.nome}`;
+              currentUser = await window.api.user.setCurrentUser(response); // Obtém os dados do usuário logado
+              let User = await window.api.user.getCurrentUser(); // Obtém os dados do usuário logado
+              currentUserElement.textContent = `usuario: ${User.nome} tipo: ${User.tipo}`; // Exibe o nome do usuário logado
+            } else {
+              resultadoLogin.textContent =
+                "Falha no login. Verifique suas credenciais.";
+            }
+          } catch (error) {
+            console.error("Erro ao fazer login:", error);
+            resultadoLogin.textContent =
+              "Ocorreu um erro ao tentar fazer login.";
+          }
+        });
 
- console.log("Testando login...");
-        try {
-          let usuario = {
-            email: "john@adm.com",
-            senha: "123456789",
-          };
+        // teste de cadastro de funcionário
+        const cadastroForm = document.getElementById("cadastroFuncionario");
 
-          const loginResult = await window.api.login.login(usuario);
-          console.log("Resultado do login:", loginResult);
-        } catch (error) {
-          console.error("Erro durante o login:", error);
-        }
+        cadastroForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
 
-        console.log("testar cadastro mesa");
-        try {
-          let mesa = {
-            numero: 10,
-            status: "disponível",
-            n_cadeiras: 6,
-          };
+          const nomeCadastro = document.getElementById("nomeFuncionario").value;
+          const emailCadastro =
+            document.getElementById("emailFuncionario").value;
+          const passwordCadastro = document.getElementById(
+            "passwordFuncionario",
+          ).value;
+          const cpfCadastro = document.getElementById("cpfFuncionario").value;
+          const cargoCadastro =
+            document.getElementById("cargoFuncionario").value;
+          const cadastroResultado =
+            document.getElementById("cadastroResultado");
 
-          window.api.mesas.cadastrarMesas(mesa);
-          console.log("Mesa cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da mesa:", error);
-        }
-        try {
-          let mesa = {
-            numero: 14,
-            status: "disponível",
-            n_cadeiras: 6,
-          };
-
-          window.api.mesas.cadastrarMesas(mesa);
-          console.log("Mesa cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da mesa:", error);
-        }
-        try {
-          let mesa = {
-            numero: 17,
-            status: "disponível",
-            n_cadeiras: 6,
-          };
-
-          window.api.mesas.cadastrarMesas(mesa);
-          console.log("Mesa cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da mesa:", error);
-        }
-
-        console.log("Testando obtenção de mesas...");
-        try {
-          const mesas = await window.api.mesas.listarMesas();
-          console.log("Mesas:", mesas);
-        } catch (error) {
-          console.error("Erro ao obter mesas:", error);
-        }
-        console.log("Testando remover mesa...");
-        try {
-          await window.api.mesas.remover(17);
-          console.log("Mesa removida com sucesso");
-        } catch (error) {
-          console.error("Erro ao remover mesa:", error);
-        }
-
-        console.log("verificar pedido mesa");
-
-        try {
-          const mesaStatus = await window.api.mesas.verificarMesaPedido(14);
-          console.log("Mesa pedido:", mesaStatus);
-        } catch (error) {
-          console.error("Erro ao verificar pedido da mesa:", error);
-        }
-
-        console.log("criar pedido teste");
-
-        try {
-          const pedidoResult = await window.api.pedido.registrarPedido(14, 1);
-          console.log("Pedido criado:", pedidoResult);
-        } catch (error) {
-          console.error("Erro ao criar pedido:", error);
-        }
-
-        console.log("adcionar produtos a um pedido");
-        try {
-          const adicionarProdutoResult =
-            await window.api.pedido.adicionarProdutosPedido(
-              1, // ID do pedido
-              4, // ID do produto
-              2, // Quantidade
-            );
-          console.log("Produto adicionado ao pedido:", adicionarProdutoResult);
-        } catch (error) {
-          console.error("Erro ao adicionar produto ao pedido:", error);
-        }
-
-        console.log("obter detalhes do pedido");
-        try {
-          const detalhesPedido = await window.api.pedido.listarItensPedido(1);
-          console.log("Detalhes do pedido:", detalhesPedido);
-        } catch (error) {
-          console.error("Erro ao obter detalhes do pedido:", error);
-        }
-          */
-
-             try {
-          let user = {
-            nome: "Rafel Alves",
-            cpf: "333.444.222.59",
-            email: "rafael@garçom.com",
-            cargo: "garçom",
-            senha: "123456789",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
-
-
-
+          try {
+            const responseCadastro =
+              await window.api.funcionario.cadastrarFuncionario(
+                nomeCadastro,
+                cpfCadastro,
+                emailCadastro,
+                cargoCadastro,
+                passwordCadastro,
+              );
+            console.log(responseCadastro);
+            cadastroResultado.textContent =
+              "Funcionário cadastrado com sucesso!";
+          } catch (error) {
+            console.error("Erro ao cadastrar funcionário:", error);
+            cadastroResultado.textContent = "Erro ao cadastrar funcionário.";
+          }
+        });
       })();
     </script>
   </body>
