@@ -2,4 +2,8 @@ npm install --save-dev sequelize-cli
 
 
 
+<<<<<<< HEAD
 npx sequelize-cli db:migrate
+=======
+npx sequelize-cli db:migrate
+>>>>>>> 6f12ad0789ca45b2dcc29ad07bb64c60411cce29

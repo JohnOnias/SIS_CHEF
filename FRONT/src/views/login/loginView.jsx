@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+// importa as imagens utilizadas no component 
 import RectangleImg from "../../assets/others/rectangle.png";
 import GroupImg from "../../assets/others/group.png";
 import "./styles/login.css";
-
+// importa o modal de rese de senha
 import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
+//
 import { login as loginService } from "../../services/authService";
 import { isElectron } from "../../services/api";
 
