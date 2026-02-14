@@ -7,313 +7,647 @@
   </head>
   <body>
     <h1>Testes do Back-end</h1>
+    <h3>Form teste login</h3>
+
+    <form action="#" method="post">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+      <br />
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password" required />
+      <br />
+      <button type="submit">Enviar</button>
+    </form>
+    <p>login: <strong id="resultadoLogin"></strong></p>
+    <p>Usuário atual: <strong id="currentUser"></strong></p>
+
+    <hr />
+
+    <h3>cadastro usuario</h3>
+
+    <form action="#" method="post" id="cadastroFuncionario">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nomeFuncionario" name="nome" required />
+      <br />
+      <label for="email">Email:</label>
+      <input type="email" id="emailFuncionario" name="email" required />
+      <br />
+      <label for="password">Senha:</label>
+      <input
+        type="text"
+        id="passwordFuncionario"
+        name="password"
+        required
+        minlength="8"
+      />
+      <br />
+      <label for="cpf">CPF:</label>
+      <input
+        type="text"
+        id="cpfFuncionario"
+        name="cpf"
+        required
+        pattern="\d{11}"
+        title="Digite um CPF válido com 11 dígitos"
+      />
+      <br />
+      <select name="cargo" id="cargoFuncionario">
+        <option value="garçom">Garçom</option>
+        <option value="gerente">Gerente</option>
+        <option value="administrador">Administrador</option>
+      </select>
+      <br />
+
+      <button type="submit">Cadastrar</button>
+    </form>
+    <p id="cadastroResultado"></p>
+
+    <hr />
+    <h3>Listar Funcionários</h3>
+
+    <select id="tipoFuncionario">
+      <option value="gerente">Gerente</option>
+      <option value="garçom">Garçom</option>
+    </select>
+
+    <button id="btnListarFuncionarios">Listar</button>
+
+    <pre id="listaFuncionarios"></pre>
+
+    <hr />
+    <h3>Cadastro de Categoria</h3>
+
+    <form id="formCategoria">
+      <input
+        type="text"
+        id="nomeCategoria"
+        placeholder="Nome da categoria"
+        required
+      />
+      <select id="statusCategoria">
+        <option value="ativa">Ativa</option>
+        <option value="inativa">Inativa</option>
+      </select>
+      <button type="submit">Cadastrar Categoria</button>
+    </form>
+    <p id="resultadoCategoria"></p>
+
+    <hr />
+    <h3>Listar Categorias</h3>
+    <button id="btnListarCategorias">Listar Categorias</button>
+    <pre id="listaCategorias"></pre>
+
+    <hr />
+    <h3>Cadastro de Produto</h3>
+
+    <form id="formProduto">
+      <input
+        type="text"
+        id="nomeProduto"
+        placeholder="Nome do produto"
+        required
+      />
+      <input
+        type="number"
+        step="0.01"
+        id="precoProduto"
+        placeholder="Preço"
+        required
+      />
+      <input
+        type="text"
+        id="descricaoProduto"
+        placeholder="Descrição"
+        required
+      />
+      <input
+        type="number"
+        id="idCategoriaProduto"
+        placeholder="ID da categoria"
+        required
+      />
+      <button type="submit">Cadastrar Produto</button>
+    </form>
+    <p id="resultadoProduto"></p>
+
+    <hr />
+    <h3>Listar Produtos por Categoria</h3>
+    <input type="number" id="buscarCategoriaId" placeholder="ID Categoria" />
+    <button id="btnBuscarProdutosCategoria">Buscar</button>
+    <pre id="listaProdutosCategoria"></pre>
+
+    <hr />
+    <h3>Listar Todos os Produtos</h3>
+    <button id="btnListarTodosProdutos">Listar Todos</button>
+    <pre id="listaTodosProdutos"></pre>
+
+    <hr />
+    <h2>MESAS</h2>
+
+    <h3>Cadastrar Mesa</h3>
+    <form id="formMesa">
+      <input
+        type="number"
+        id="numeroMesa"
+        placeholder="Número da mesa"
+        required
+      />
+      <input
+        type="text"
+        id="statusMesa"
+        placeholder="Status (livre/ocupada)"
+        required
+      />
+      <input
+        type="number"
+        id="cadeirasMesa"
+        placeholder="Quantidade cadeiras"
+        required
+      />
+      <button type="submit">Cadastrar Mesa</button>
+    </form>
+    <p id="resultadoMesa"></p>
+
+    <h3>Listar Mesas</h3>
+    <button id="btnListarMesas">Listar Mesas</button>
+    <pre id="listaMesas"></pre>
+
+    <h3>Remover Mesa</h3>
+    <input type="number" id="removerNumeroMesa" placeholder="Número da mesa" />
+    <button id="btnRemoverMesa">Remover</button>
+    <p id="resultadoRemoverMesa"></p>
+
+    <h3>Verificar Pedido da Mesa</h3>
+    <input
+      type="number"
+      id="verificarMesaNumero"
+      placeholder="Número da mesa"
+    />
+    <button id="btnVerificarMesa">Verificar</button>
+    <pre id="resultadoVerificarMesa"></pre>
+
+    <hr />
+    <h2>PEDIDOS</h2>
+
+    <h3>Criar Pedido</h3>
+    <input type="number" id="pedidoNumeroMesa" placeholder="Número da mesa" />
+    <input type="number" id="pedidoIdGarcom" placeholder="ID Garçom" />
+    <button id="btnCriarPedido">Criar Pedido</button>
+    <p id="resultadoCriarPedido"></p>
+
+    <h3>Adicionar Produto ao Pedido</h3>
+    <input type="number" id="addIdPedido" placeholder="ID Pedido" />
+    <input type="number" id="addIdProduto" placeholder="ID Produto" />
+    <input type="number" id="addQuantidade" placeholder="Quantidade" />
+    <button id="btnAdicionarProduto">Adicionar</button>
+    <pre id="resultadoAddProduto"></pre>
+
+    <h3>Listar Itens do Pedido</h3>
+    <input type="number" id="listarItensPedidoId" placeholder="ID Pedido" />
+    <button id="btnListarItensPedido">Listar Itens</button>
+    <pre id="resultadoItensPedido"></pre>
+
+    <h3>Remover Item do Pedido</h3>
+    <input type="number" id="removerItemPedidoId" placeholder="ID Pedido" />
+    <input type="number" id="removerItemProdutoId" placeholder="ID Produto" />
+    <input type="number" id="removerItemQuantidade" placeholder="Quantidade" />
+    <button id="btnRemoverItem">Remover Item</button>
+    <p id="resultadoRemoverItem"></p>
+
+    <h3>Fechar Pedido</h3>
+    <input type="number" id="fecharPedidoId" placeholder="ID Pedido" />
+    <input type="number" id="valorTotalPedido" placeholder="Valor Total" />
+    <button id="btnFecharPedido">Fechar Pedido</button>
+    <pre id="resultadoFecharPedido"></pre>
 
     <script>
       (async () => {
-        console.log("Iniciando testes...");
-   /*
-       
+        // teste de login
+        let currentUser = null;
 
-        console.log("Testando cadastro de funcionários...");
-        try {
-          let user = {
-            nome: "jose silva",
-            cpf: "98765432100",
-            email: "jose@garcom.com",
-            cargo: "garçom",
-            senha: "senha123",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
-        try {
-          let user = {
-            nome: "miguel silva",
-            cpf: "98765432122",
-            email: "miguel@gerente.com",
-            cargo: "gerente",
-            senha: "senha123",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
-     
-        console.log("Testando cadastro de categorias...");
+        const form = document.querySelector("form");
+        const resultadoLogin = document.getElementById("resultadoLogin");
+        const currentUserElement = document.getElementById("currentUser");
 
-        try {
-          let categoria = {
-            nome: "Bebidas",
-            status: "ativa",
-          };
-          window.api.categoria.cadastrarCategoria(
-            categoria.nome,
-            categoria.status,
-          );
-          console.log("Categoria cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da categoria:", error);
-        }
-        console.log("Testando obtenção de categorias...");
-        try {
-          const categorias = await window.api.categoria.getCategorias();
-          console.log("Categorias:", categorias);
-        } catch (error) {
-          console.error("Erro ao obter categorias:", error);
-        }
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
 
-        console.log("Testando cadastro de produtos...");
-        try {
-          let produto = {
-            nome: "Refrigerante",
-            preco: 5.0,
-            idCategoria: 1,
-            status: "disponível",
-            descricao: "Refrigerante sabor cola",
-          };
-          window.api.produto.cadastrarProduto(produto);
-          console.log("Produto cadastrado com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro do produto:", error);
-        }
-        try {
-          let produto = {
-            nome: "Agua Mineral",
-            preco: 3.0,
-            idCategoria: 1,
-            status: "disponível",
-            descricao: "Água mineral sem gás",
-          };
-          window.api.produto.cadastrarProduto(produto);
-          console.log("Produto cadastrado com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro do produto:", error);
-        }
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
 
-        console.log("Testando obtenção de produtos por categoria...");
-        try {
-          const produtos = await window.api.produto.getProdutosPorCategoria(1);
-          console.log("Produtos:", produtos);
-        } catch (error) {
-          console.error("Erro ao obter produtos:", error);
-        }
-
-        console.log("Testando mudança de status do produto...");
-        try {
-          const produtoStatus = await window.api.produto.mudarStatus(1);
-          console.log("Produto atualizado:", produtoStatus);
-        } catch (error) {
-          console.error("Erro ao atualizar status do produto:", error);
-        }
-
-        console.log("Testando obtenção de todos os produtos...");
-        try {
-          const todosProdutos = await window.api.produto.getTodosProdutos();
-          console.log("Todos os Produtos:", todosProdutos);
-        } catch (error) {
-          console.error("Erro ao obter todos os produtos:", error);
-        }
-
-        console.log("Testando obtenção de funcionários por cargo...");
-        try {
-          const garcom = await window.api.funcionario.getFuncionario("garçom");
-          const gerentes =
-            await window.api.funcionario.getFuncionario("gerente");
-          console.log("Funcionarios:", garcom, gerentes);
-        } catch (error) {
-          console.error("Erro ao obter funcionarios:", error);
-        }
-
-
-console.log("Testando cadastro de funcionários...");
-        try {
-          let user = {
-            nome: "lucas silva",
-            cpf: "222.222.222.22",
-            email: "lucas@garçom.com",
-            cargo: "garçom",
-            senha: "123456789",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
-            );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
           try {
-          let user = {
-            nome: "rafael silva",
-            cpf: "333.444.222.22",
-            email: "rafael@garcom.com",
-            cargo: "garçom",
-            senha: "123456789",
-          };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
+            const response = await window.api.login.login(email, password);
+
+            if (response) {
+              resultadoLogin.textContent = `Login bem-sucedido! Token: ${response.nome}`;
+              currentUser = await window.api.user.setCurrentUser(response); // Obtém os dados do usuário logado
+              let User = await window.api.user.getCurrentUser(); // Obtém os dados do usuário logado
+              currentUserElement.textContent = `usuario: ${User.nome} tipo: ${User.tipo}`; // Exibe o nome do usuário logado
+            } else {
+              resultadoLogin.textContent =
+                "Falha no login. Verifique suas credenciais.";
+            }
+          } catch (error) {
+            console.error("Erro ao fazer login:", error);
+            resultadoLogin.textContent =
+              "Ocorreu um erro ao tentar fazer login.";
+          }
+        });
+
+
+
+        // teste de cadastro de funcionário
+        const cadastroForm = document.getElementById("cadastroFuncionario");
+
+        cadastroForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const nomeCadastro = document.getElementById("nomeFuncionario").value;
+          const emailCadastro =
+            document.getElementById("emailFuncionario").value;
+          const passwordCadastro = document.getElementById(
+            "passwordFuncionario",
+          ).value;
+          const cpfCadastro = document.getElementById("cpfFuncionario").value;
+          const cargoCadastro =
+            document.getElementById("cargoFuncionario").value;
+          const cadastroResultado =
+            document.getElementById("cadastroResultado");
+
+          try {
+            const responseCadastro =
+              await window.api.funcionario.cadastrarFuncionario(
+                nomeCadastro,
+                cpfCadastro,
+                emailCadastro,
+                cargoCadastro,
+                passwordCadastro,
+              );
+            console.log(responseCadastro);
+            cadastroResultado.textContent =
+              "Funcionário cadastrado com sucesso!";
+          } catch (error) {
+            console.error("Erro ao cadastrar funcionário:", error);
+            cadastroResultado.textContent = "Erro ao cadastrar funcionário.";
+          }
+        });
+        // =========================
+        // LISTAR FUNCIONÁRIOS
+        // =========================
+
+        const btnListarFuncionarios = document.getElementById(
+          "btnListarFuncionarios",
+        );
+        const listaFuncionarios = document.getElementById("listaFuncionarios");
+
+        btnListarFuncionarios.addEventListener("click", async () => {
+          const tipo = document.getElementById("tipoFuncionario").value;
+
+          try {
+            const funcionarios =
+              await window.api.funcionario.getFuncionario(tipo);
+
+            console.log("Funcionários retornados:", funcionarios);
+
+            if (!funcionarios || funcionarios.length === 0) {
+              listaFuncionarios.textContent = "Nenhum funcionário encontrado.";
+              return;
+            }
+
+            listaFuncionarios.textContent = JSON.stringify(
+              funcionarios,
+              null,
+              2,
             );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
+          } catch (error) {
+            console.error("Erro ao listar funcionários:", error);
+            listaFuncionarios.textContent = "Erro ao listar funcionários.";
+          }
+        });
 
+        // =========================
+        // CATEGORIA
+        // =========================
 
- console.log("Testando login...");
-        try {
-          let usuario = {
-            email: "john@adm.com",
-            senha: "123456789",
-          };
+        const formCategoria = document.getElementById("formCategoria");
+        const resultadoCategoria =
+          document.getElementById("resultadoCategoria");
 
-          const loginResult = await window.api.login.login(usuario);
-          console.log("Resultado do login:", loginResult);
-        } catch (error) {
-          console.error("Erro durante o login:", error);
-        }
+        formCategoria.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        console.log("testar cadastro mesa");
-        try {
-          let mesa = {
-            numero: 10,
-            status: "disponível",
-            n_cadeiras: 6,
-          };
+          const nome = document.getElementById("nomeCategoria").value;
+          const status = document.getElementById("statusCategoria").value;
 
-          window.api.mesas.cadastrarMesas(mesa);
-          console.log("Mesa cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da mesa:", error);
-        }
-        try {
-          let mesa = {
-            numero: 14,
-            status: "disponível",
-            n_cadeiras: 6,
-          };
-
-          window.api.mesas.cadastrarMesas(mesa);
-          console.log("Mesa cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da mesa:", error);
-        }
-        try {
-          let mesa = {
-            numero: 17,
-            status: "disponível",
-            n_cadeiras: 6,
-          };
-
-          window.api.mesas.cadastrarMesas(mesa);
-          console.log("Mesa cadastrada com sucesso");
-        } catch (error) {
-          console.error("Erro durante o cadastro da mesa:", error);
-        }
-
-        console.log("Testando obtenção de mesas...");
-        try {
-          const mesas = await window.api.mesas.listarMesas();
-          console.log("Mesas:", mesas);
-        } catch (error) {
-          console.error("Erro ao obter mesas:", error);
-        }
-        console.log("Testando remover mesa...");
-        try {
-          await window.api.mesas.remover(17);
-          console.log("Mesa removida com sucesso");
-        } catch (error) {
-          console.error("Erro ao remover mesa:", error);
-        }
-
-        console.log("verificar pedido mesa");
-
-        try {
-          const mesaStatus = await window.api.mesas.verificarMesaPedido(14);
-          console.log("Mesa pedido:", mesaStatus);
-        } catch (error) {
-          console.error("Erro ao verificar pedido da mesa:", error);
-        }
-
-        console.log("criar pedido teste");
-
-        try {
-          const pedidoResult = await window.api.pedido.registrarPedido(14, 1);
-          console.log("Pedido criado:", pedidoResult);
-        } catch (error) {
-          console.error("Erro ao criar pedido:", error);
-        }
-
-        console.log("adcionar produtos a um pedido");
-        try {
-          const adicionarProdutoResult =
-            await window.api.pedido.adicionarProdutosPedido(
-              1, // ID do pedido
-              4, // ID do produto
-              2, // Quantidade
+          try {
+            const response = await window.api.categoria.cadastrarCategoria(
+              nome,
+              status,
             );
-          console.log("Produto adicionado ao pedido:", adicionarProdutoResult);
-        } catch (error) {
-          console.error("Erro ao adicionar produto ao pedido:", error);
-        }
+            console.log("Cadastrar categoria:", response);
 
-        console.log("obter detalhes do pedido");
-        try {
-          const detalhesPedido = await window.api.pedido.listarItensPedido(1);
-          console.log("Detalhes do pedido:", detalhesPedido);
-        } catch (error) {
-          console.error("Erro ao obter detalhes do pedido:", error);
-        }
-          */
+            resultadoCategoria.textContent = response
+              ? "Categoria cadastrada com sucesso!"
+              : "Falha ao cadastrar categoria.";
+          } catch (error) {
+            console.error(error);
+            resultadoCategoria.textContent = "Erro ao cadastrar categoria.";
+          }
+        });
 
-             try {
-          let user = {
-            nome: "Rafel Alves",
-            cpf: "333.444.222.59",
-            email: "rafael@garçom.com",
-            cargo: "garçom",
-            senha: "123456789",
+        // Listar categorias
+        document
+          .getElementById("btnListarCategorias")
+          .addEventListener("click", async () => {
+            try {
+              const categorias = await window.api.categoria.getCategorias();
+              console.log("Categorias:", categorias);
+              document.getElementById("listaCategorias").textContent =
+                JSON.stringify(categorias, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // =========================
+        // PRODUTOS
+        // =========================
+
+        const formProduto = document.getElementById("formProduto");
+        const resultadoProduto = document.getElementById("resultadoProduto");
+
+        formProduto.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const produto = {
+            nome: document.getElementById("nomeProduto").value,
+            preco: parseFloat(document.getElementById("precoProduto").value),
+            descricao: document.getElementById("descricaoProduto").value,
+            idCategoria: parseInt(
+              document.getElementById("idCategoriaProduto").value,
+            ),
           };
-          const cadastroResult =
-            await window.api.funcionario.cadastrarFuncionario(
-              user.nome,
-              user.cpf,
-              user.email,
-              user.cargo,
-              user.senha,
+
+          try {
+            const response = await window.api.produto.cadastrarProduto(produto);
+            console.log("Cadastrar produto:", response);
+
+            resultadoProduto.textContent = response
+              ? "Produto cadastrado com sucesso!"
+              : "Erro ao cadastrar produto.";
+          } catch (error) {
+            console.error(error);
+            resultadoProduto.textContent = "Erro ao cadastrar produto.";
+          }
+        });
+
+        // Buscar produtos por categoria
+        document
+          .getElementById("btnBuscarProdutosCategoria")
+          .addEventListener("click", async () => {
+            const idCategoria = parseInt(
+              document.getElementById("buscarCategoriaId").value,
             );
-          console.log("Resultado do cadastro:", cadastroResult);
-        } catch (error) {
-          console.error("Erro durante o cadastro:", error);
-        }
 
+            try {
+              const produtos =
+                await window.api.produto.getProdutosPorCategoria(idCategoria);
+              console.log("Produtos da categoria:", produtos);
 
+              document.getElementById("listaProdutosCategoria").textContent =
+                JSON.stringify(produtos, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
 
+        // Listar todos os produtos
+        document
+          .getElementById("btnListarTodosProdutos")
+          .addEventListener("click", async () => {
+            try {
+              const produtos = await window.api.produto.getTodosProdutos();
+              console.log("Todos os produtos:", produtos);
+
+              document.getElementById("listaTodosProdutos").textContent =
+                JSON.stringify(produtos, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // ======================
+        // MESAS
+        // ======================
+
+        // cadastrar mesa
+        document
+          .getElementById("formMesa")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const mesa = {
+              numero: parseInt(document.getElementById("numeroMesa").value),
+              status: document.getElementById("statusMesa").value,
+              cadeiras: parseInt(document.getElementById("cadeirasMesa").value),
+            };
+
+            try {
+              const response = await window.api.mesas.cadastrarMesas(mesa);
+              console.log("Cadastrar mesa:", response);
+
+              document.getElementById("resultadoMesa").textContent = response
+                ? "Mesa cadastrada com sucesso!"
+                : "Erro ao cadastrar mesa.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // listar mesas
+        document
+          .getElementById("btnListarMesas")
+          .addEventListener("click", async () => {
+            try {
+              const mesas = await window.api.mesas.listarMesas();
+              console.log("Mesas:", mesas);
+
+              document.getElementById("listaMesas").textContent =
+                JSON.stringify(mesas, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // remover mesa
+        document
+          .getElementById("btnRemoverMesa")
+          .addEventListener("click", async () => {
+            const numero = parseInt(
+              document.getElementById("removerNumeroMesa").value,
+            );
+
+            try {
+              const response = await window.api.mesas.remover(numero);
+              console.log("Remover mesa:", response);
+
+              document.getElementById("resultadoRemoverMesa").textContent =
+                response ? "Mesa removida!" : "Erro ao remover mesa.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // verificar pedido da mesa
+        document
+          .getElementById("btnVerificarMesa")
+          .addEventListener("click", async () => {
+            const numero = parseInt(
+              document.getElementById("verificarMesaNumero").value,
+            );
+
+            try {
+              const pedido = await window.api.mesas.verificarMesaPedido(numero);
+              console.log("Pedido da mesa:", pedido);
+
+              document.getElementById("resultadoVerificarMesa").textContent =
+                JSON.stringify(pedido, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // ======================
+        // PEDIDOS
+        // ======================
+
+        // criar pedido
+        document
+          .getElementById("btnCriarPedido")
+          .addEventListener("click", async () => {
+            const numeroMesa = parseInt(
+              document.getElementById("pedidoNumeroMesa").value,
+            );
+            const idGarcom = parseInt(
+              document.getElementById("pedidoIdGarcom").value,
+            );
+
+            try {
+              const response = await window.api.pedido.registrarPedido(
+                numeroMesa,
+                idGarcom,
+              );
+              console.log("Criar pedido:", response);
+
+              document.getElementById("resultadoCriarPedido").textContent =
+                response ? "Pedido criado!" : "Erro ao criar pedido.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // adicionar produto
+        document
+          .getElementById("btnAdicionarProduto")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("addIdPedido").value,
+            );
+            const idProduto = parseInt(
+              document.getElementById("addIdProduto").value,
+            );
+            const quantidade = parseInt(
+              document.getElementById("addQuantidade").value,
+            );
+
+            try {
+              const item = await window.api.pedido.adicionarProdutosPedido(
+                idPedido,
+                idProduto,
+                quantidade,
+              );
+
+              console.log("Item adicionado:", item);
+
+              document.getElementById("resultadoAddProduto").textContent =
+                JSON.stringify(item, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // listar itens
+        document
+          .getElementById("btnListarItensPedido")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("listarItensPedidoId").value,
+            );
+
+            try {
+              const itens = await window.api.pedido.listarItensPedido(idPedido);
+              console.log("Itens do pedido:", itens);
+
+              document.getElementById("resultadoItensPedido").textContent =
+                JSON.stringify(itens, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // remover item
+        document
+          .getElementById("btnRemoverItem")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("removerItemPedidoId").value,
+            );
+            const idProduto = parseInt(
+              document.getElementById("removerItemProdutoId").value,
+            );
+            const quantidade = parseInt(
+              document.getElementById("removerItemQuantidade").value,
+            );
+
+            try {
+              const response = await window.api.pedido.removerItem(
+                idPedido,
+                idProduto,
+                quantidade,
+              );
+              console.log("Remover item:", response);
+
+              document.getElementById("resultadoRemoverItem").textContent =
+                response ? "Item removido!" : "Erro ao remover item.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // fechar pedido
+        document
+          .getElementById("btnFecharPedido")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("fecharPedidoId").value,
+            );
+            const valorTotal = parseFloat(
+              document.getElementById("valorTotalPedido").value,
+            );
+
+            try {
+              const pedido = await window.api.pedido.fecharPedido(
+                idPedido,
+                valorTotal,
+              );
+              console.log("Pedido fechado:", pedido);
+
+              document.getElementById("resultadoFecharPedido").textContent =
+                JSON.stringify(pedido, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
       })();
     </script>
   </body>

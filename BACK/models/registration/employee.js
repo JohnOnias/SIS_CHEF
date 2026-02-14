@@ -9,7 +9,7 @@ export async function cadastrarFuncionario(
   cpf,
   email,
   tipoFuncionario,
-  senha
+  senha,
 ) {
   // Inicia uma transação para garantir consistência
   const transaction = await Funcionario.sequelize.transaction();
@@ -72,7 +72,6 @@ export async function cadastrarFuncionario(
     // Confirma a transação
     await transaction.commit();
 
-
     return {
       success: true,
       data: {
@@ -104,6 +103,22 @@ export async function cadastrarFuncionario(
       };
     }
 
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getFuncionario(tipoFuncionario) {
+  if (!tipoFuncionario) {
+    return { success: false, error: "Tipo de funcionário é obrigatório." };
+  }
+  try {
+    const funcionarios = await Funcionario.findAll({
+      where: { tipo: tipoFuncionario },
+      attributes: ["id", "nome", "email", "tipo"],
+    });
+    return funcionarios;
+  } catch (error) {
+    console.error("Erro ao buscar funcionários:", error);
     return { success: false, error: error.message };
   }
 }

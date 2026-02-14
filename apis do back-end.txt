@@ -62,7 +62,7 @@ apis  do back-end:
 
 - api cadastrar mesas
 	objeto = {	numero: "",
-			status: "",
+			status: "",  //livre ou ocupada
 			cadeiras: "" 
 			}
 	window.api.mesas.cadastrarMesas(objeto);
@@ -74,7 +74,7 @@ apis  do back-end:
 		return um array de objetos, status, numero, n_cadeiras
 
 - api remover mesa 
-		window.api.mesa.remover(mesa_numero);
+		window.api.mesas.remover(mesa_numero);
 		return true
 
 		
