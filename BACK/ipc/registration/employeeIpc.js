@@ -1,5 +1,5 @@
 const { ipcMain } = require("electron");
-const { getFuncionario } = require("../../models/utils/getFuncionario.js");
+const { getFuncionario } = require("../../models/registration/employee.js");
 
 module.exports = function employeeIpc() {
   

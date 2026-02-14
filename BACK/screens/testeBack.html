@@ -62,6 +62,164 @@
     </form>
     <p id="cadastroResultado"></p>
 
+    <hr />
+    <h3>Listar Funcionários</h3>
+
+    <select id="tipoFuncionario">
+      <option value="gerente">Gerente</option>
+      <option value="garçom">Garçom</option>
+    </select>
+
+    <button id="btnListarFuncionarios">Listar</button>
+
+    <pre id="listaFuncionarios"></pre>
+
+    <hr />
+    <h3>Cadastro de Categoria</h3>
+
+    <form id="formCategoria">
+      <input
+        type="text"
+        id="nomeCategoria"
+        placeholder="Nome da categoria"
+        required
+      />
+      <select id="statusCategoria">
+        <option value="ativa">Ativa</option>
+        <option value="inativa">Inativa</option>
+      </select>
+      <button type="submit">Cadastrar Categoria</button>
+    </form>
+    <p id="resultadoCategoria"></p>
+
+    <hr />
+    <h3>Listar Categorias</h3>
+    <button id="btnListarCategorias">Listar Categorias</button>
+    <pre id="listaCategorias"></pre>
+
+    <hr />
+    <h3>Cadastro de Produto</h3>
+
+    <form id="formProduto">
+      <input
+        type="text"
+        id="nomeProduto"
+        placeholder="Nome do produto"
+        required
+      />
+      <input
+        type="number"
+        step="0.01"
+        id="precoProduto"
+        placeholder="Preço"
+        required
+      />
+      <input
+        type="text"
+        id="descricaoProduto"
+        placeholder="Descrição"
+        required
+      />
+      <input
+        type="number"
+        id="idCategoriaProduto"
+        placeholder="ID da categoria"
+        required
+      />
+      <button type="submit">Cadastrar Produto</button>
+    </form>
+    <p id="resultadoProduto"></p>
+
+    <hr />
+    <h3>Listar Produtos por Categoria</h3>
+    <input type="number" id="buscarCategoriaId" placeholder="ID Categoria" />
+    <button id="btnBuscarProdutosCategoria">Buscar</button>
+    <pre id="listaProdutosCategoria"></pre>
+
+    <hr />
+    <h3>Listar Todos os Produtos</h3>
+    <button id="btnListarTodosProdutos">Listar Todos</button>
+    <pre id="listaTodosProdutos"></pre>
+
+    <hr />
+    <h2>MESAS</h2>
+
+    <h3>Cadastrar Mesa</h3>
+    <form id="formMesa">
+      <input
+        type="number"
+        id="numeroMesa"
+        placeholder="Número da mesa"
+        required
+      />
+      <input
+        type="text"
+        id="statusMesa"
+        placeholder="Status (livre/ocupada)"
+        required
+      />
+      <input
+        type="number"
+        id="cadeirasMesa"
+        placeholder="Quantidade cadeiras"
+        required
+      />
+      <button type="submit">Cadastrar Mesa</button>
+    </form>
+    <p id="resultadoMesa"></p>
+
+    <h3>Listar Mesas</h3>
+    <button id="btnListarMesas">Listar Mesas</button>
+    <pre id="listaMesas"></pre>
+
+    <h3>Remover Mesa</h3>
+    <input type="number" id="removerNumeroMesa" placeholder="Número da mesa" />
+    <button id="btnRemoverMesa">Remover</button>
+    <p id="resultadoRemoverMesa"></p>
+
+    <h3>Verificar Pedido da Mesa</h3>
+    <input
+      type="number"
+      id="verificarMesaNumero"
+      placeholder="Número da mesa"
+    />
+    <button id="btnVerificarMesa">Verificar</button>
+    <pre id="resultadoVerificarMesa"></pre>
+
+    <hr />
+    <h2>PEDIDOS</h2>
+
+    <h3>Criar Pedido</h3>
+    <input type="number" id="pedidoNumeroMesa" placeholder="Número da mesa" />
+    <input type="number" id="pedidoIdGarcom" placeholder="ID Garçom" />
+    <button id="btnCriarPedido">Criar Pedido</button>
+    <p id="resultadoCriarPedido"></p>
+
+    <h3>Adicionar Produto ao Pedido</h3>
+    <input type="number" id="addIdPedido" placeholder="ID Pedido" />
+    <input type="number" id="addIdProduto" placeholder="ID Produto" />
+    <input type="number" id="addQuantidade" placeholder="Quantidade" />
+    <button id="btnAdicionarProduto">Adicionar</button>
+    <pre id="resultadoAddProduto"></pre>
+
+    <h3>Listar Itens do Pedido</h3>
+    <input type="number" id="listarItensPedidoId" placeholder="ID Pedido" />
+    <button id="btnListarItensPedido">Listar Itens</button>
+    <pre id="resultadoItensPedido"></pre>
+
+    <h3>Remover Item do Pedido</h3>
+    <input type="number" id="removerItemPedidoId" placeholder="ID Pedido" />
+    <input type="number" id="removerItemProdutoId" placeholder="ID Produto" />
+    <input type="number" id="removerItemQuantidade" placeholder="Quantidade" />
+    <button id="btnRemoverItem">Remover Item</button>
+    <p id="resultadoRemoverItem"></p>
+
+    <h3>Fechar Pedido</h3>
+    <input type="number" id="fecharPedidoId" placeholder="ID Pedido" />
+    <input type="number" id="valorTotalPedido" placeholder="Valor Total" />
+    <button id="btnFecharPedido">Fechar Pedido</button>
+    <pre id="resultadoFecharPedido"></pre>
+
     <script>
       (async () => {
         // teste de login
@@ -131,6 +289,363 @@
             cadastroResultado.textContent = "Erro ao cadastrar funcionário.";
           }
         });
+        // =========================
+        // LISTAR FUNCIONÁRIOS
+        // =========================
+
+        const btnListarFuncionarios = document.getElementById(
+          "btnListarFuncionarios",
+        );
+        const listaFuncionarios = document.getElementById("listaFuncionarios");
+
+        btnListarFuncionarios.addEventListener("click", async () => {
+          const tipo = document.getElementById("tipoFuncionario").value;
+
+          try {
+            const funcionarios =
+              await window.api.funcionario.getFuncionario(tipo);
+
+            console.log("Funcionários retornados:", funcionarios);
+
+            if (!funcionarios || funcionarios.length === 0) {
+              listaFuncionarios.textContent = "Nenhum funcionário encontrado.";
+              return;
+            }
+
+            listaFuncionarios.textContent = JSON.stringify(
+              funcionarios,
+              null,
+              2,
+            );
+          } catch (error) {
+            console.error("Erro ao listar funcionários:", error);
+            listaFuncionarios.textContent = "Erro ao listar funcionários.";
+          }
+        });
+
+        // =========================
+        // CATEGORIA
+        // =========================
+
+        const formCategoria = document.getElementById("formCategoria");
+        const resultadoCategoria =
+          document.getElementById("resultadoCategoria");
+
+        formCategoria.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const nome = document.getElementById("nomeCategoria").value;
+          const status = document.getElementById("statusCategoria").value;
+
+          try {
+            const response = await window.api.categoria.cadastrarCategoria(
+              nome,
+              status,
+            );
+            console.log("Cadastrar categoria:", response);
+
+            resultadoCategoria.textContent = response
+              ? "Categoria cadastrada com sucesso!"
+              : "Falha ao cadastrar categoria.";
+          } catch (error) {
+            console.error(error);
+            resultadoCategoria.textContent = "Erro ao cadastrar categoria.";
+          }
+        });
+
+        // Listar categorias
+        document
+          .getElementById("btnListarCategorias")
+          .addEventListener("click", async () => {
+            try {
+              const categorias = await window.api.categoria.getCategorias();
+              console.log("Categorias:", categorias);
+              document.getElementById("listaCategorias").textContent =
+                JSON.stringify(categorias, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // =========================
+        // PRODUTOS
+        // =========================
+
+        const formProduto = document.getElementById("formProduto");
+        const resultadoProduto = document.getElementById("resultadoProduto");
+
+        formProduto.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const produto = {
+            nome: document.getElementById("nomeProduto").value,
+            preco: parseFloat(document.getElementById("precoProduto").value),
+            descricao: document.getElementById("descricaoProduto").value,
+            idCategoria: parseInt(
+              document.getElementById("idCategoriaProduto").value,
+            ),
+          };
+
+          try {
+            const response = await window.api.produto.cadastrarProduto(produto);
+            console.log("Cadastrar produto:", response);
+
+            resultadoProduto.textContent = response
+              ? "Produto cadastrado com sucesso!"
+              : "Erro ao cadastrar produto.";
+          } catch (error) {
+            console.error(error);
+            resultadoProduto.textContent = "Erro ao cadastrar produto.";
+          }
+        });
+
+        // Buscar produtos por categoria
+        document
+          .getElementById("btnBuscarProdutosCategoria")
+          .addEventListener("click", async () => {
+            const idCategoria = parseInt(
+              document.getElementById("buscarCategoriaId").value,
+            );
+
+            try {
+              const produtos =
+                await window.api.produto.getProdutosPorCategoria(idCategoria);
+              console.log("Produtos da categoria:", produtos);
+
+              document.getElementById("listaProdutosCategoria").textContent =
+                JSON.stringify(produtos, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // Listar todos os produtos
+        document
+          .getElementById("btnListarTodosProdutos")
+          .addEventListener("click", async () => {
+            try {
+              const produtos = await window.api.produto.getTodosProdutos();
+              console.log("Todos os produtos:", produtos);
+
+              document.getElementById("listaTodosProdutos").textContent =
+                JSON.stringify(produtos, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // ======================
+        // MESAS
+        // ======================
+
+        // cadastrar mesa
+        document
+          .getElementById("formMesa")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const mesa = {
+              numero: parseInt(document.getElementById("numeroMesa").value),
+              status: document.getElementById("statusMesa").value,
+              cadeiras: parseInt(document.getElementById("cadeirasMesa").value),
+            };
+
+            try {
+              const response = await window.api.mesas.cadastrarMesas(mesa);
+              console.log("Cadastrar mesa:", response);
+
+              document.getElementById("resultadoMesa").textContent = response
+                ? "Mesa cadastrada com sucesso!"
+                : "Erro ao cadastrar mesa.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // listar mesas
+        document
+          .getElementById("btnListarMesas")
+          .addEventListener("click", async () => {
+            try {
+              const mesas = await window.api.mesas.listarMesas();
+              console.log("Mesas:", mesas);
+
+              document.getElementById("listaMesas").textContent =
+                JSON.stringify(mesas, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // remover mesa
+        document
+          .getElementById("btnRemoverMesa")
+          .addEventListener("click", async () => {
+            const numero = parseInt(
+              document.getElementById("removerNumeroMesa").value,
+            );
+
+            try {
+              const response = await window.api.mesas.remover(numero);
+              console.log("Remover mesa:", response);
+
+              document.getElementById("resultadoRemoverMesa").textContent =
+                response ? "Mesa removida!" : "Erro ao remover mesa.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // verificar pedido da mesa
+        document
+          .getElementById("btnVerificarMesa")
+          .addEventListener("click", async () => {
+            const numero = parseInt(
+              document.getElementById("verificarMesaNumero").value,
+            );
+
+            try {
+              const pedido = await window.api.mesas.verificarMesaPedido(numero);
+              console.log("Pedido da mesa:", pedido);
+
+              document.getElementById("resultadoVerificarMesa").textContent =
+                JSON.stringify(pedido, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // ======================
+        // PEDIDOS
+        // ======================
+
+        // criar pedido
+        document
+          .getElementById("btnCriarPedido")
+          .addEventListener("click", async () => {
+            const numeroMesa = parseInt(
+              document.getElementById("pedidoNumeroMesa").value,
+            );
+            const idGarcom = parseInt(
+              document.getElementById("pedidoIdGarcom").value,
+            );
+
+            try {
+              const response = await window.api.pedido.registrarPedido(
+                numeroMesa,
+                idGarcom,
+              );
+              console.log("Criar pedido:", response);
+
+              document.getElementById("resultadoCriarPedido").textContent =
+                response ? "Pedido criado!" : "Erro ao criar pedido.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // adicionar produto
+        document
+          .getElementById("btnAdicionarProduto")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("addIdPedido").value,
+            );
+            const idProduto = parseInt(
+              document.getElementById("addIdProduto").value,
+            );
+            const quantidade = parseInt(
+              document.getElementById("addQuantidade").value,
+            );
+
+            try {
+              const item = await window.api.pedido.adicionarProdutosPedido(
+                idPedido,
+                idProduto,
+                quantidade,
+              );
+
+              console.log("Item adicionado:", item);
+
+              document.getElementById("resultadoAddProduto").textContent =
+                JSON.stringify(item, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // listar itens
+        document
+          .getElementById("btnListarItensPedido")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("listarItensPedidoId").value,
+            );
+
+            try {
+              const itens = await window.api.pedido.listarItensPedido(idPedido);
+              console.log("Itens do pedido:", itens);
+
+              document.getElementById("resultadoItensPedido").textContent =
+                JSON.stringify(itens, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // remover item
+        document
+          .getElementById("btnRemoverItem")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("removerItemPedidoId").value,
+            );
+            const idProduto = parseInt(
+              document.getElementById("removerItemProdutoId").value,
+            );
+            const quantidade = parseInt(
+              document.getElementById("removerItemQuantidade").value,
+            );
+
+            try {
+              const response = await window.api.pedido.removerItem(
+                idPedido,
+                idProduto,
+                quantidade,
+              );
+              console.log("Remover item:", response);
+
+              document.getElementById("resultadoRemoverItem").textContent =
+                response ? "Item removido!" : "Erro ao remover item.";
+            } catch (error) {
+              console.error(error);
+            }
+          });
+
+        // fechar pedido
+        document
+          .getElementById("btnFecharPedido")
+          .addEventListener("click", async () => {
+            const idPedido = parseInt(
+              document.getElementById("fecharPedidoId").value,
+            );
+            const valorTotal = parseFloat(
+              document.getElementById("valorTotalPedido").value,
+            );
+
+            try {
+              const pedido = await window.api.pedido.fecharPedido(
+                idPedido,
+                valorTotal,
+              );
+              console.log("Pedido fechado:", pedido);
+
+              document.getElementById("resultadoFecharPedido").textContent =
+                JSON.stringify(pedido, null, 2);
+            } catch (error) {
+              console.error(error);
+            }
+          });
       })();
     </script>
   </body>

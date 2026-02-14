@@ -62,9 +62,6 @@ export async function mudarStatus(idProduto) {
   }
 }
 
-
-
-
 export async function getTodosProdutos() {
   try {
     const produtos = await Produto.findAll({
@@ -83,3 +80,4 @@ export async function getTodosProdutos() {
     throw err;
   }
 }
+
