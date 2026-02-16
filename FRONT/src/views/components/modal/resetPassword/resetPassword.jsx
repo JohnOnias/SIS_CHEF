@@ -1,85 +1,76 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../styles/resetPassword.css";
 import CloseIcon from "../../../../assets/modal/close.png";
 import ModalVerifyToken from "./verifyToken";
-import { api, isElectron } from "../../../../services/api";
-import { useForm } from "react-hook-form";
 
 function ModalResetSenha({ isOpen, onClose }) {
   const [openModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm({
-    defaultValues: { email: "" },
-    mode: "onSubmit",
+  const [formulario, setFormulario] = useState({
+    email: "",
   });
 
-  const enviarEmail = async ({ email }) => {
-    if (!isElectron) {
-      alert("Reset de senha só funciona no Electron (window.api).");
-      return;
-    }
+  const evento = (event) => {
+    const { name, value } = event.target;
+    setFormulario((prev) => ({ ...prev, [name]: value }));
+  };
 
-    setLoading(true);
+  const enviarEmail = async (event) => {
+    event.preventDefault();
+
+
+    
     try {
-      const ok = await api.login.gerarEEnviarToken(String(email).trim());
-      if (!ok) throw new Error("Falha ao enviar o token.");
+      // ainda não fiz essa api
+      const ok = await window.api.login.sendResetEmail(formulario.email);
+
+      if (!ok) {
+        alert("Erro ao acessar sua conta, tente novamente mais tarde");
+        return;
+      }
+
       setOpenModal(true);
     } catch (e) {
       console.error(e);
       alert(e?.message || "Erro ao enviar token");
-    } finally {
-      setLoading(false);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <>
-      <div className="backgroundResetSenha">
-        <div id="formResetSenha">
-          <div id="formCentre">
-            <img src={CloseIcon} id="closeIcon" alt="Fechar" onClick={onClose} />
-            <h1>Recuperar Acesso</h1>
+    <div className="backgroundResetSenha">
+      <div id="formResetSenha">
+        <div id="formCentre">
+          <img src={CloseIcon} id="closeIcon" alt="Fechar" onClick={onClose} />
 
-            <label id="labelEmail" htmlFor="emailResetTest">
-              Digite o Email cadastrado!
-            </label>
+          <h1>Recuperar Acesso</h1>
 
-            <form onSubmit={handleSubmit(enviarEmail)}>
-              <input
-                type="text"
-                id="emailResetTest"
-                placeholder="Email"
-                {...register("email", { required: "Informe o email" })}
-              />
-              {errors.email && (
-                <small style={{ display: "block", marginTop: 6, color: "#b42318" }}>
-                  {errors.email.message}
-                </small>
-              )}
+          <label htmlFor="emailResetTest">Digite o Email cadastrado!</label>
 
-              <button id="enviar" type="submit" disabled={loading}>
-                {loading ? "Enviando..." : "Enviar código"}
-              </button>
-            </form>
-          </div>
+          <form onSubmit={enviarEmail}>
+            <input
+              type="text"
+              name="email"
+              id="emailResetTest"
+              placeholder="Email"
+              value={formulario.email}
+              onChange={evento}
+            />
+
+            <button id="enviar" type="submit">
+              Enviar
+            </button>
+          </form>
         </div>
-
-        <ModalVerifyToken
-          isOpen={openModal}
-          onClose={() => setOpenModal(false)}
-          // mantém o email disponível, caso você queira exibir/usar no modal 2
-          email={getValues("email")}
-        />
       </div>
-    </>
+
+      <ModalVerifyToken
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        email={formulario.email}
+      />
+    </div>
   );
 }
 

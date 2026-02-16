@@ -1,57 +1,74 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+// importa imagens e estilos
 import RectangleImg from "../../assets/others/rectangle.png";
 import GroupImg from "../../assets/others/group.png";
 import "./styles/login.css";
 
+// importa os modais
 import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
-import { login as loginService } from "../../services/authService";
-import { isElectron } from "../../services/api";
+
+
 
 function LoginView() {
+
+
+// importa o navigate para redirecionamento pós-login
   const navigate = useNavigate();
 
+// seta o título da página ao montar o componente
   useEffect(() => {
     const tituloElement = document.getElementById("titulo");
     if (tituloElement) tituloElement.innerHTML = "Login!";
   }, []);
 
-  const [openModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false);
 
+
+// estado para controle do modal
+  const [openModal, setOpenModal] = useState(false);
+
+
+
+  // estado para armazenar os dados do formulário de login
   const [formulario, setFormulario] = useState({
     email: "",
     senha: "",
   });
 
+// função para atualizar o estado do formulário conforme o usuário digita
   const evento = (event) => {
     const { name, value } = event.target;
     setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
-  const routeByTipo = (tipo) => {
-    const t = String(tipo || "").toLowerCase();
-    if (t.includes("adm") || t.includes("administrador")) return "/adm";
-    if (t.includes("gerente")) return "/manager";
-    if (t.includes("gar") || t.includes("garç") || t.includes("bart") || t.includes("barman"))
-      return "/bartender";
-    return "/manager";
-  };
 
-  const login = async () => {
-    try {
-      setLoading(true);
-      const usuario = await loginService(formulario.email, formulario.senha);
-      navigate(routeByTipo(usuario.tipo));
-    } catch (error) {
-      console.error(error);
-      alert(error?.message || "Erro ao fazer login");
-    } finally {
-      setLoading(false);
+
+
+
+
+// função para lidar com o login quando o usuário clicar no botão
+const login = async () => {
+  try {
+    const user = await window.api.login.login(
+      formulario.email,
+      formulario.senha,
+    );
+
+    if (user) {
+      await window.api.user.setCurrentUser(user);
+      navigate("/employeer"); // ou rota que quiser
     }
-  };
+  } catch (err) {
+    console.log("erro ao fazer login:", err);
+  }
+};
 
+
+
+
+
+
+// JSX para renderizar a tela de login, incluindo o modal de reset de senha
   return (
     <>
       <div className="container">
@@ -65,11 +82,6 @@ function LoginView() {
               <img src={GroupImg} alt="perfil icone" />
             </div>
 
-            {!isElectron && (
-              <div style={{ padding: 10, background: "#fff3cd", borderRadius: 8, marginBottom: 12 }}>
-                Você está no Chrome (sem Electron). O login via window.api não funciona aqui.
-              </div>
-            )}
 
             <h1>Bem-vindo</h1>
             <p>Entre com suas credenciais</p>
@@ -95,12 +107,13 @@ function LoginView() {
               <button
                 className="buttonLogin"
                 onClick={login}
-                disabled={loading || !isElectron}
-              >
-                {loading ? "Entrando..." : "Entrar"}
-              </button>
+             
+              />
+             
 
               <button className="buttonRegister" onClick={() => setOpenModal(true)}>
+
+
                 Esqueci a senha
               </button>
             </div>
@@ -112,5 +125,6 @@ function LoginView() {
     </>
   );
 }
+
 
 export default LoginView;
