@@ -3,31 +3,23 @@ import { useNavigate } from "react-router-dom";
 // importa imagens e estilos
 import RectangleImg from "../../assets/others/rectangle.png";
 import GroupImg from "../../assets/others/group.png";
-import "./styles/login.css";
+import "./style/login.css";
 
 // importa os modais
-import ModalResetSenha from "../components/modal/resetPassword/resetPassword";
-
-
+import ModalResetSenha from "../../components/modal/resetPassword/resetPassword";
 
 function LoginView() {
-
-
-// importa o navigate para redirecionamento pós-login
+  // importa o navigate para redirecionamento pós-login
   const navigate = useNavigate();
 
-// seta o título da página ao montar o componente
+  // seta o título da página ao montar o componente
   useEffect(() => {
     const tituloElement = document.getElementById("titulo");
     if (tituloElement) tituloElement.innerHTML = "Login!";
   }, []);
 
-
-
-// estado para controle do modal
+  // estado para controle do modal
   const [openModal, setOpenModal] = useState(false);
-
-
 
   // estado para armazenar os dados do formulário de login
   const [formulario, setFormulario] = useState({
@@ -35,45 +27,44 @@ function LoginView() {
     senha: "",
   });
 
-// função para atualizar o estado do formulário conforme o usuário digita
+  // função para atualizar o estado do formulário conforme o usuário digita
   const evento = (event) => {
     const { name, value } = event.target;
     setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
+  // função para lidar com o login quando o usuário clicar no botão
+  const login = async () => {
+    try {
+      const user = await window.api.login.login(
+        formulario.email,
+        formulario.senha,
+      );
+      if (!user) {
+        alert("Email ou senha invalidos, tente novamente");
+      }
 
+      // ################ ERRO NO REDIRECIONAMENTO CONCERTAR DEPOIS ###################
+      // concertar esse redirecionamento
 
-
-
-
-// função para lidar com o login quando o usuário clicar no botão
-const login = async () => {
-  try {
-    const user = await window.api.login.login(
-      formulario.email,
-      formulario.senha,
-    );
-
-    if (user) {
-      await window.api.user.setCurrentUser(user);
-      navigate("/employeer"); // ou rota que quiser
+      if (user) {
+        localStorage.setItem("usuario", JSON.stringify(user));
+        navigate("/home");
+      }
+    } catch (err) {
+      console.log("erro ao fazer login:", err);
     }
-  } catch (err) {
-    console.log("erro ao fazer login:", err);
-  }
-};
+  };
 
-
-
-
-
-
-// JSX para renderizar a tela de login, incluindo o modal de reset de senha
+  // JSX para renderizar a tela de login, incluindo o modal de reset de senha
   return (
     <>
       <div className="container">
         <div className="leftSide">
-          <img src={RectangleImg} alt="imagem de pratos suculentos a esquerda" />
+          <img
+            src={RectangleImg}
+            alt="imagem de pratos suculentos a esquerda"
+          />
         </div>
 
         <div className="rightSide">
@@ -81,7 +72,6 @@ const login = async () => {
             <div className="divimg">
               <img src={GroupImg} alt="perfil icone" />
             </div>
-
 
             <h1>Bem-vindo</h1>
             <p>Entre com suas credenciais</p>
@@ -104,16 +94,12 @@ const login = async () => {
             </div>
 
             <div className="containerButton">
+              <button className="buttonLogin" onClick={login} />
+
               <button
-                className="buttonLogin"
-                onClick={login}
-             
-              />
-             
-
-              <button className="buttonRegister" onClick={() => setOpenModal(true)}>
-
-
+                className="buttonRegister"
+                onClick={() => setOpenModal(true)}
+              >
                 Esqueci a senha
               </button>
             </div>
@@ -125,6 +111,5 @@ const login = async () => {
     </>
   );
 }
-
 
 export default LoginView;

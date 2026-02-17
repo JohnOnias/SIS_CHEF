@@ -1,11 +1,38 @@
 import React, { useState } from "react";
 import "../styles/resetPassword.css";
-import CloseIcon from "../../../../assets/modal/close.png";
+import CloseIcon from "../../../assets/modal/close.png";
+
+
 
 
 function ModalVerifyToken({ isOpen, onClose, email }) {
- 
 
+ const [formulario, setFormulario] = useState({
+    email:email || "",
+    token:"",
+    senha1: "",
+    senha2: "",
+  });
+
+
+  const evento = (event) => {
+    const { name, value } = event.target;
+    setFormulario((prev) => ({ ...prev, [name]: value }));
+  };
+
+
+function updateSenha(event, formulario){
+  event.preventDefault();
+
+  if(!formulario.email || !formulario.senha1 || !formulario.senha2){
+    alert("Preencha todos os dados!");
+  }
+  if(formulario.senha1 != formulario.senha2){
+    alert("As senhas devem ser iguais");
+  }
+
+
+}
 
 
   if (!isOpen) return null;
@@ -15,12 +42,15 @@ function ModalVerifyToken({ isOpen, onClose, email }) {
       <div className="backgroundResetSenha">
         <div id="formResetSenha">
           <div id="formCentre">
-
-
-            <img src={CloseIcon} id="closeIcon" alt="Fechar" onClick={onClose} />
+            <img
+              src={CloseIcon}
+              id="closeIcon"
+              alt="Fechar"
+              onClick={onClose}
+            />
             <h1>Validar Token</h1>
 
-            <form >
+            <form onSubmit={updateSenha(formulario)}>
               <label id="labelEmail" htmlFor="tokenReset">
                 Token recebido
               </label>
@@ -29,9 +59,10 @@ function ModalVerifyToken({ isOpen, onClose, email }) {
                 type="text"
                 id="tokenReset"
                 placeholder="Token"
-               
+                value={formulario.token}
+                onChange={evento}
               />
-            
+
               <label id="labelEmail" htmlFor="novaSenhaReset">
                 Nova senha
               </label>
@@ -40,8 +71,10 @@ function ModalVerifyToken({ isOpen, onClose, email }) {
                 type="password"
                 id="novaSenhaReset"
                 placeholder="Nova senha"
-        />
-              
+                value={formulario.senha1}
+                onChange={evento}
+              />
+
               <label id="labelEmail" htmlFor="confirmarSenhaReset">
                 Confirmar senha
               </label>
@@ -49,11 +82,11 @@ function ModalVerifyToken({ isOpen, onClose, email }) {
                 type="password"
                 id="confirmarSenhaReset"
                 placeholder="Confirmar senha"
+                value={formulario.senha2}
+                onChange={evento}
               />
 
-              <button id="enviar" type="submit">
-               
-              </button>
+              <button id="enviar" type="submit"></button>
             </form>
           </div>
         </div>

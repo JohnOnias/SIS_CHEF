@@ -1,0 +1,94 @@
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #fff;
+    height: 100vh;
+    padding: 20px 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Perfil */
+.perfil {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.icone {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    position: relative;
+}
+
+.icone::before {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.icone::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 25px;
+    border: 2px solid #333;
+    border-radius: 50% 50% 0 0;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom: none;
+}
+
+.perfil p {
+    font-size: 14px;
+    color: #666;
+}
+
+.perfil strong {
+    color: #333;
+    font-size: 16px;
+}
+
+/* Menu */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.menu img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.menu a {
+  text-decoration: none;
+  display: block;
+  padding: 12px 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  color: #333;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.menu a:hover {
+  background-color: #C8F4F9;
+}
+
