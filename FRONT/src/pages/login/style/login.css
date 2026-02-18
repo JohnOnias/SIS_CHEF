@@ -1,75 +1,142 @@
 *{
     margin: 0;
-    padding: 0;
     overflow: hidden;
-}
-
-.container{
-    display: flex;
-    flex-direction: row;
-    height: 100vh;
-    width: 100vw;
-}
-.leftSide{
-    height: 100vh;
-    width: 50vw;
-}
-.leftSide > img{
-    height: 100vh;
-    width: 50vw;
 
 }
-.centralizeRight{
-    height: 65vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+/* Reset básico interno */
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
+/* Lado esquerdo (imagem) */
+.leftSide {
+  flex: 1;
+  overflow: hidden;
 }
-.rightSide{
-    height: 100vh;
-    width: 50vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-   
+
+.leftSide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.divimg{
-    padding: 0;
-    width: 25vw;
-    height: 20vh;
-    text-align: center;
+
+/* Lado direito */
+.rightSide {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e1e1e;
+  color: #f5f5f5;
 }
-.divimg > img{
-    height: 15vh;
-    width: 8.5vw;
+
+/* Centralização do conteúdo */
+.centralizeRight {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  padding: 20px;
 }
-#form{
-    display: flex;
-    flex-direction: column;
-    height: 45vh;
-    width: 38vw;
-    align-items: center;
+
+/* Ícone superior */
+.divimg {
+  margin-bottom: 20px;
 }
-button{
-    margin-top: 5px;
-    height: 5vh;
-    width: 12vw;
-    background-color: rgb(255, 248, 116);
-    border-radius: 10px;
-    margin-bottom: 15px;
-    color: black;
+
+.divimg img {
+  width: 70px;
+  opacity: 0.9;
 }
-input{
-    height: 3.6vh;
-    width: 20vw;
-    border-radius: 6px;
-    background-color: white;
-    margin-bottom: 10px;
-    text-indent: 5px;
+
+/* Títulos */
+.centralizeRight h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
 }
-input::placeholder{
-   color: black;
+
+.centralizeRight p {
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #bbb;
+}
+
+/* Inputs */
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputlogin {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #fff;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.inputlogin:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+}
+
+/* Botão login */
+.containerButton {
+  margin-top: 25px;
+}
+
+.bntlogin {
+  width: 55%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4caf50;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Texto dentro do botão */
+.bntlogin::after {
+  content: "Entrar";
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.bntlogin:hover {
+  background-color: #43a047;
+  transform: scale(1.02);
+}
+
+/* Reset senha */
+.bnt-reset {
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 13px;
+  color: #4caf50;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.bnt-reset:hover {
+  color: #66bb6a;
+  text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .leftSide {
+    display: none;
+  }
+
+  .rightSide {
+    flex: 1;
+  }
 }

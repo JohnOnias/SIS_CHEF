@@ -44,12 +44,13 @@ function ModalResetSenha({ isOpen, onClose }) {
         <div id="formCentre">
           <img src={CloseIcon} id="closeIcon" alt="Fechar" onClick={onClose} />
 
-          <h1>Recuperar Acesso</h1>
+          <h1 className="h1reset">Recuperar Acesso</h1>
 
-          <label htmlFor="emailResetTest">Digite o Email cadastrado!</label>
+          <label className="labelreset" htmlFor="emailResetTest">Digite o Email cadastrado!</label>
 
           <form onSubmit={enviarEmail}>
             <input
+              className="inputreset"
               type="text"
               name="email"
               id="emailResetTest"
@@ -58,7 +59,7 @@ function ModalResetSenha({ isOpen, onClose }) {
               onChange={evento}
             />
 
-            <button id="enviar" type="submit">
+            <button className="bntreset" id="enviar" type="submit">
               Enviar
             </button>
           </form>

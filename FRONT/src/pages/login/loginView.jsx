@@ -78,6 +78,7 @@ function LoginView() {
 
             <div className="inputs">
               <input
+                className="inputlogin"
                 placeholder="Email"
                 name="email"
                 value={formulario.email}
@@ -85,6 +86,7 @@ function LoginView() {
               />
 
               <input
+                className="inputlogin"
                 placeholder="Senha"
                 name="senha"
                 type="password"
@@ -94,14 +96,15 @@ function LoginView() {
             </div>
 
             <div className="containerButton">
-              <button className="buttonLogin" onClick={login} />
+              <button className="bntlogin" onClick={login} />
+              <br />
 
-              <button
-                className="buttonRegister"
+              <a
+                className="bnt-reset"
                 onClick={() => setOpenModal(true)}
               >
                 Esqueci a senha
-              </button>
+              </a>
             </div>
           </div>
         </div>

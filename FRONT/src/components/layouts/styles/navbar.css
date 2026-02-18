@@ -3,9 +3,16 @@
     width: 220px;
     background-color: #fff;
     height: 100vh;
-    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 25px 15px;
+    position: fixed;
+    left: 0;
+    top: 0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
+
 }
 
 /* Perfil */
@@ -92,3 +99,18 @@ nav ul {
   background-color: #C8F4F9;
 }
 
+.logoutbnt {
+
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: #2c2c2c;
+  color: #f5f5f5;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.logoutbnt:hover {
+  background-color: #b71c1c;
+  color: #fff;
+}

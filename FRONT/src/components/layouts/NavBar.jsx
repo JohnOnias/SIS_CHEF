@@ -2,14 +2,17 @@ import PedidoIcon from "../../assets/menu/pedidos.png";
 import ProdutosIcon from "../../assets/menu/produtos.png";
 import CadastroIcon from "../../assets/menu/cadastro.png";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./styles/navbar.css";
 
 const UserDetails = ({ usuario }) => {
+   let nome = usuario?.nome || "";
+
+   let resultado = nome.charAt(0).toUpperCase() + nome.slice(1);
   return (
     <div className="perfil">
       <div className="icone"></div>
-      <p>Olá, {usuario?.nome}.</p>
+      <p>Olá, {resultado}.</p>
       <p>
         <strong>{usuario?.tipo}</strong>
       </p>
@@ -17,7 +20,16 @@ const UserDetails = ({ usuario }) => {
   );
 };
 
+
+
 function NavBar() {
+  const navigate = useNavigate();
+
+   const handleLogout = () => {
+     localStorage.removeItem("usuario");
+     navigate("/");
+   };
+  
   const usuario = JSON.parse(localStorage.getItem("usuario"));
 
   if (!usuario) return null;
@@ -64,6 +76,8 @@ function NavBar() {
           )}
         </ul>
       </nav>
+
+      <button onClick={handleLogout} className="logoutbnt">Logout</button>
     </aside>
   );
 }

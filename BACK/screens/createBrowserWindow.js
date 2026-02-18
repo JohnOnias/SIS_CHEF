@@ -20,6 +20,7 @@ function createWindow() {
 
   // Carrega sua aplicação React no Vite dev server
   win.loadURL("http://localhost:5173/");
+     // serve pra testar o back sem o front
   //win.loadFile(join(__dirname, "testeBack.html"));
 
   win.on("closed", () => {

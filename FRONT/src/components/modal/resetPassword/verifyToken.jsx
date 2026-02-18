@@ -1,18 +1,16 @@
-import React, { useState } from "react";
-import "../styles/resetPassword.css";
+import React, { useState} from "react";
+import "../styles/verifytoken.css";
 import CloseIcon from "../../../assets/modal/close.png";
-
-
-
 
 function ModalVerifyToken({ isOpen, onClose, email }) {
 
- const [formulario, setFormulario] = useState({
-    email:email || "",
-    token:"",
-    senha1: "",
-    senha2: "",
-  });
+const [formulario, setFormulario] = useState({
+  email: email || "",
+  token: "",
+  senha1: "",
+  senha2: "",
+});
+
 
 
   const evento = (event) => {
@@ -20,78 +18,108 @@ function ModalVerifyToken({ isOpen, onClose, email }) {
     setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
+  const updateSenha = async (event) => {
+    event.preventDefault();
 
-function updateSenha(event, formulario){
-  event.preventDefault();
+    if (
+      !formulario.email ||
+      !formulario.token ||
+      !formulario.senha1 ||
+      !formulario.senha2
+    ) {
+      alert("Preencha todos os dados!");
+      return;
+    }
 
-  if(!formulario.email || !formulario.senha1 || !formulario.senha2){
-    alert("Preencha todos os dados!");
-  }
-  if(formulario.senha1 != formulario.senha2){
-    alert("As senhas devem ser iguais");
-  }
+    if (formulario.senha1 !== formulario.senha2) {
+      alert("As senhas devem ser iguais");
+      return;
+    }
+
+    try {
+      // ainda n fiz essa api
+      const ok = await window.api.login.updatePassword(
+        formulario.email,
+        formulario.token,
+        formulario.senha1,
+      );
+
+      if (!ok) {
+        alert("Token inválido ou expirado.");
+        return;
+      }
+
+      alert("Senha atualizada com sucesso!");
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao atualizar senha.");
+    }
+  };
 
 
-}
 
 
   if (!isOpen) return null;
 
   return (
-    <>
-      <div className="backgroundResetSenha">
-        <div id="formResetSenha">
-          <div id="formCentre">
-            <img
-              src={CloseIcon}
-              id="closeIcon"
-              alt="Fechar"
-              onClick={onClose}
+    <div className="backgroundResetSenha">
+      <div id="formResetSenha">
+        <div id="formCentre">
+          <img src={CloseIcon} id="closeIcon" alt="Fechar" onClick={onClose} />
+
+          <h1 className="h1reset">Validar Token</h1>
+
+          <form onSubmit={updateSenha}>
+            <label className="labelreset" htmlFor="tokenReset">
+              Token recebido
+            </label>
+
+            <input
+              className="inputreset"
+              type="text"
+              name="token"
+              id="tokenReset"
+              placeholder="Token"
+              value={formulario.token}
+              onChange={evento}
             />
-            <h1>Validar Token</h1>
 
-            <form onSubmit={updateSenha(formulario)}>
-              <label id="labelEmail" htmlFor="tokenReset">
-                Token recebido
-              </label>
+            <label className="labelreset" htmlFor="novaSenhaReset">
+              Nova senha
+            </label>
 
-              <input
-                type="text"
-                id="tokenReset"
-                placeholder="Token"
-                value={formulario.token}
-                onChange={evento}
-              />
+            <input
+              className="inputreset"
+              type="password"
+              name="senha1"
+              id="novaSenhaReset"
+              placeholder="Nova senha"
+              value={formulario.senha1}
+              onChange={evento}
+            />
 
-              <label id="labelEmail" htmlFor="novaSenhaReset">
-                Nova senha
-              </label>
+            <label className="labelreset" htmlFor="confirmarSenhaReset">
+              Confirmar senha
+            </label>
 
-              <input
-                type="password"
-                id="novaSenhaReset"
-                placeholder="Nova senha"
-                value={formulario.senha1}
-                onChange={evento}
-              />
+            <input
+              className="inputreset"
+              type="password"
+              name="senha2"
+              id="confirmarSenhaReset"
+              placeholder="Confirmar senha"
+              value={formulario.senha2}
+              onChange={evento}
+            />
 
-              <label id="labelEmail" htmlFor="confirmarSenhaReset">
-                Confirmar senha
-              </label>
-              <input
-                type="password"
-                id="confirmarSenhaReset"
-                placeholder="Confirmar senha"
-                value={formulario.senha2}
-                onChange={evento}
-              />
-
-              <button id="enviar" type="submit"></button>
-            </form>
-          </div>
+            <button className="bntreset" type="submit">
+              Atualizar Senha
+            </button>
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
