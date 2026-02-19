@@ -14,3 +14,16 @@ export async function getFuncionario(tipoFuncionario) {
     throw err;
   }
 }
+
+export async function listarFuncionarios (){
+  try{
+     const funcionarios = await Funcionario.findAll({
+      attributes: ["id", "nome", "tipo", "email"]
+     })
+     return funcionarios; 
+  }
+  catch(err){
+    console.log("erro: ", err);
+    throw err; 
+  }
+}

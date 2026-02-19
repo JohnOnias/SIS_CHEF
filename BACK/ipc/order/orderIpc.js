@@ -6,7 +6,11 @@ const {
 } = require("../../models/registration/table.js");
 
 
-const { adicionarProdutosPedido } = require("../../models/registration/order.js");
+const {
+  adicionarProdutosPedido,
+  getListaPedidos,
+} = require("../../models/registration/order.js");
+
 const {
   getProdutosID,
 
@@ -93,7 +97,9 @@ module.exports = function orderIpc() {
       return { success: false, error: err.message };
     }
   });
-
+ ipcMain.handle("listarTodosPedidos", async () => {
+   return await getListaPedidos();
+ });
 
 
 

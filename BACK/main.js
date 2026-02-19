@@ -9,14 +9,12 @@ const { createWindow } = require("./screens/createBrowserWindow.js");
 const loginIpc = require("./ipc/login/loginIpc.js");
 const categoryIpc = require("./ipc/registration/categoryIpc.js");
 const productIpc = require("./ipc/registration/productIpc.js");
-const employeeIpc = require("./ipc/registration/employeeIpc.js");
 const tableIpc = require("./ipc/registration/tableIpc.js");
 const resetIpc = require("./ipc/reset/resetIpc.js");
 const userIpc = require("./ipc/user/userIpc.js");
-const managerIpc = require("./ipc/employee/managerIpc.js");
 const admIpc = require("./ipc/adm/admIpc.js");
-const bartenderIpc = require("./ipc/employee/bartenderIpc.js");
 const orderIpc = require("./ipc/order/orderIpc.js");
+const employeeIpc = require("./ipc/registration/employeeIpc.js");
 
 // ============================================================
 // Função para inicializar todos os IPC handlers
@@ -25,14 +23,13 @@ function inicializarIpcHandlers() {
   try {
     loginIpc();
     categoryIpc();
-    productIpc();
     employeeIpc();
+    productIpc();
     tableIpc();
     resetIpc();
     userIpc();
-    managerIpc();
     admIpc();
-    bartenderIpc();
+
     orderIpc();
 
     console.log("Todos os IPC handlers foram inicializados com sucesso.");
@@ -67,12 +64,11 @@ app.on("window-all-closed", () => {
 module.exports = {
   inicializarIpcHandlers,
   loginIpc,
+  employeeIpc,
   categoryIpc,
   tableIpc,
   resetIpc,
   userIpc,
-  managerIpc,
   admIpc,
-  bartenderIpc,
   orderIpc,
 };

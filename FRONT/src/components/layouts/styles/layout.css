@@ -10,6 +10,6 @@
   display: flex;
   justify-content: center;   /* centraliza horizontal */
   align-items: center;       /* centraliza vertical */
-  padding: 40px;
-  overflow: auto;
+  overflow: hiden;
+
 }

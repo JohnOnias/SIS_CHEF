@@ -12,8 +12,10 @@ module.exports = function funcionarioPreload() {
         cargo,
         senha,
       ),
-      
+
     getFuncionario: (tipoFuncionario) =>
       ipcRenderer.invoke("get-funcionario", tipoFuncionario),
+
+    listarFuncionarios: () => ipcRenderer.invoke("listar-funcionarios"),
   };
 };
