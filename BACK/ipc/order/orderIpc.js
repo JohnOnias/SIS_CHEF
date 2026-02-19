@@ -13,6 +13,12 @@ const {
   listarPedidos
 } = require("../../models/registration/table.js");
 
+
+const {
+  adicionarProdutosPedido,
+  getListaPedidos,
+} = require("../../models/registration/order.js");
+
 const {
   getProdutosID,
 } = require("../../models/registration/product.js");
@@ -98,7 +104,9 @@ module.exports = function orderIpc() {
       return { success: false, error: err.message };
     }
   });
-
+ ipcMain.handle("listarTodosPedidos", async () => {
+   return await getListaPedidos();
+ });
 
 
 

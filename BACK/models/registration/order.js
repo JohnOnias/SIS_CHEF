@@ -2,7 +2,7 @@ import {
   Produto,
   Pedido,
   ItemPedido,
-  Mesa,
+  Funcionario,
 } from "../../database/models/index.js";
 
 export async function getPedidos() {
@@ -16,11 +16,22 @@ export async function getPedidos() {
         "valor_total",
         "id_funcionario",
       ],
+      attributes: [
+        "id",
+        "mesa_numero",
+        "data_criacao",
+        "status",
+        "valor_total",
+        "id_funcionario",
+      ],
       order: [["data_criacao", "DESC"]],
+    });
     });
     return pedidos;
   } catch (error) {
+  } catch (error) {
     console.error("Erro ao buscar pedidos:", error);
+    throw error;
     throw error;
   }
 }
@@ -33,6 +44,7 @@ export async function editarPedido(idPedido, dadosAtualizados) {
       return { success: false, error: "Pedido não encontrado." };
     }
 
+    const { mesa_numero, status, id_funcionario } = dadosAtualizados;
     const { mesa_numero, status, id_funcionario } = dadosAtualizados;
 
     await pedido.update({
@@ -103,6 +115,14 @@ export async function getTodosProdutos() {
         "id_categoria",
         "status",
       ],
+      attributes: [
+        "id",
+        "nome",
+        "preco",
+        "descricao",
+        "id_categoria",
+        "status",
+      ],
     });
     return produtos;
   } catch (err) {
@@ -111,6 +131,7 @@ export async function getTodosProdutos() {
   }
 }
 
+export async function adicionarProdutosPedido(idPedido, idProduto, quantidade) {
 export async function adicionarProdutosPedido(idPedido, idProduto, quantidade) {
   // Buscar produto
   const produto = await Produto.findByPk(idProduto);
@@ -156,15 +177,19 @@ export async function adicionarProdutosPedido(idPedido, idProduto, quantidade) {
   return item;
 }
 
-export async function removerItem(idPedido, idProduto, quantidade) {
+export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
   try {
     const item = await ItemPedido.findOne({
       where: { id_pedido: idPedido, id_produto: idProduto },
+    });
     });
     if (!item) {
       throw new Error("Produto não encontrado no pedido");
     }
     if (item.quantidade < quantidade) {
+      throw new Error(
+        "Quantidade a remover é maior do que a quantidade no pedido",
+      );
       throw new Error(
         "Quantidade a remover é maior do que a quantidade no pedido",
       );
@@ -180,6 +205,10 @@ export async function removerItem(idPedido, idProduto, quantidade) {
         success: true,
         message: "Quantidade do produto atualizada no pedido",
       };
+      return {
+        success: true,
+        message: "Quantidade do produto atualizada no pedido",
+      };
     }
   } catch (err) {
     console.error("Erro ao remover produto do pedido:", err);
@@ -189,6 +218,7 @@ export async function removerItem(idPedido, idProduto, quantidade) {
 
 export async function listarItensPedido(idPedido) {
   try {
+    const itens = await ItemPedido.findAll({
     const itens = await ItemPedido.findAll({
       where: { id_pedido: idPedido },
       include: {
@@ -202,6 +232,26 @@ export async function listarItensPedido(idPedido) {
     throw err;
   }
 }
+
+export async function getListaPedidos() {
+  try {
+    const pedidos = await Pedido.findAll({
+      include: [
+        {
+          model: Funcionario,
+          attributes: ["nome"],
+          required: true,
+        },
+      ],
+    });
+
+    return pedidos.map((p) => p.get({ plain: true }));
+  } catch (error) {
+    console.error("Erro real:", error);
+    throw error;
+  }
+}
+
 
 export async function listarPedidosMesa(MesaNumero) {
   try {
@@ -227,6 +277,7 @@ export async function listarPedidosMesa(MesaNumero) {
 export async function fecharPedido(idPedido, valorTotal) {
   try {
     const pedido = await Pedido.findByPk(idPedido);
+    const pedido = await Pedido.findByPk(idPedido);
     if (!pedido) {
       return { success: false, error: "Pedido não encontrado." };
     }
@@ -235,6 +286,7 @@ export async function fecharPedido(idPedido, valorTotal) {
   } catch (error) {
     console.error("Erro ao fechar pedido:", error);
     return { success: false, error: error.message };
+  }
   }
 }
 
@@ -252,3 +304,4 @@ export async function cancelarPedido(idPedido) {
     return { success: false, error: error.message };
   }
 }
+

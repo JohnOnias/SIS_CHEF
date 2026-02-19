@@ -1,0 +1,123 @@
+/* Fundo escuro */
+.backgroundResetSenha {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Caixa do modal */
+#formResetSenha {
+  width: 100%;
+  max-width: 420px;
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 30px 25px;
+  position: relative;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  animation: fadeInScale 0.2s ease-in-out;
+}
+
+/* Animação */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#formCentre {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+/* Botão fechar */
+#closeIcon {
+  width: 18px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s ease;
+}
+
+#closeIcon:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Título */
+.h1reset {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #f5f5f5;
+}
+
+/* Labels */
+.labelreset {
+  text-align: left;
+  font-size: 13px;
+  margin: 10px 0 5px;
+  color: #bbb;
+}
+
+/* Inputs */
+.inputreset {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #fff;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.inputreset:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
+}
+
+/* Botão principal */
+.bntreset {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.bntreset:hover {
+  background-color: #43a047;
+  transform: scale(1.02);
+}
+
+.bntreset:active {
+  transform: scale(0.98);
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  #formResetSenha {
+    margin: 0 15px;
+    padding: 25px 20px;
+  }
+}
