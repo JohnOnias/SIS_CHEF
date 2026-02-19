@@ -171,7 +171,7 @@ export async function listarPedidos(numero_mesa) {
   }
 }
 
-export async function mudarStatus(numero_mesa, novoStatus = "Ocupada") {
+export async function mudarStatus(numero_mesa, novoStatus = "ocupada") {
   const transaction = await Mesa.sequelize.transaction();
 
   try {
@@ -205,7 +205,7 @@ export async function mudarStatus(numero_mesa, novoStatus = "Ocupada") {
 
 
 
-
+/*
 export async function excluirMesa(numero_mesa) {
   const transaction = await Mesa.sequelize.transaction();
 
@@ -244,7 +244,9 @@ export async function excluirMesa(numero_mesa) {
     console.error("Erro ao excluir mesa:", error);
     return handleSequelizeError(error);
   }
-}
+}*/
+
+
 export async function listarMesas() {
 
   try {

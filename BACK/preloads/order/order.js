@@ -9,7 +9,7 @@ module.exports = function pedidoPreload() {
       ipcRenderer.invoke("editarPedido", idPedido, dadosAtualizados),
     removerItem: (idPedido, idProduto, quantidade) =>
       ipcRenderer.invoke(
-        "removerProdutoPedido",
+        "removerItem",
         idPedido,
         idProduto,
         quantidade,

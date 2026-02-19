@@ -1,6 +1,14 @@
 const { ipcMain } = require("electron");
 
-const { registrarPedido, editarPedido, fecharPedido, listarItensPedido, cancelarPedido} = require("../../models/registration/order.js");
+const {
+  removerItem,
+  adicionarProdutosPedido,
+  registrarPedido,
+  editarPedido,
+  fecharPedido,
+  listarItensPedido,
+  cancelarPedido,
+} = require("../../models/registration/order.js");
 const {
   listarPedidos
 } = require("../../models/registration/table.js");
@@ -13,8 +21,7 @@ const {
 
 const {
   getProdutosID,
-
-} = require("../../models/utils/produto.js");
+} = require("../../models/registration/product.js");
 
 
 
@@ -106,9 +113,9 @@ module.exports = function orderIpc() {
 
 
    ipcMain.handle(
-     "removerProdutoPedido",
+     "removerItem",
      async (event, idPedido, idItem, quantidade) => {
-       return await removerProdutoPedido(idPedido, idItem, quantidade);
+       return await removerItem(idPedido, idItem, quantidade);
      },
    );
 
