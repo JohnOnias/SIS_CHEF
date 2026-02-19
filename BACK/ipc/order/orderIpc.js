@@ -15,7 +15,6 @@ const {
 
 
 const {
-  adicionarProdutosPedido,
   getListaPedidos,
 } = require("../../models/registration/order.js");
 

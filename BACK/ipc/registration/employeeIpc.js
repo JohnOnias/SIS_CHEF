@@ -2,7 +2,7 @@ const { ipcMain } = require("electron");
 const {
   getFuncionario,
   listarFuncionarios,
-} = require("../../models/utils/getFuncionario.js");
+} = require("../../models/registration/employee.js");
 
 module.exports = function employeeIpc() {
   // Pegar funcionários pelo tipo

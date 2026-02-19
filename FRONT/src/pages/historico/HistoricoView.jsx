@@ -40,7 +40,7 @@ export default function HistoricoView() {
              <tr key={pedido.id}>
                <td>{pedido.id}</td>
                <td>{pedido.mesa_numero}</td>
-               <td>{pedido.data_criacao}</td>
+               <td>{pedido.data_criacao.toLocaleDateString()}</td>
                <td>{pedido.status}</td>
                <td>{pedido.Funcionario?.nome}</td>
                <td>{pedido.valor_total}</td>
