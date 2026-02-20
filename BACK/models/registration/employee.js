@@ -122,3 +122,16 @@ export async function getFuncionario(tipoFuncionario) {
     return { success: false, error: error.message };
   }
 }
+
+export async function listarFuncionarios(){
+  try{
+    const funcionarios = await Funcionario.findAll()
+
+    return funcionarios; 
+  }
+  catch(error){
+      console.error("Erro ao buscar funcionários:", error);
+      return { success: false, error: error.message };
+    
+  }
+}

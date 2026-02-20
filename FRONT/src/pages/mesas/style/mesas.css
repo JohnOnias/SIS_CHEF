@@ -1,0 +1,42 @@
+.mesas{
+    height: 150px;
+    width: 150px;
+    background-color: rgb(56, 54, 54);
+    color: #ebe4e4;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    border: 1px solid rgb(151, 142, 124);
+    border-radius: 15px;
+    box-shadow: 5px 5px 10px rgb(95, 95, 110);
+}
+.containerMesas{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 100vh;
+    background-color: aquamarine;
+    width: 80vw;
+    margin-left: 250px;
+}
+.numero-mesas{
+    
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+}
+
+.mesas:hover{
+    height: 155px;
+    width: 155px;
+}
+.mesas-status{
+
+    background-color: red;
+    padding: 3px;
+    border-radius: 10px;
+}

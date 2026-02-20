@@ -13,6 +13,7 @@ export default function CadastroUsuariosView() {
     carregarFuncionarios();
   }, []);
   console.log("o cadastro funcionarios pegou: ", usuarios); 
+  
   function cadastrarFuncionario() {
     // aqui abre o modal depois
   }
