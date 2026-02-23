@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../styles/resetPassword.css";
+import "./styles/resetPassword.css";
 import CloseIcon from "../../../assets/modal/close.png";
 import ModalVerifyToken from "./verifyToken.jsx";
 

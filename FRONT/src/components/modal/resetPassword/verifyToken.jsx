@@ -1,5 +1,5 @@
 import React, { useState} from "react";
-import "../styles/verifytoken.css";
+import "./styles/verifytoken.css";
 import CloseIcon from "../../../assets/modal/close.png";
 
 function ModalVerifyToken({ isOpen, onClose, email }) {

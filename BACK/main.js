@@ -12,7 +12,6 @@ const productIpc = require("./ipc/registration/productIpc.js");
 const tableIpc = require("./ipc/registration/tableIpc.js");
 const resetIpc = require("./ipc/reset/resetIpc.js");
 const userIpc = require("./ipc/user/userIpc.js");
-const admIpc = require("./ipc/adm/admIpc.js");
 const orderIpc = require("./ipc/order/orderIpc.js");
 const employeeIpc = require("./ipc/registration/employeeIpc.js");
 
@@ -28,8 +27,6 @@ function inicializarIpcHandlers() {
     tableIpc();
     resetIpc();
     userIpc();
-    admIpc();
-
     orderIpc();
 
     console.log("Todos os IPC handlers foram inicializados com sucesso.");
@@ -69,6 +66,5 @@ module.exports = {
   tableIpc,
   resetIpc,
   userIpc,
-  admIpc,
   orderIpc,
 };

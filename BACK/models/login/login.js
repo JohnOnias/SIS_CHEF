@@ -12,7 +12,7 @@ export async function login(email, senha) {
 
     const usuario = await Funcionario.findOne({
       where: { email: email },
-      attributes: ["id", "nome", "email", "senha", "tipo"],
+      attributes: ["id", "nome", "email", "senha", "tipo", "ativo"],
     });
 
     if (!usuario) {
@@ -31,6 +31,7 @@ export async function login(email, senha) {
       nome: usuarioLimpo.nome,
       email: usuarioLimpo.email,
       tipo: usuarioLimpo.tipo,
+      ativo: usuarioLimpo.ativo,
     };
   } catch (error) {
     console.error("Erro no login:", error);

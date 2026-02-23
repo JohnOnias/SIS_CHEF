@@ -6,6 +6,7 @@
     <title>testes</title>
   </head>
   <body>
+    <!--
     <h1>Testes do Back-end</h1>
     <h3>Form teste login</h3>
 
@@ -218,12 +219,12 @@
     <input type="number" id="fecharPedidoId" placeholder="ID Pedido" />
     <input type="number" id="valorTotalPedido" placeholder="Valor Total" />
     <button id="btnFecharPedido">Fechar Pedido</button>
-    <pre id="resultadoFecharPedido"></pre>
+    <pre id="resultadoFecharPedido"></pre> -->
 
     <script>
       (async () => {
         // teste de login
-        let currentUser = null;
+      /*  let currentUser = null;
 
         const form = document.querySelector("form");
         const resultadoLogin = document.getElementById("resultadoLogin");
@@ -275,14 +276,7 @@
             document.getElementById("cadastroResultado");
 
           try {
-            const responseCadastro =
-              await window.api.funcionario.cadastrarFuncionario(
-                nomeCadastro,
-                cpfCadastro,
-                emailCadastro,
-                cargoCadastro,
-                passwordCadastro,
-              );
+           
             console.log(responseCadastro);
             cadastroResultado.textContent =
               "Funcionário cadastrado com sucesso!";
@@ -648,6 +642,25 @@
               console.error(error);
             }
           });
+
+
+          */
+          async function evento(){
+          const responseCadastro =
+              await window.api.funcionario.cadastrarFuncionario(
+                "John Onias",
+                "07312001360",
+                "john@adm.com",
+                "administrador",
+                "123456789",
+              );
+              if(!responseCadastro.success){
+                console.log("erro no cadastro");
+              }
+          }
+          evento()
+          
+
       })();
     </script>
   </body>
