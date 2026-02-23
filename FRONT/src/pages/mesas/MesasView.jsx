@@ -1,52 +1,66 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./style/mesas.css";
 
-export default function MesasView() {
+import AddMesaModal from "../../components/modal/mesas/addmesa";
+import RemoverMesaModal from "../../components/modal/mesas/removermesa";
+
+
+
+export default function Mesas() {
+
+
+
+
   const [mesas, setMesas] = useState([]);
+  const [openModalAdd, setOpenModalAdd] = useState(false);
+ const [openModalRemover, setOpenModalRemover] = useState(false);
 
-  useEffect(() => {
-    async function carregarMesas() {
-      const dados = await window.api.mesas.listarMesas();
-      setMesas(dados || []);
-    }
 
-    carregarMesas();
+
+useEffect(() => {
+   
   }, []);
 
-  return (
-    <>
-    <div className="containerMesas">
-      {mesas.length > 0 ? (
-        mesas.map((mesa) => (
-          <div className="mesas" key={mesa.id}>
-            <p className="numero-mesas">
-              <strong>{mesa.numero}</strong>
-            </p>
 
-            <p
-              className="mesas-status"
-              style={{
-                backgroundColor:
-                  mesa.status === "disponivel"
-                    ? "green"
-                    : mesa.status === "ocupada"
-                    ? "red"
-                    : "gray",
-                color: "white", // para o texto ficar visível
-                padding: "5px 10px",
-                borderRadius: "5px"
-              }}
-            >
-              {mesa.status}
-            </p>
+ 
+
+
+  //  Remover Mesa
+ 
+
+
+  return (
+    <div className="layout">
+
+ 
+
+      {/* CONTEÚDO */}
+      <main className="content">
+        <div className="header">
+          <div>
+            <h1>Mesas</h1>
+            <p>Clique na mesa para abrir pedido</p>
           </div>
-        ))
-      ) : (
-        <div>
-          <h1>Nem Uma Mesa cadastrada!</h1>
+
+          <div className="buttons">
+            <button className="remove" onClick={() => setOpenModalRemover(true)}>
+              Remover Mesa
+            </button>
+
+            <button className="add" onClick={() => setOpenModalAdd(true)}>
+              Adicionar Mesa
+            </button>
+          </div>
         </div>
-      )}
-      </div>
-    </>
+
+       
+      </main>
+
+      <AddMesaModal   isOpen={openModalAdd} onClose={() => setOpenModalAdd(false)}/>
+      <RemoverMesaModal   isOpen={openModalRemover} onClose={() => setOpenModalRemover(false)} />
+     
+
+
+    </div>
   );
 }

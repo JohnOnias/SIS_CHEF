@@ -1,42 +1,120 @@
-.mesas{
-    height: 150px;
-    width: 150px;
-    background-color: rgb(56, 54, 54);
-    color: #ebe4e4;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
-    border: 1px solid rgb(151, 142, 124);
-    border-radius: 15px;
-    box-shadow: 5px 5px 10px rgb(95, 95, 110);
-}
-.containerMesas{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    height: 100vh;
-    background-color: aquamarine;
-    width: 80vw;
-    margin-left: 250px;
-}
-.numero-mesas{
-    
-    text-align: center;
-    font-size: 32px;
-    margin-bottom: 20px;
-    margin-top: 20px;
 
+.layout {
+  display: flex;
+  height: 100vh;
 }
 
-.mesas:hover{
-    height: 155px;
-    width: 155px;
-}
-.mesas-status{
+/* Sidebar */
 
-    background-color: red;
-    padding: 3px;
-    border-radius: 10px;
+.sidebar {
+  width: 250px;
+  background: white;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.menu-icon {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.profile {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.sidebar li.active {
+  background: #b7e0ea;
+}
+
+/* Conteúdo */
+
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttons button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.remove {
+  background: #9c4b4b;
+  color: white;
+}
+
+.add {
+  background: #2ea52e;
+  color: white;
+}
+
+/* Grid */
+
+.grid {
+  margin-top: 40px;
+  display: flex;
+  gap: 25px;
+}
+
+.card {
+  width: 130px;
+  height: 130px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #aaa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card h2 {
+  font-size: 32px;
+  margin: 0;
+}
+
+.status {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.disponivel {
+  background: #c7e9c0;
+  color: green;
+}
+
+.ocupada {
+  background: #f5d7bd;
+  color: #d35400;
 }
