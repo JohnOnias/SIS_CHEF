@@ -92,3 +92,19 @@ tbody tr {
 tbody tr:hover {
   background-color: #4b4b4b;
 }
+
+.editar-icon{
+  background-color: #ff000000;
+
+}
+.editar-icon:hover{
+  cursor: pointer;
+}
+.delete-icon{
+  background-color: #ff000000;
+  
+}
+.delete-icon:hover{
+  cursor: pointer;
+   
+}

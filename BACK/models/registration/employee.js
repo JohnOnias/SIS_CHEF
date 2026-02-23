@@ -107,6 +107,76 @@ export async function cadastrarFuncionario(
   }
 }
 
+export async function atualizarFuncionario(id, nome, cpf, email, tipo, senha) {
+  try {
+    const funcionario = await Funcionario.findByPk(Number(id));
+
+    if (!funcionario) {
+      return { success: false, error: "Funcionário não encontrado" };
+    }
+
+    // Só pode existir um gerente
+    if (tipo === "gerente") {
+      const gerenteExistente = await Funcionario.findOne({
+        where: { tipo: "gerente" },
+      });
+
+      if (gerenteExistente && gerenteExistente.id !== Number(id)) {
+        return {
+          success: false,
+          error: "Já existe um gerente cadastrado",
+        };
+      }
+    }
+
+    // CPF único
+    if (cpf) {
+      const cpfExistente = await Funcionario.findOne({
+        where: { cpf },
+      });
+
+      if (cpfExistente && cpfExistente.id !== Number(id)) {
+        return {
+          success: false,
+          error: "CPF já cadastrado",
+        };
+      }
+    }
+
+    // Email único
+    if (email) {
+      const emailExistente = await Funcionario.findOne({
+        where: { email },
+      });
+
+      if (emailExistente && emailExistente.id !== Number(id)) {
+        return {
+          success: false,
+          error: "Email já cadastrado",
+        };
+      }
+    }
+
+    const dadosAtualizacao = {
+      nome,
+      cpf,
+      email,
+      tipo,
+    };
+
+    if (senha) {
+      const hash = await bcrypt.hash(senha, saltRounds);
+      dadosAtualizacao.senha = hash;
+    }
+
+    await funcionario.update(dadosAtualizacao);
+
+    return { success: true, data: funcionario.toJSON() };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
 export async function getFuncionario(tipoFuncionario) {
   if (!tipoFuncionario) {
     return { success: false, error: "Tipo de funcionário é obrigatório." };
@@ -123,15 +193,45 @@ export async function getFuncionario(tipoFuncionario) {
   }
 }
 
-export async function listarFuncionarios(){
-  try{
-    const funcionarios = await Funcionario.findAll()
+export async function listarFuncionarios() {
+  try {
+    const funcionarios = await Funcionario.findAll({
+      order: [["tipo", "ASC"]],
+    });
 
-    return funcionarios; 
+    return funcionarios;
+  } catch (error) {
+    console.error("Erro ao buscar funcionários:", error);
+    return { success: false, error: error.message };
   }
-  catch(error){
-      console.error("Erro ao buscar funcionários:", error);
-      return { success: false, error: error.message };
-    
+}
+
+export async function deletarFuncionario(id) {
+  console.log("chegou no model sequelize o id:", id);
+
+  try {
+    const [linhasAfetadas] = await Funcionario.update(
+      { ativo: false }, 
+      {
+        where: {
+          id: id,
+          tipo: {
+            [Op.ne]: "administrador",
+          },
+        },
+      },
+    );
+
+    if (linhasAfetadas === 0) {
+      return {
+        success: false,
+        message: "Usuário não encontrado ou é administrador",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: error.message };
   }
 }

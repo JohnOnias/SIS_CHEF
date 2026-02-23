@@ -44,12 +44,12 @@ function NavBar() {
             <>
               <li className="menu">
                 <img src={CadastroIcon} alt="icone cadastro" />
-                <Link to="/cadastro-usuarios">Cadastro Usuarios</Link>
+                <Link to="/cadastro-usuarios">Cadastro de Usuarios</Link>
               </li>
 
               <li className="menu">
                 <img src={ProdutosIcon} alt="icone historico" />
-                <Link to="/historico">Histórico</Link>
+                <Link to="/historico">Histórico de Pedidos</Link>
               </li>
             </>
           )}
@@ -65,6 +65,11 @@ function NavBar() {
                 <img src={ProdutosIcon} alt="icone produtos" />
                 <Link to="/produtos">Produtos</Link>
               </li>
+              
+              <li className="menu">
+                <img src={ProdutosIcon} alt="icone historico" />
+                <Link to="/historico">Histórico de Pedidos</Link>
+              </li>
 
               {usuario.tipo === "gerente" && (
                 <li className="menu">
@@ -77,7 +82,9 @@ function NavBar() {
         </ul>
       </nav>
 
-      <button onClick={handleLogout} className="logoutbnt">Logout</button>
+      <button onClick={handleLogout} className="logoutbnt">
+        Logout
+      </button>
     </aside>
   );
 }

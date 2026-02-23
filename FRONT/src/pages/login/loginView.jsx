@@ -43,6 +43,10 @@ function LoginView() {
       if (!user) {
         alert("Email ou senha invalidos, tente novamente");
       }
+      if(!user.ativo){
+        alert("Usuario inativo, converse com o seu supervisor!");
+        return null; 
+      }
 
       // ################ ERRO NO REDIRECIONAMENTO CONCERTAR DEPOIS ###################
       // concertar esse redirecionamento
