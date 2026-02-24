@@ -4,37 +4,26 @@ import "./style/mesas.css";
 import AddMesaModal from "../../components/modal/mesas/addmesa";
 import RemoverMesaModal from "../../components/modal/mesas/removermesa";
 
-
-
 export default function Mesas() {
-
-
-
-
   const [mesas, setMesas] = useState([]);
   const [openModalAdd, setOpenModalAdd] = useState(false);
- const [openModalRemover, setOpenModalRemover] = useState(false);
+  const [openModalRemover, setOpenModalRemover] = useState(false);
 
+  async function carregarMesas() {
+    try {
+      const data = await window.api.mesas.listarMesas();
+      setMesas(data);
+    } catch (error) {
+      console.error("Erro ao carregar mesas:", error);
+    }
+  }
 
-
-useEffect(() => {
-   
+  useEffect(() => {
+    carregarMesas();
   }, []);
-
-
- 
-
-
-  //  Remover Mesa
- 
-
 
   return (
     <div className="layout">
-
- 
-
-      {/* CONTEÚDO */}
       <main className="content">
         <div className="header">
           <div>
@@ -43,7 +32,10 @@ useEffect(() => {
           </div>
 
           <div className="buttons">
-            <button className="remove" onClick={() => setOpenModalRemover(true)}>
+            <button
+              className="remove"
+              onClick={() => setOpenModalRemover(true)}
+            >
               Remover Mesa
             </button>
 
@@ -53,14 +45,36 @@ useEffect(() => {
           </div>
         </div>
 
-       
+        <div className="grid">
+          {mesas.map((mesa) => (
+            <div key={mesa.id} className="card">
+              <h2>{mesa.numero}</h2>
+
+              <span
+                className={
+                  mesa.status === "livre"
+                    ? "status disponivel"
+                    : "status ocupada"
+                }
+              >
+                {mesa.status === "livre" ? "Disponível" : "Ocupada"}
+              </span>
+            </div>
+          ))}
+        </div>
       </main>
 
-      <AddMesaModal   isOpen={openModalAdd} onClose={() => setOpenModalAdd(false)}/>
-      <RemoverMesaModal   isOpen={openModalRemover} onClose={() => setOpenModalRemover(false)} />
-     
+      <AddMesaModal
+        isOpen={openModalAdd}
+        onClose={() => setOpenModalAdd(false)}
+        onMesaCriada={carregarMesas}
+      />
 
-
+      <RemoverMesaModal
+        isOpen={openModalRemover}
+        onClose={() => setOpenModalRemover(false)}
+        onMesaRemovida={carregarMesas}
+         />
     </div>
   );
 }

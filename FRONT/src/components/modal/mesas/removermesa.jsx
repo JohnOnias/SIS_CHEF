@@ -25,9 +25,9 @@ import { useState } from "react";
   
             alert("Mesa removida  com sucesso!");
             console.log("mesa capturda: ", ok); 
-      } catch (error) {
+      } catch (err) {
         
-          alert("erro ao remover a mesa"); 
+          alert("erro ao remover a mesa", err); 
   
       }
     }
@@ -39,33 +39,30 @@ import { useState } from "react";
   
 
     return (
-    <div className="overlay">
-      <div className="modal">
-        
-
-         <h2>Excluir Mesa</h2>
+      <div className="overlay">
+        <div className="modal">
+          <h2>Excluir Mesa</h2>
 
           <p>Número da mesa</p>
 
           <input
             type="text"
+            name="numero"
             placeholder="Digite o número"
             value={formulario.numero}
             onChange={evento}
           />
 
-          <button  className="criar" onClick={()=> removerMesa()}>
+          <button className="criar" onClick={() => removerMesa()}>
             Remover Mesa
           </button>
 
-<button className="cancelar" onClick={()=> onClose()}>
+          <button className="cancelar" onClick={() => onClose()}>
             Cancelar
           </button>
-
-
+        </div>
       </div>
-    </div>
-  );
+    );
 }
 
 

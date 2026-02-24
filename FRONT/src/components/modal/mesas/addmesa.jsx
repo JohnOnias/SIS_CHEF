@@ -3,63 +3,71 @@ import { useState } from "react";
 
 
 
-function AddMesaModal({isOpen, onClose}) {
-
+function AddMesaModal({ isOpen, onClose, onMesaCriada }) {
   const [formulario, setFormulario] = useState({
-      numero: "",
-    });
-
-
+    numero: "",
+  });
 
   const evento = (event) => {
-      const { name, value } = event.target;
-      setFormulario((prev) => ({ ...prev, [name]: value }));
-    };
+    const { name, value } = event.target;
+    setFormulario((prev) => ({ ...prev, [name]: value }));
+  };
 
 
-    const addMesa = async () => {
-      try {
-            const ok = await window.api.mesas.cadastrarMesas(formulario.numero);
 
-            alert("Mesa Cadastrada com sucesso!");
-            console.log("mesa capturda: ", ok); 
-      } catch (error) {
-        
-          alert("erro ao cadastrar mesa"); 
-
-      }
+  const addMesa = async () => {
+    if (!formulario.numero.trim()) {
+      alert("Digite o número da mesa");
+      return;
     }
 
-  
-    if(!isOpen){
-        return null; 
+    try {
+      const ok = await window.api.mesas.cadastrarMesas(formulario.numero);
+      console.log("erro?:",ok);
+      console.log(formulario.numero);
+
+        if (ok.success) {
+          alert("Mesa criada com sucesso!");
+
+          setFormulario({ numero: "" });
+            onMesaCriada();
+              onClose();
+        }
+     
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao cadastrar mesa");
     }
+  };
 
-    return (
 
 
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
     <div className="overlay">
       <div className="modal">
+        <h2>Adicionar Mesa</h2>
 
-                <h2>Adicionar Mesa</h2>
+        <p>Número da mesa</p>
 
-          <p>Número da mesa</p>
+        <input
+          type="text"
+          name="numero"
+          placeholder="Digite o número"
+          value={formulario.numero}
+          onChange={evento}
+        />
 
-          <input
-            type="text"
-            placeholder="Digite o número"
-            value={formulario.numero}
-            onChange={evento}
-          />
+        <button className="criar" onClick={addMesa}>
+          Criar Mesa
+        </button>
 
-          <button className="criar" onClick={addMesa}>
-            Criar Mesa
-          </button>
-          
-          <button className="cancelar" onClick={()=> onClose()}>
-            Cancelar
-          </button>
-
+        <button className="cancelar" onClick={() => onClose()}>
+          Cancelar
+        </button>
       </div>
     </div>
   );

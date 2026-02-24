@@ -11,12 +11,12 @@ Olá Pessoal :D
 ## instalação
 - git clone [url]
 - cd para raiz do projeto
-- cd front e instale o react via npm (npm init )
+- cd front e instale o react via npm (npm install vite@latest )
 - cd back instale o electron via npm (npm install electron)
 - cd back, cd database, instale o sequelize para rodar as migrations(
-    npm install --save-dev sequelize
+    
     npm install --save-dev sequelize-cli
-    npx sequelize-cli init
+
 )
 - rode as migrations (
     npx sequelize-cli db:migrate
