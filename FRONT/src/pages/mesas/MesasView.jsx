@@ -3,11 +3,14 @@ import "./style/mesas.css";
 
 import AddMesaModal from "../../components/modal/mesas/addmesa";
 import RemoverMesaModal from "../../components/modal/mesas/removermesa";
+import PedidoModal from "../../components/modal/orders/pedido";
 
 export default function Mesas() {
   const [mesas, setMesas] = useState([]);
   const [openModalAdd, setOpenModalAdd] = useState(false);
   const [openModalRemover, setOpenModalRemover] = useState(false);
+  const [openPedido, setOpenPedido] = useState(false);
+  const [mesaSelecionada, setMesaSelecionada] = useState(null);
 
   async function carregarMesas() {
     try {
@@ -21,6 +24,13 @@ export default function Mesas() {
   useEffect(() => {
     carregarMesas();
   }, []);
+
+
+function abrirPedido(numeroMesa) {
+  console.log("abriu o modal de pedido com a mesa:", numeroMesa);
+  setMesaSelecionada(numeroMesa);
+  setOpenPedido(true);
+}
 
   return (
     <div className="layout">
@@ -47,7 +57,11 @@ export default function Mesas() {
 
         <div className="grid">
           {mesas.map((mesa) => (
-            <div key={mesa.id} className="card">
+            <div
+              key={mesa.id}
+              className="card"
+              onClick={() => abrirPedido(mesa.numero)}
+            >
               <h2>{mesa.numero}</h2>
 
               <span
@@ -74,7 +88,13 @@ export default function Mesas() {
         isOpen={openModalRemover}
         onClose={() => setOpenModalRemover(false)}
         onMesaRemovida={carregarMesas}
-         />
+      />
+
+      <PedidoModal
+        isOpen={openPedido}
+        onClose={() => setOpenPedido(false)}
+        mesa={mesaSelecionada}
+      />
     </div>
   );
 }

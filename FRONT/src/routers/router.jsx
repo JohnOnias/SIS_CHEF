@@ -10,7 +10,6 @@ import HistoricoView from "../pages/historico/HistoricoView.jsx";
 import CadastrosView from "../pages/cadastros/CadastrosView.jsx"; 
 import ProdutosView from "../pages/produtos/ProdutosView.jsx"
 import MesasView from "../pages/mesas/MesasView.jsx";
-import TelaMesa from "../pages/mesas/telapedido.jsx";
 
 
 const router = createHashRouter([
@@ -53,11 +52,7 @@ const router = createHashRouter([
         path:"mesas",
         element: <MesasView/>
       }
-       {
-        path:"tela",
-        element: <TelaMesa/>
-      }
-
+     
 
     ],
   },
