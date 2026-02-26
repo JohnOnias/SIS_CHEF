@@ -52,6 +52,7 @@ const router = createHashRouter([
         path:"mesas",
         element: <MesasView/>
       }
+     
 
     ],
   },

@@ -1,52 +1,100 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./style/mesas.css";
 
-export default function MesasView() {
+import AddMesaModal from "../../components/modal/mesas/addmesa";
+import RemoverMesaModal from "../../components/modal/mesas/removermesa";
+import PedidoModal from "../../components/modal/orders/pedido";
+
+export default function Mesas() {
   const [mesas, setMesas] = useState([]);
+  const [openModalAdd, setOpenModalAdd] = useState(false);
+  const [openModalRemover, setOpenModalRemover] = useState(false);
+  const [openPedido, setOpenPedido] = useState(false);
+  const [mesaSelecionada, setMesaSelecionada] = useState(null);
+
+  async function carregarMesas() {
+    try {
+      const data = await window.api.mesas.listarMesas();
+      setMesas(data);
+    } catch (error) {
+      console.error("Erro ao carregar mesas:", error);
+    }
+  }
 
   useEffect(() => {
-    async function carregarMesas() {
-      const dados = await window.api.mesas.listarMesas();
-      setMesas(dados || []);
-    }
-
     carregarMesas();
   }, []);
 
-  return (
-    <>
-    <div className="containerMesas">
-      {mesas.length > 0 ? (
-        mesas.map((mesa) => (
-          <div className="mesas" key={mesa.id}>
-            <p className="numero-mesas">
-              <strong>{mesa.numero}</strong>
-            </p>
 
-            <p
-              className="mesas-status"
-              style={{
-                backgroundColor:
-                  mesa.status === "disponivel"
-                    ? "green"
-                    : mesa.status === "ocupada"
-                    ? "red"
-                    : "gray",
-                color: "white", // para o texto ficar visível
-                padding: "5px 10px",
-                borderRadius: "5px"
-              }}
-            >
-              {mesa.status}
-            </p>
+function abrirPedido(numeroMesa) {
+  console.log("abriu o modal de pedido com a mesa:", numeroMesa);
+  setMesaSelecionada(numeroMesa);
+  setOpenPedido(true);
+}
+
+  return (
+    <div className="layout">
+      <main className="content">
+        <div className="header">
+          <div>
+            <h1>Mesas</h1>
+            <p>Clique na mesa para abrir pedido</p>
           </div>
-        ))
-      ) : (
-        <div>
-          <h1>Nem Uma Mesa cadastrada!</h1>
+
+          <div className="buttons">
+            <button
+              className="remove"
+              onClick={() => setOpenModalRemover(true)}
+            >
+              Remover Mesa
+            </button>
+
+            <button className="add" onClick={() => setOpenModalAdd(true)}>
+              Adicionar Mesa
+            </button>
+          </div>
         </div>
-      )}
-      </div>
-    </>
+
+        <div className="grid">
+          {mesas.map((mesa) => (
+            <div
+              key={mesa.id}
+              className="card"
+              onClick={() => abrirPedido(mesa.numero)}
+            >
+              <h2>{mesa.numero}</h2>
+
+              <span
+                className={
+                  mesa.status === "livre"
+                    ? "status disponivel"
+                    : "status ocupada"
+                }
+              >
+                {mesa.status === "livre" ? "Disponível" : "Ocupada"}
+              </span>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      <AddMesaModal
+        isOpen={openModalAdd}
+        onClose={() => setOpenModalAdd(false)}
+        onMesaCriada={carregarMesas}
+      />
+
+      <RemoverMesaModal
+        isOpen={openModalRemover}
+        onClose={() => setOpenModalRemover(false)}
+        onMesaRemovida={carregarMesas}
+      />
+
+      <PedidoModal
+        isOpen={openPedido}
+        onClose={() => setOpenPedido(false)}
+        mesa={mesaSelecionada}
+      />
+    </div>
   );
 }

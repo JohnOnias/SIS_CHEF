@@ -1,0 +1,96 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.container-pedido {
+  width: 900px;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.container-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-fechar {
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.container-pedido-lista {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.produto-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.produto-item button {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.container-produto-selecionado {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.container-list {
+  flex: 2;
+}
+
+.pedido-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.pedido-item button {
+  margin-left: 5px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.container-buttons {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.btn-finalizar {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+}

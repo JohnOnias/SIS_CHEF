@@ -18,8 +18,10 @@ module.exports = function tableIpc() {
 
   ipcMain.handle(
     "cadastro-mesa",
-    async (_, mesa) => {
-      return await cadastrarMesa(mesa);
+    async (_, numero) => {
+      console.log("numero da messa pego no ipc:", numero);
+      console.log("evento?:", _);
+      return await cadastrarMesa(numero);
     },
   );
 
