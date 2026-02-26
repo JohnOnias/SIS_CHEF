@@ -1,22 +1,24 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import "./style/cadastros.css";
+import ProdutoModal from "../../components/modal/cadastros/cadastrarProduto";
 
 // importar o useSatate
 export default function CadastrosView() {
+const [openProdutos, setOpenProdutos] = useState(false);
+const [openCategorias, setOpenCategorias] = useState(false); 
 
-  function cadastrarMesa() {
-    //settar o open modal aqui
 
-    alert("abriu o cadastro de mesa!");
-  }
+
+ 
   function cadastrarProduto() {
-    //settar o open modal aqui
-    alert("abriu o cadastro de produtos!");
+    setOpenProdutos(true);
   }
   function cadastrarCategoria() {
     //settar o open modal aqui
     alert("abriu o cadastro de categorias!");
   }
+
 
   return (
     <>
@@ -49,6 +51,13 @@ export default function CadastrosView() {
 
         <hr />
       </div>
+
+      <ProdutoModal  
+        isOpen={openProdutos}
+        onClose={()=> setOpenProdutos(false)}
+      
+      />
+      
     </>
   );
 }

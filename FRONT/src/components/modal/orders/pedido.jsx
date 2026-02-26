@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/pedido.css";
+
+
+
+
 
 const produtosMock = [
   { id: 1, nome: "Hambúrguer", preco: 18 },
@@ -8,8 +12,40 @@ const produtosMock = [
   { id: 4, nome: "Suco", preco: 8 },
 ];
 
+
 function PedidoModal({ isOpen, onClose, mesa }) {
   const [itensSelecionados, setItensSelecionados] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
+  const [produtos, setProdutos] = useState([]);
+
+
+
+
+async function getCategorias() {
+  try {
+    const categorias = await window.api.categoria.getCategorias();
+    setCategorias(categorias);
+  } catch (error) {
+    console.log("erro ao pegar categorias", error);
+  }
+}
+async function getProdutosByCategoria(categoriaId) {
+  try {
+    const produtos = await window.api.produto.getProdutosPorCategoria(categoriaId);
+    setProdutos(produtos);
+  } catch (error) {
+    console.log("erro ao pegar produtos", error);
+  }
+}
+
+  useEffect(() => {
+    getCategorias();
+  }, []);
+
+
+
+
 
   if (!isOpen || !mesa) {
     return null;
@@ -57,18 +93,50 @@ function PedidoModal({ isOpen, onClose, mesa }) {
         </div>
 
         <div className="container-pedido-lista">
-          <h3>Produtos</h3>
-          {produtosMock.map((produto) => (
-            <div key={produto.id} className="produto-item">
-              <span>
-                {produto.nome} - R$ {produto.preco}
-              </span>
-              <button onClick={() => adicionarProduto(produto)}>
-                Adicionar
-              </button>
-            </div>
-          ))}
-        </div>
+
+          {categorias.length >0 ?
+          <>
+           
+           <h3>Categorias</h3>
+
+            {categorias.map((categoria) => (
+              <div
+                key={categoria.id}
+                className="produto-item"
+                onClick={() => {
+                  setCategoriaSelecionada(categoria.id);
+                  getProdutosByCategoria(categoria.id);
+                }}
+              >
+                <span>{categoria.nome}</span>
+              </div>
+            ))}
+          
+          </>
+          
+           : <span> nem uma categoria cadastrada </span>}
+           </div>
+        {categoriaSelecionada && (
+                <>
+                  <h3>Produtos</h3>
+
+                  {produtos.length === 0 ? (
+                    <p>Nenhum produto nessa categoria</p>
+                  ) : (
+                    produtos.map((produto) => (
+                      <div
+                        key={produto.id}
+                        className="produto-item"
+                        onClick={() => adicionarProduto(produto)}
+                      >
+                        <span>{produto.nome}</span>
+                        <span>R$ {produto.preco}</span>
+                      </div>
+                    ))
+                  )}
+                </>
+              )}
+         
 
         <div className="container-produto-selecionado">
           <div className="container-list">

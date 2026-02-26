@@ -1,13 +1,13 @@
 import { Produto } from "../../database/models/index.js";
 
 // Cadastrar um produto
-export async function cadastrarProduto(produto) {
+export async function cadastrarProduto(nome, preco, idCategoria, descricao) {
   try {
     await Produto.create({
-      nome: produto.nome,
-      preco: produto.preco,
-      id_categoria: produto.idCategoria,
-      descricao: produto.descricao,
+      nome: nome,
+      preco: preco,
+      id_categoria: idCategoria,
+      descricao: descricao,
     });
     return { success: true, message: "produto cadastrado com sucesso" }; // sucesso
   } catch (err) {
