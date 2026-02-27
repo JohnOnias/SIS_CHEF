@@ -18,18 +18,25 @@ const [categorias, setCategorias] = useState([]);
 
 async function getCategorias() {
   try {
-    const categorias = await window.api.categoria.getCategorias();
-    setCategorias(categorias);
+    const resposta = await window.api.categoria.getCategorias();
+
+    if (resposta?.success) {
+      setCategorias(resposta.data);
+      console.log(" lista de categorias",resposta.data)
+    } else {
+      console.log("Erro ao buscar categorias");
+    }
   } catch (error) {
     console.log("erro ao pegar categorias", error);
   }
 }
   
-    useEffect(() => {
-      getCategorias();
-    }, []);
-  
-  
+  useEffect(() => {
+  getCategorias();
+}, []);
+
+
+
 
   const evento = (event) => {
     const { name, value } = event.target;
@@ -42,12 +49,12 @@ const enviar = async (event) => {
   event.preventDefault();
   try {
     const resposta = await window.api.produto.cadastrarProduto(
-      formulario.nome,
-      formulario.preco,
-      formulario.categoria,
-      formulario.descricao
-      
-    );
+        formulario.nome,
+        Number(formulario.preco),
+        formulario.categoria,
+        formulario.descricao
+      );
+    
 
     if (!resposta?.success) {
       alert(`Erro ao cadastrar: ${resposta?.error || "Erro ao cadastrar"}`);
@@ -57,12 +64,7 @@ const enviar = async (event) => {
     console.log("objeto retornado do cadastro", resposta);
     alert("Produto cadastrado com sucesso!");
 
-    setFormulario({
-      nome: "",
-      preco: "",
-      categoria: "",
-      descricao: ""
-    });
+ 
 
     onClose();
   } catch (e) {
@@ -119,18 +121,23 @@ const enviar = async (event) => {
             <label className="modal-label" htmlFor="categoria">
               Categoria: 
             </label>
-            <select
-              required
-              className="modal-input"
-              name="categoria"
-              id="categoria"
-              value={formulario.categoria}
-              onChange={evento}>
 
-              <option value="">Selecione</option>
-             {categorias.map((categoria) => (<option key={categoria.id} value={categoria.id}>{categoria.nome}</option>))}
-            </select>
-
+           <select
+  required
+  className="modal-input"
+  name="categoria"
+  id="categoria"
+  value={formulario.categoria}
+  onChange={evento}
+>
+  <option value="">Selecione</option>
+  {Array.isArray(categorias) &&
+    categorias.map((categoria) => (
+      <option key={categoria.dataValues.id} value={categoria.dataValues.id}>
+        {categoria.dataValues.nome}
+      </option>
+    ))}
+</select>
             <label className="modal-label" htmlFor="descricao">
               Descrição:
             </label>
@@ -145,7 +152,7 @@ const enviar = async (event) => {
               onChange={evento}
             />
 
-            <button className="modal-button" type="submit">
+            <button className="modal-button" type="submit" >
               Cadastrar
             </button>
           </form>

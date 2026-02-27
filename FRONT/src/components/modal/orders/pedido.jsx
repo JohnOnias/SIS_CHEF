@@ -25,7 +25,7 @@ function PedidoModal({ isOpen, onClose, mesa }) {
 async function getCategorias() {
   try {
     const categorias = await window.api.categoria.getCategorias();
-    setCategorias(categorias);
+    setCategorias(categorias.data);
   } catch (error) {
     console.log("erro ao pegar categorias", error);
   }
@@ -101,14 +101,14 @@ async function getProdutosByCategoria(categoriaId) {
 
             {categorias.map((categoria) => (
               <div
-                key={categoria.id}
+                key={categoria.dataValues.id}
                 className="produto-item"
                 onClick={() => {
-                  setCategoriaSelecionada(categoria.id);
-                  getProdutosByCategoria(categoria.id);
+                  setCategoriaSelecionada(categoria.dataValues.id);
+                  getProdutosByCategoria(categoria.dataValues.id);
                 }}
               >
-                <span>{categoria.nome}</span>
+                <span>{categoria.dataValues.nome}</span>
               </div>
             ))}
           
