@@ -1,29 +1,35 @@
 import { Categoria } from "../../database/models/index.js";
 
+
 export async function cadastrarCategoria(nomeCategoria, status) {
+  console.log("chegou no model", nomeCategoria, status);
+
   try {
     const categoria = await Categoria.create({
       nome: nomeCategoria,
       status: status,
     });
 
-    return true;
+    return { success: true, data: categoria };
+
   } catch (error) {
     console.error("Erro ao cadastrar categoria:", error);
     return { success: false, error: error.message };
   }
 }
 
-export async function getCategoria() {
+
+export async function getCategorias() {
   try {
     const categorias = await Categoria.findAll({
       attributes: ["id", "nome", "status"],
-      order: [["nome", "ASC"]], // Ordena por nome (opcional)
+      order: [["nome", "ASC"]],
     });
 
-    return categorias;
+    return { success: true, data: categorias };
+
   } catch (error) {
     console.error("Erro ao buscar categorias:", error);
-    throw error; // Mantém o mesmo comportamento de rejeição
+    return { success: false, error: error.message };
   }
 }

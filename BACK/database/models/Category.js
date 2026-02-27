@@ -12,7 +12,7 @@ export default function CategoriaModel(sequelize) {
       },
       nome: { type: DataTypes.STRING, allowNull: false },
       status: { type: DataTypes.STRING, allowNull: false },
-      descricao: { type: DataTypes.STRING, allowNull: true },
+    
     },
     {
       tableName: "tb_categorias",

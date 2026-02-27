@@ -1,7 +1,7 @@
 const { ipcMain } = require("electron");
 const {
   cadastrarCategoria,
-  getCategoria,
+  getCategorias,
 } = require("../../models/registration/category.js");
 
 module.exports = function categoryIpc() {
@@ -11,7 +11,7 @@ module.exports = function categoryIpc() {
   });
 
   ipcMain.handle("get-categorias", async () => {
-    return await getCategoria();
+    return await getCategorias();
   });
 
   // Pegar todas as categorias

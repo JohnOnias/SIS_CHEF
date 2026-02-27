@@ -11,9 +11,9 @@ const {
 module.exports = function productIpc() {
   ipcMain.handle(
     "cadastrar-produto",
-    async (event, produto) => {
+    async (event, nome, preco, idCategoria, descricao) => {
       // Corrigi os parâmetros - o primeiro é sempre o event
-      return await cadastrarProduto(produto);
+      return await cadastrarProduto(nome, preco, idCategoria, descricao);
     },
   );
 

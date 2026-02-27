@@ -5,10 +5,10 @@ module.exports = function produtoPreload() {
   return {
     getCategorias: () => ipcRenderer.invoke("get-categorias"),
 
-    cadastrarProduto: (produto) =>
+    cadastrarProduto: (nome, preco, idCategoria, descricao) =>
       ipcRenderer.invoke(
         "cadastrar-produto",
-       produto
+       nome, preco, idCategoria, descricao
       ),
 
     getProdutosPorCategoria: (idCategoria) =>

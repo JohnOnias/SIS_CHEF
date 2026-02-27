@@ -1,22 +1,27 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import "./style/cadastros.css";
+import ProdutoModal from "../../components/modal/cadastros/cadastrarProduto";
+import CategoriaModal from "../../components/modal/cadastros/cadastroCategoria";
 
 // importar o useSatate
 export default function CadastrosView() {
+const [openProdutos, setOpenProdutos] = useState(false);
+const [openCategorias, setOpenCategorias] = useState(false); 
 
-  function cadastrarMesa() {
-    //settar o open modal aqui
 
-    alert("abriu o cadastro de mesa!");
-  }
+
+ 
   function cadastrarProduto() {
-    //settar o open modal aqui
-    alert("abriu o cadastro de produtos!");
+    setOpenProdutos(true);
+ 
   }
   function cadastrarCategoria() {
-    //settar o open modal aqui
-    alert("abriu o cadastro de categorias!");
+    setOpenCategorias(true);
+  
+  
   }
+
 
   return (
     <>
@@ -41,14 +46,20 @@ export default function CadastrosView() {
 
         <hr />
 
-        <div className="divbnt">
-          <label htmlFor="">Adcione uma nova mesa para gerenciar Pedidos</label>
-          <button onClick={() => cadastrarMesa()}>Nova Mesa</button>
-          <button className="linkbnt">Editar Mesas</button>
-        </div>
-
-        <hr />
+     
       </div>
+
+      <ProdutoModal  
+        isOpen={openProdutos}
+        onClose={()=> setOpenProdutos(false)}
+      
+      />
+      <CategoriaModal
+          isOpen={openCategorias}
+          onClose={()=> setOpenCategorias(false)}
+
+      />
+      
     </>
   );
 }
