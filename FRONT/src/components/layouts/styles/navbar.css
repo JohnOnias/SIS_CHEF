@@ -1,116 +1,218 @@
-/* Sidebar */
-.sidebar {
-    width: 220px;
-    background-color: #fff;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 25px 15px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
+/* ===============================
+   navBar.css (INTEIRO)
+   - Tamanho mantido
+   - Melhor alinhamento
+   - Conteúdo “mais baixo” (respiração no topo)
+   - Itens com altura uniforme e coluna de ícones alinhada
+================================ */
 
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  height: 100vh;
+
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+
+  /* baixa o conteúdo do menu e dá respiro */
+  padding: 32px 18px 18px 18px;
+  box-sizing: border-box;
 }
 
 /* Perfil */
-.perfil {
-    text-align: center;
-    margin-bottom: 40px;
+.profile {
+  padding: 0 8px 12px 8px;
+  border-bottom: 1px solid #eef2f7;
+
+  margin-top: 10px;     /* baixa um pouco */
+  margin-bottom: 28px;  /* separa dos itens */
 }
 
-.icone {
-    width: 80px;
-    height: 80px;
-    border: 2px solid #333;
-    border-radius: 50%;
-    margin: 0 auto 15px;
-    position: relative;
+.profile p {
+  margin: 0 0 2px 0;
+  font-size: 13px;
+  color: #6b7280;
 }
 
-.icone::before {
-    content: '';
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border: 2px solid #333;
-    border-radius: 50%;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.icone::after {
-    content: '';
-    position: absolute;
-    width: 50px;
-    height: 25px;
-    border: 2px solid #333;
-    border-radius: 50% 50% 0 0;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-bottom: none;
-}
-
-.perfil p {
-    font-size: 14px;
-    color: #666;
-}
-
-.perfil strong {
-    color: #333;
-    font-size: 16px;
-}
-
-/* Menu */
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.menu img {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-.menu a {
-  text-decoration: none;
+.profile strong {
   display: block;
-  padding: 12px 15px;
+  margin-top: 4px;
   font-size: 16px;
-  border-radius: 8px;
-  color: #333;
-  width: 100%;
-  transition: background-color 0.3s;
+  font-weight: 900;
+  color: #111827;
 }
 
-.menu a:hover {
-  background-color: #C8F4F9;
+/* Avatar (se existir) */
+.avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 2px solid #111;
+  margin: 0 0 10px 0;
 }
 
-.logoutbnt {
+/* Lista */
+.sidebar ul {
+  list-style: none;
+  margin: 20px 0 0 0;   /* baixa os botões */
+  padding: 0 0 0 4px;   /* alinhamento ótico */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;            /* espaçamento uniforme */
+  flex: 1;
+}
 
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background-color: #2c2c2c;
-  color: #f5f5f5;
+/* Itens: suporta tanto li clicável quanto li > a */
+.sidebar li {
+  margin: 0;
+  padding: 0;
+  border-radius: 12px;
+}
+
+/* Se for <a> dentro do li */
+.sidebar li a,
+.sidebar a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  height: 46px;      /* linha visual uniforme */
+  padding: 0 14px;
+
+  gap: 14px;
+  border-radius: 12px;
+
+  text-decoration: none;
+  color: #111827;
+  font-weight: 750;
+  font-size: 15px;
+
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+/* Se o click for direto no li (sem <a>) */
+.sidebar li {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  height: 46px;
+  padding: 0 14px;
+
+  gap: 14px;
   cursor: pointer;
-  transition: 0.2s ease;
+
+  color: #111827;
+  font-weight: 750;
+  font-size: 15px;
+
+  transition: background 120ms ease, transform 120ms ease;
 }
 
-.logoutbnt:hover {
-  background-color: #b71c1c;
-  color: #fff;
+/* Hover / Active */
+.sidebar li:hover,
+.sidebar li a:hover {
+  background: #f3f6fb;
+}
+
+.sidebar li.active,
+.sidebar li a.active {
+  background: #b7e0ea;
+}
+
+/* Coluna fixa de ícones (alinhamento perfeito) */
+.sidebar li svg,
+.sidebar li img,
+.sidebar li .icon,
+.sidebar li a svg,
+.sidebar li a img,
+.sidebar li a .icon {
+  width: 22px !important;
+  height: 22px !important;
+  flex: 0 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Evita imagens gigantes dentro do menu */
+.sidebar img {
+  max-width: 140px;
+  height: auto;
+}
+
+/* Caso exista uma ilustração */
+.sidebar .illustration,
+.sidebar .menu-illustration,
+.sidebar .big-icon {
+  max-width: 140px;
+  margin: 16px auto 8px auto;
+  display: block;
+  opacity: 0.95;
+}
+
+/* Logout (mais baixo e equilibrado) */
+.logout {
+  margin-top: auto;  /* empurra para o fundo */
+  margin-bottom: 10px;
+
+  width: 100%;
+  height: 42px;
+
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+
+  background: #2b2b2b;
+  color: #ffffff;
+
+  font-weight: 900;
+  font-size: 14px;
+
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.logout:hover {
+  background: #1f1f1f;
+}
+
+.logout:active {
+  transform: translateY(1px);
+}
+
+/* (Opcional) conteúdo ao lado se este CSS estiver no escopo do layout */
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 22px 24px;
+  box-sizing: border-box;
+}
+
+/* Responsivo */
+@media (max-width: 980px) {
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    padding: 26px 14px 14px 14px;
+  }
+
+  .sidebar li,
+  .sidebar li a {
+    height: 44px;
+    font-size: 14.5px;
+  }
+
+  .sidebar li svg,
+  .sidebar li img,
+  .sidebar li .icon,
+  .sidebar li a svg,
+  .sidebar li a img,
+  .sidebar li a .icon {
+    width: 20px !important;
+    height: 20px !important;
+    flex: 0 0 20px;
+  }
 }

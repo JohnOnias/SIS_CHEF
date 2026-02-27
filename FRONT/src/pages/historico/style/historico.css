@@ -1,0 +1,203 @@
+/* ========= Base / Layout global para não ficar por baixo do menu ========= */
+
+:root {
+  --sidebar-w: 280px;     /* ajuste se o menu for maior/menor */
+  --gutter: 26px;
+  --radius: 14px;
+
+  --bg: #f3f6fb;
+  --panel: #ffffff;
+  --border: #e5e7eb;
+  --text: #111827;
+  --muted: #6b7280;
+
+  --shadow: 0 12px 34px rgba(0, 0, 0, 0.10);
+}
+
+/* Não dependa do CSS do Vite (centralizado). */
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+}
+
+/* Se existir um wrapper geral tipo layout */
+.layout {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar: se tiver classe .sidebar, fixa e dá largura consistente */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow: auto;
+}
+
+/* Regra MAIS IMPORTANTE:
+   qualquer conteúdo principal deve começar depois do menu */
+.content,
+.main,
+.page,
+main {
+  box-sizing: border-box;
+  margin-left: var(--sidebar-w);
+  padding: var(--gutter);
+}
+
+/* Em telas menores, não dá pra reservar tanto espaço */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 240px; --gutter: 18px; }
+}
+@media (max-width: 780px) {
+  :root { --sidebar-w: 0px; --gutter: 14px; }
+  .sidebar { display: none; } /* se o menu não é colapsável via JS */
+  .content, .main, .page, main { margin-left: 0; }
+}
+
+/* ========= HISTÓRICO - Container e tipografia ========= */
+
+/* Tente pegar um container da página de histórico caso exista */
+.historico,
+.historico-page,
+.historico-container,
+#historico,
+[data-page="historico"] {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* Títulos do histórico (h1/h2) */
+.historico h1,
+.historico-page h1,
+.historico-container h1,
+#historico h1,
+main h1 {
+  margin: 0 0 14px 0;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+/* “Card” do conteúdo (onde fica a tabela) */
+.historico .card,
+.historico-page .card,
+.historico-container .card,
+#historico .card,
+main .card,
+.historico-panel,
+.table-wrapper,
+.tabela-wrapper {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+/* ========= Tabela do histórico (estética + leitura) ========= */
+
+/* Scroll horizontal sem quebrar layout (caso tenha muitas colunas) */
+.table-wrapper,
+.tabela-wrapper,
+main .card {
+  overflow: auto;
+}
+
+/* Tabela base */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 860px; /* garante tabela legível; com overflow auto */
+  background: transparent;
+  color: var(--text);
+}
+
+/* Cabeçalho */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #0f172a;         /* preto/azul escuro elegante */
+  color: #ffffff;
+  text-align: left;
+
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Bordas arredondadas no header */
+thead th:first-child { border-top-left-radius: 10px; }
+thead th:last-child  { border-top-right-radius: 10px; }
+
+/* Corpo */
+tbody td {
+  padding: 12px 14px;
+  font-size: 13.5px;
+  color: #111827;
+  border-bottom: 1px solid #eef2f7;
+  background: #ffffff;
+}
+
+/* Zebra e hover (melhora muito leitura) */
+tbody tr:nth-child(even) td {
+  background: #f8fafc;
+}
+
+tbody tr:hover td {
+  background: #eef6ff;
+}
+
+/* Linha “Lista de pedidos vazia” (se for uma td única grande) */
+tbody td[colspan] {
+  text-align: center;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 18px 14px;
+}
+
+/* ========= Ajustes extras para visual mais “limpo” ========= */
+
+/* Remover qualquer fundo escuro global que esteja vindo de outro CSS */
+main, .content, .page, .main {
+  background: transparent;
+}
+
+/* Caso exista um header da página acima da tabela */
+.header,
+.historico-header,
+.page-header {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+/* Subtítulo se existir */
+.header p,
+.historico-header p,
+.page-header p {
+  margin: 6px 0 0 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
