@@ -1,69 +1,53 @@
 import React, { useState, useEffect } from "react";
 import "./styles/pedido.css";
 
-
-
-
-
-const produtosMock = [
-  { id: 1, nome: "Hambúrguer", preco: 18 },
-  { id: 2, nome: "Refrigerante", preco: 6 },
-  { id: 3, nome: "Batata Frita", preco: 12 },
-  { id: 4, nome: "Suco", preco: 8 },
-];
-
-
 function PedidoModal({ isOpen, onClose, mesa }) {
   const [itensSelecionados, setItensSelecionados] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
   const [produtos, setProdutos] = useState([]);
 
-
-
-
-async function getCategorias() {
-  try {
-    const categorias = await window.api.categoria.getCategorias();
-    setCategorias(categorias.data);
-  } catch (error) {
-    console.log("erro ao pegar categorias", error);
+  // Busca categorias do backend
+  async function getCategorias() {
+    try {
+      const resposta = await window.api.categoria.getCategorias();
+      if (resposta?.data) setCategorias(resposta.data);
+    } catch (error) {
+      console.log("erro ao pegar categorias", error);
+    }
   }
-}
-async function getProdutosByCategoria(categoriaId) {
-  try {
-    const produtos = await window.api.produto.getProdutosPorCategoria(categoriaId);
-    setProdutos(produtos);
-  } catch (error) {
-    console.log("erro ao pegar produtos", error);
+
+  // Busca produtos da categoria selecionada
+  async function getProdutosByCategoria(categoriaId) {
+    try {
+      const produtos = await window.api.produto.getProdutosPorCategoria(categoriaId);
+      setProdutos(produtos || []);
+    } catch (error) {
+      console.log("erro ao pegar produtos", error);
+    }
   }
-}
 
   useEffect(() => {
     getCategorias();
   }, []);
 
+  useEffect(() => {
+    if (categoriaSelecionada) getProdutosByCategoria(categoriaSelecionada);
+  }, [categoriaSelecionada]);
 
-
-
-
-  if (!isOpen || !mesa) {
-    return null;
-  }
+  if (!isOpen || !mesa) return null;
 
   function adicionarProduto(produto) {
     setItensSelecionados((prev) => {
-      const existe = prev.find((item) => item.id === produto.id);
-
+      const existe = prev.find((item) => item.id === produto.dataValues.id);
       if (existe) {
         return prev.map((item) =>
-          item.id === produto.id
+          item.id === produto.dataValues.id
             ? { ...item, quantidade: item.quantidade + 1 }
-            : item,
+            : item
         );
       }
-
-      return [...prev, { ...produto, quantidade: 1 }];
+      return [...prev, { ...produto.dataValues, quantidade: 1 }];
     });
   }
 
@@ -71,20 +55,21 @@ async function getProdutosByCategoria(categoriaId) {
     setItensSelecionados((prev) =>
       prev
         .map((item) =>
-          item.id === id ? { ...item, quantidade: item.quantidade - 1 } : item,
+          item.id === id ? { ...item, quantidade: item.quantidade - 1 } : item
         )
-        .filter((item) => item.quantidade > 0),
+        .filter((item) => item.quantidade > 0)
     );
   }
 
   const total = itensSelecionados.reduce(
-    (acc, item) => acc + item.preco * item.quantidade,
-    0,
+    (acc, item) => acc + Number(item.preco) * item.quantidade,
+    0
   );
 
   return (
     <div className="overlay">
       <div className="container-pedido">
+        {/* HEADER */}
         <div className="container-titulo">
           <h2>Mesa {mesa}</h2>
           <button className="btn-fechar" onClick={onClose}>
@@ -92,57 +77,51 @@ async function getProdutosByCategoria(categoriaId) {
           </button>
         </div>
 
-        <div className="container-pedido-lista">
-
-          {categorias.length >0 ?
-          <>
-           
-           <h3>Categorias</h3>
-
+        {/* COLUNA ESQUERDA: categorias e produtos */}
+        <div className="col-esquerda">
+          {/* Categorias */}
+          <div className="listar-categoria-container">
             {categorias.map((categoria) => (
               <div
                 key={categoria.dataValues.id}
-                className="produto-item"
-                onClick={() => {
-                  setCategoriaSelecionada(categoria.dataValues.id);
-                  getProdutosByCategoria(categoria.dataValues.id);
-                }}
+                className={`listar-categoria ${
+                  categoria.dataValues.id === categoriaSelecionada ? "active" : ""
+                }`}
+                onClick={() => setCategoriaSelecionada(categoria.dataValues.id)}
               >
-                <span>{categoria.dataValues.nome}</span>
+                {categoria.dataValues.nome}
               </div>
             ))}
-          
-          </>
-          
-           : <span> nem uma categoria cadastrada </span>}
-           </div>
-        {categoriaSelecionada && (
-                <>
-                  <h3>Produtos</h3>
+          </div>
 
-                  {produtos.length === 0 ? (
-                    <p>Nenhum produto nessa categoria</p>
-                  ) : (
-                    produtos.map((produto) => (
-                      <div
-                        key={produto.id}
-                        className="produto-item"
-                        onClick={() => adicionarProduto(produto)}
-                      >
-                        <span>{produto.nome}</span>
-                        <span>R$ {produto.preco}</span>
-                      </div>
-                    ))
-                  )}
-                </>
-              )}
-         
+          {/* Produtos */}
+          <div>
+            {categoriaSelecionada && (
+              <>
+                {produtos.length === 0 ? (
+                  <p>Nenhum produto nessa categoria</p>
+                ) : (
+                  produtos.map((produto) => (
+                    <div
+                      key={produto.dataValues.id}
+                      className="produto-item"
+                      onClick={() => adicionarProduto(produto)}
+                    >
+                      <span>{produto.dataValues.nome}</span>
+                      <span>R$ {produto.dataValues.preco}</span>
+                    </div>
+                  ))
+                )}
+              </>
+            )}
+          </div>
+        </div>
 
-        <div className="container-produto-selecionado">
+        {/* COLUNA DIREITA: pedido */}
+        <div className="col-direita">
           <div className="container-list">
             <h3>Pedido</h3>
             {itensSelecionados.length === 0 && <p>Nenhum item</p>}
-
             {itensSelecionados.map((item) => (
               <div key={item.id} className="pedido-item">
                 <span>
@@ -150,7 +129,13 @@ async function getProdutosByCategoria(categoriaId) {
                 </span>
                 <div>
                   <button onClick={() => removerProduto(item.id)}>-</button>
-                  <button onClick={() => adicionarProduto(item)}>+</button>
+                  <button
+                    onClick={() =>
+                      adicionarProduto({ dataValues: item })
+                    }
+                  >
+                    +
+                  </button>
                 </div>
               </div>
             ))}
