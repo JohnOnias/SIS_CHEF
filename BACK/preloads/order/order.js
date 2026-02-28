@@ -8,12 +8,7 @@ module.exports = function pedidoPreload() {
     editarPedido: (idPedido, dadosAtualizados) =>
       ipcRenderer.invoke("editarPedido", idPedido, dadosAtualizados),
     removerItem: (idPedido, idProduto, quantidade) =>
-      ipcRenderer.invoke(
-        "removerItem",
-        idPedido,
-        idProduto,
-        quantidade,
-      ),
+      ipcRenderer.invoke("removerItem", idPedido, idProduto, quantidade),
     getListaPedidos: () => ipcRenderer.invoke("listarTodosPedidos"),
     fecharPedido: (idPedido) => ipcRenderer.invoke("fecharPedido", idPedido),
     listarItensPedido: (idPedido) =>
@@ -32,12 +27,12 @@ module.exports = function pedidoPreload() {
 
     getTodosProdutos: () => ipcRenderer.invoke("getTodosProdutos"),
 
-    adicionarProdutosPedido: (idPedido, idProduto, quantidade) =>
-      ipcRenderer.invoke(
-        "adicionarProdutosPedido",
-        idPedido,
-        idProduto,
-        quantidade,
-      ),
+    adicionarProdutosPedido: (idPedido, itens) =>
+      ipcRenderer.invoke("adicionarProdutosPedido", idPedido, itens),
+
+    atualizarItemPedido: (idPedido, idProduto, quantidade) =>
+      ipcRenderer.invoke("atualizarPedido", idPedido, idProduto, quantidade),
+    removerItemPedido: (idPedido, idItem) => ipcRenderer.invoke("removerItemPedido", idPedido, idItem),
+
   };
 };

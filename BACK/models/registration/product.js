@@ -30,7 +30,8 @@ export async function getProdutosID(idCategoria) {
       ],
       where: { id_categoria: idCategoria },
     });
-    return produtos;
+
+    return produtos.map((p) => p.toJSON());
   } catch (err) {
     console.error("Erro ao buscar produtos:", err);
     throw err;

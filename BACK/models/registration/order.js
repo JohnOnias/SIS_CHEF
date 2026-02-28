@@ -1,9 +1,10 @@
+
 import {
-  Produto,
   Pedido,
-  ItemPedido,
   Funcionario,
   Mesa,
+  ItemPedido,
+  Produto,
 } from "../../database/models/index.js";
 
 /* =========================
@@ -30,7 +31,30 @@ export async function getPedidos() {
     throw error;
   }
 }
+export async function atualizarPedido(idPedido, idItemPedido, novaQuantidade) {
+  if (!idPedido) throw new Error("ID do pedido não definido");
+  if (!idItemPedido) throw new Error("ID do item não definido");
+  if (novaQuantidade < 0) throw new Error("Quantidade inválida");
 
+  // Procura pelo id do ItemPedido
+  const item = await ItemPedido.findOne({
+    where: { id: idItemPedido, id_pedido: idPedido },
+  });
+
+  if (!item) throw new Error("Item do pedido não encontrado");
+
+  // Se quantidade for zero, remove o item
+  if (novaQuantidade === 0) {
+    await item.destroy();
+    return { message: "Item removido" };
+  }
+
+  // Atualiza quantidade
+  item.quantidade = novaQuantidade;
+  await item.save();
+
+  return item;
+}
 export async function editarPedido(idPedido, dadosAtualizados) {
   try {
     const pedido = await Pedido.findByPk(idPedido);
@@ -116,23 +140,15 @@ export async function getTodosProdutos() {
   }
 }
 
-export async function adicionarProdutosPedido(idPedido, idProduto, quantidade) {
+export async function adicionarProdutosPedido(idPedido, itens) {
+  console.log("pegos no adcionar itens", itens);
   try {
     if (!idPedido) {
       throw new Error("ID do pedido não definido");
     }
 
-    if (quantidade <= 0) {
-      throw new Error("Quantidade deve ser maior que zero");
-    }
-
-    const produto = await Produto.findByPk(idProduto);
-    if (!produto) {
-      throw new Error("Produto não encontrado");
-    }
-
-    if (produto.status?.toLowerCase() !== "disponivel") {
-      throw new Error("Produto inativo, não pode ser adicionado ao pedido");
+    if (!Array.isArray(itens) || itens.length === 0) {
+      throw new Error("Lista de itens inválida");
     }
 
     const pedido = await Pedido.findByPk(idPedido);
@@ -144,16 +160,31 @@ export async function adicionarProdutosPedido(idPedido, idProduto, quantidade) {
       throw new Error("Pedido não está aberto");
     }
 
-    const item = await ItemPedido.create({
-      id_pedido: idPedido,
-      id_produto: idProduto,
-      quantidade,
-      preco_unitario: produto.preco,
-    });
+    const itensCriados = [];
 
-    return item;
+    for (const item of itens) {
+      const { id, quantidade } = item;
+      if (!id) throw new Error("ID do produto não informado");
+
+      const produto = await Produto.findByPk(id);
+      if (!produto) throw new Error(`Produto ${id} não encontrado`);
+
+      if (produto.status?.toLowerCase() !== "disponivel") {
+        throw new Error(`Produto ${produto.nome} está indisponível`);
+      }
+
+      const novoItem = await ItemPedido.create({
+        id_pedido: idPedido,
+        id_produto: id,
+        quantidade: quantidade,
+        preco_unitario: produto.preco,
+      });
+
+      itensCriados.push(novoItem);
+    }
+    return itensCriados;
   } catch (error) {
-    console.error("Erro ao adicionar produto:", error);
+    console.error("Erro ao adicionar produtos:", error);
     throw error;
   }
 }
@@ -190,23 +221,32 @@ export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
   }
 }
 
+
 export async function listarItensPedido(idPedido) {
   try {
     const itens = await ItemPedido.findAll({
       where: { id_pedido: idPedido },
       include: {
         model: Produto,
+        as: "produto",
         attributes: ["id", "nome", "preco", "descricao"],
       },
     });
-
-    return itens.map((item) => item.toJSON());
+    return itens.map((item) => {
+      const json = item.toJSON();
+      return {
+        id: json.id,
+        nome: json.produto.nome,
+        preco: json.produto.preco,
+        descricao: json.produto.descricao,
+        quantidade: json.quantidade,
+      };
+    });
   } catch (err) {
     console.error("Erro ao listar itens:", err);
     throw err;
   }
 }
-
 /* =========================
    LISTAGENS
 ========================= */
@@ -217,16 +257,46 @@ export async function getListaPedidos() {
       include: [
         {
           model: Funcionario,
-          attributes: ["nome"],
-          required: true,
+          as: "funcionario", // aqui é o alias definido no model
+          attributes: ["id", "nome"],
+        },
+        {
+          model: Mesa,
+          as: "mesa",
+          attributes: ["numero"],
+        },
+        {
+          model: ItemPedido,
+          as: "itens",
+          include: {
+            model: Produto,
+            as: "produto",
+            attributes: ["nome", "preco"],
+          },
         },
       ],
+      order: [["data_criacao", "DESC"]],
     });
 
-    return pedidos.map((p) => p.get({ plain: true }));
-  } catch (error) {
-    console.error("Erro ao listar pedidos:", error);
-    throw error;
+    return pedidos.map((pedido) => {
+      const json = pedido.toJSON();
+      const valor_total = json.itens.reduce(
+        (total, item) => total + item.quantidade * item.produto.preco,
+        0,
+      );
+
+      return {
+        id: json.id,
+        mesa_numero: json.mesa?.numero,
+        data_criacao: new Date(json.data_criacao),
+        status: json.status,
+        Funcionario: json.funcionario,
+        valor_total,
+      };
+    });
+  } catch (err) {
+    console.error("Erro ao listar pedidos:", err);
+    throw err;
   }
 }
 
@@ -274,6 +344,20 @@ export async function fecharPedido(idPedido, valorTotal) {
     console.error("Erro ao fechar pedido:", error);
     return { success: false, error: error.message };
   }
+}
+
+export async function removerItemPedido(idPedido, idItemPedido) {
+  console.log("idPedido e idItem", idPedido, idItemPedido);
+  if (!idPedido || !idItemPedido) throw new Error("IDs não informados");
+
+  const item = await ItemPedido.findOne({
+    where: { id: idItemPedido, id_pedido: idPedido },
+  });
+
+  if (!item) throw new Error("Item não encontrado");
+
+  await item.destroy();
+  return { message: "Item removido" };
 }
 
 export async function cancelarPedido(idPedido) {
