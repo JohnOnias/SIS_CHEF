@@ -27,8 +27,7 @@ function AddMesaModal({ isOpen, onClose, onMesaCriada }) {
       console.log(formulario.numero);
 
         if (ok.success) {
-          alert("Mesa criada com sucesso!");
-
+          
           setFormulario({ numero: "" });
             onMesaCriada();
               onClose();
