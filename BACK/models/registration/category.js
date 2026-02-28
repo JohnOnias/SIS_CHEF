@@ -1,6 +1,5 @@
 import { Categoria } from "../../database/models/index.js";
 
-
 export async function cadastrarCategoria(nomeCategoria, status) {
   console.log("chegou no model", nomeCategoria, status);
 
@@ -11,13 +10,11 @@ export async function cadastrarCategoria(nomeCategoria, status) {
     });
 
     return { success: true, data: categoria };
-
   } catch (error) {
     console.error("Erro ao cadastrar categoria:", error);
     return { success: false, error: error.message };
   }
 }
-
 
 export async function getCategorias() {
   try {
@@ -26,8 +23,9 @@ export async function getCategorias() {
       order: [["nome", "ASC"]],
     });
 
-    return { success: true, data: categorias };
+    const categoriasJson = categorias.map((c) => c.toJSON());
 
+    return { success: true, data: categoriasJson };
   } catch (error) {
     console.error("Erro ao buscar categorias:", error);
     return { success: false, error: error.message };

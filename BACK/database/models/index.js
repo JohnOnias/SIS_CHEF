@@ -1,5 +1,8 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import FuncionarioModel from "./Employee.js";
 import CategoriaModel from "./Category.js";
 import ProdutoModel from "./Product.js";
@@ -9,24 +12,25 @@ import ItemPedidoModel from "./OrderItens.js";
 import PagamentoModel from "./Payment.js";
 
 dotenv.config({
-  path: ".env", // opcional: especificar o caminho
-  quiet: true, // <-- Isso remove o aviso do dotenv
+  path: ".env",
+  quiet: true,
 });
-import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Conexão com o banco
+// ==========================
+// Conexão com banco
+// ==========================
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  //storage: process.env.DB_STORAGE || "../AppRestaurante.sqlite",
   storage: path.join(__dirname, "../AppRestaurante.sqlite"),
-  logging: false, // opcional: desliga logs SQL
+  logging: false,
 });
 
-// Inicializa os models
+// ==========================
+// Inicialização dos models
+// ==========================
 const Funcionario = FuncionarioModel(sequelize, Sequelize.DataTypes);
 const Categoria = CategoriaModel(sequelize, Sequelize.DataTypes);
 const Produto = ProdutoModel(sequelize, Sequelize.DataTypes);
@@ -35,41 +39,73 @@ const Pedido = PedidoModel(sequelize, Sequelize.DataTypes);
 const ItemPedido = ItemPedidoModel(sequelize, Sequelize.DataTypes);
 const Pagamento = PagamentoModel(sequelize, Sequelize.DataTypes);
 
-// --- Associações ---
+// ==========================
+// ASSOCIAÇÕES
+// ==========================
 
 // Categoria ↔ Produto
-Categoria.hasMany(Produto, { foreignKey: "id_categoria" });
-Produto.belongsTo(Categoria, { foreignKey: "id_categoria" });
-
-// Funcionario ↔ Pedido
-Funcionario.hasMany(Pedido, { foreignKey: "id_funcionario" });
-Pedido.belongsTo(Funcionario, { foreignKey: "id_funcionario" });
-
-
-// Pedido ↔ ItemPedido
-Pedido.hasMany(ItemPedido, { 
-  foreignKey: "id_pedido",
-  as: "itens"
+Categoria.hasMany(Produto, {
+  foreignKey: "id_categoria",
+  as: "produtos",
+});
+Produto.belongsTo(Categoria, {
+  foreignKey: "id_categoria",
+  as: "categoria",
 });
 
-ItemPedido.belongsTo(Pedido, { 
+// Funcionario ↔ Pedido
+Funcionario.hasMany(Pedido, {
+  foreignKey: "id_funcionario",
+  as: "pedidos",
+});
+Pedido.belongsTo(Funcionario, {
+  foreignKey: "id_funcionario",
+  as: "funcionario",
+});
+
+// Mesa ↔ Pedido
+Mesa.hasMany(Pedido, {
+  foreignKey: "mesa_numero",
+  as: "pedidos",
+});
+Pedido.belongsTo(Mesa, {
+  foreignKey: "mesa_numero",
+  as: "mesa",
+});
+
+// Pedido ↔ ItemPedido
+Pedido.hasMany(ItemPedido, {
   foreignKey: "id_pedido",
-  as: "pedido"
+  as: "itens",
+});
+ItemPedido.belongsTo(Pedido, {
+  foreignKey: "id_pedido",
+  as: "pedido",
 });
 
 // Produto ↔ ItemPedido
-Produto.hasMany(ItemPedido, { foreignKey: "id_produto" });
-ItemPedido.belongsTo(Produto, { foreignKey: "id_produto" });
+Produto.hasMany(ItemPedido, {
+  foreignKey: "id_produto",
+  as: "itensPedido",
+});
+ItemPedido.belongsTo(Produto, {
+  foreignKey: "id_produto",
+  as: "produto",
+});
 
-// Pagamento ↔ Pedido
+// Pedido ↔ Pagamento
 Pedido.hasOne(Pagamento, {
-   foreignKey: "id_pedido",
-   as: "pagamento"});
-Pagamento.belongsTo(Pedido, { 
   foreignKey: "id_pedido",
-  as: "pedido"});
+  as: "pagamento",
+});
+Pagamento.belongsTo(Pedido, {
+  foreignKey: "id_pedido",
+  as: "pedido",
+});
 
-// Exporta tudo
+// ==========================
+// EXPORTS
+// ==========================
 export {
   sequelize,
   Sequelize,

@@ -133,8 +133,8 @@ const enviar = async (event) => {
   <option value="">Selecione</option>
   {Array.isArray(categorias) &&
     categorias.map((categoria) => (
-      <option key={categoria.dataValues.id} value={categoria.dataValues.id}>
-        {categoria.dataValues.nome}
+      <option key={categoria.id} value={categoria.id}>
+        {categoria.nome}
       </option>
     ))}
 </select>

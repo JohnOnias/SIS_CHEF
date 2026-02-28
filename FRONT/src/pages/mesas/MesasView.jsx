@@ -3,14 +3,16 @@ import "./style/mesas.css";
 
 import AddMesaModal from "../../components/modal/mesas/addmesa";
 import RemoverMesaModal from "../../components/modal/mesas/removermesa";
-import PedidoModal from "../../components/modal/orders/pedido";
+import PedidoModal from "../../components/modal/orders/addPedido";
+import EditarPedidoModal from "../../components/modal/orders/editPedido";
 
 export default function Mesas() {
   const [mesas, setMesas] = useState([]);
   const [openModalAdd, setOpenModalAdd] = useState(false);
   const [openModalRemover, setOpenModalRemover] = useState(false);
-  const [openPedido, setOpenPedido] = useState(false);
-  const [mesaSelecionada, setMesaSelecionada] = useState(null);
+const [openAdd, setOpenAdd] = useState(false);
+const [openEdit, setOpenEdit] = useState(false);
+const [mesaSelecionada, setMesaSelecionada] = useState(null);
 
   async function carregarMesas() {
     try {
@@ -26,11 +28,16 @@ export default function Mesas() {
   }, []);
 
 
-function abrirPedido(numeroMesa) {
-  console.log("abriu o modal de pedido com a mesa:", numeroMesa);
-  setMesaSelecionada(numeroMesa);
-  setOpenPedido(true);
-}
+const abrirPedido = (mesa) => {
+  setMesaSelecionada(mesa);
+
+  if (mesa.status === "livre") {
+    setOpenAdd(true);
+  } else {
+    setOpenEdit(true);
+  }
+};
+
 
   return (
     <div className="layout">
@@ -60,7 +67,7 @@ function abrirPedido(numeroMesa) {
             <div
               key={mesa.id}
               className="card"
-              onClick={() => abrirPedido(mesa.numero)}
+              onClick={() => abrirPedido(mesa)}
             >
               <h2>{mesa.numero}</h2>
 
@@ -91,10 +98,21 @@ function abrirPedido(numeroMesa) {
       />
 
       <PedidoModal
-        isOpen={openPedido}
-        onClose={() => setOpenPedido(false)}
+        isOpen={openAdd}
+        onClose={() => setOpenAdd(false)}
         mesa={mesaSelecionada}
       />
+      <EditarPedidoModal
+        isOpen={openEdit}
+        onClose={() => setOpenEdit(false)}
+        mesa={mesaSelecionada}
+        onAdicionarItens={() => {
+          setOpenEdit(false);
+          setOpenAdd(true);
+        }}
+      />
+      
+    
     </div>
   );
 }

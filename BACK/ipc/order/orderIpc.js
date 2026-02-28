@@ -1,13 +1,14 @@
 const { ipcMain } = require("electron");
 
 const {
-  removerItem,
   adicionarProdutosPedido,
   registrarPedido,
   editarPedido,
   fecharPedido,
   listarItensPedido,
   cancelarPedido,
+  atualizarPedido,
+  removerItemPedido
 } = require("../../models/registration/order.js");
 const {
   listarPedidos
@@ -32,6 +33,11 @@ let pedidoAtual = {
 };
 
 module.exports = function orderIpc() {
+
+  ipcMain.handle("removerItemPedido", async(event, idPedido, idItem)=>{
+    return await removerItemPedido(idPedido, idItem);
+    
+  });
 
 
   // Registrar pedido 
@@ -81,12 +87,11 @@ module.exports = function orderIpc() {
 
 
   // Adicionar produtos ao pedido
-  ipcMain.handle("adicionarProdutosPedido", async (event, idPedido, idProduto, quantidade) => {
+  ipcMain.handle("adicionarProdutosPedido", async (event, idPedido, itens) => {
     try {
       const resultado = await adicionarProdutosPedido(
-        idPedido,
-        idProduto,
-        quantidade
+       idPedido,
+       itens
       );
       return { success: true, data: resultado };
     } catch (err) {
@@ -94,6 +99,9 @@ module.exports = function orderIpc() {
       return { success: false, error: err.message };
     }
   });
+
+
+  
   ipcMain.handle("cancelarPedido", async (event, idPedido) => {
     try {
       const resultado = await cancelarPedido(idPedido);
@@ -130,11 +138,18 @@ module.exports = function orderIpc() {
 
   ipcMain.handle("listarItensPedido", async (event, idPedido) => {  
     try {      const resultado = await listarItensPedido(idPedido);
-      return { success: true, data: resultado };
+      return resultado
     } catch (err) {
       console.error("Erro ao listar itens do pedido:", err);
       return { success: false, error: err.message };
     }
   });
+
+  ipcMain.handle(
+    "atualizarPedido",
+    async(event, idPedido, idProduto, quantidade) =>{
+      return await atualizarPedido(idPedido, idProduto, quantidade);
+    },
+  );
 }
 

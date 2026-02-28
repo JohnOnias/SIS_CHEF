@@ -1,0 +1,161 @@
+/* Overlay escuro no fundo */
+/* Botão de fechar (X) no canto superior direito */
+.modal-editar .btn-fechar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+  z-index: 1010;
+}
+
+.modal-editar .btn-fechar:hover {
+  color: #ff4d4d;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Caixa principal do modal */
+.modal-editar {
+  background: #ffffff;
+  width: 500px;
+  max-height: 80vh;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Título */
+.modal-editar h2 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  text-align: center;
+}
+
+/* Lista de itens com scroll */
+.lista-itens {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  padding-right: 5px;
+}
+
+/* Cada item */
+.item {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Informações do item */
+.item .info {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+/* Controles de quantidade */
+.controles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botões padrão */
+.controles button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  transition: 0.2s;
+}
+
+.controles button:hover {
+  background-color: #dcdcdc;
+}
+
+/* Botão remover */
+.controles .remover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.controles .remover:hover {
+  background-color: #d93636;
+}
+
+/* Total */
+.total {
+  margin-top: 10px;
+  text-align: right;
+  font-size: 18px;
+}
+
+/* Área dos botões finais */
+.acoes {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.acoes button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.acoes button:first-child {
+  background-color: #4caf50;
+  color: white;
+}
+
+.acoes button:first-child:hover {
+  background-color: #3e9442;
+}
+
+.acoes button:last-child {
+  background-color: #cccccc;
+}
+
+.acoes button:last-child:hover {
+  background-color: #b3b3b3;
+}
+
+/* Animação suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
