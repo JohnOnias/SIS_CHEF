@@ -300,6 +300,7 @@ export async function getListaPedidos() {
   }
 }
 
+
 export async function listarPedidosMesa(mesaNumero) {
   try {
     const pedidos = await Pedido.findAll({

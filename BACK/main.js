@@ -14,6 +14,7 @@ const resetIpc = require("./ipc/reset/resetIpc.js");
 const userIpc = require("./ipc/user/userIpc.js");
 const orderIpc = require("./ipc/order/orderIpc.js");
 const employeeIpc = require("./ipc/registration/employeeIpc.js");
+const paymantIpc = require("./ipc/paymant/paymantIpc.js");
 
 // ============================================================
 // Função para inicializar todos os IPC handlers
@@ -28,6 +29,7 @@ function inicializarIpcHandlers() {
     resetIpc();
     userIpc();
     orderIpc();
+    paymantIpc();
 
     console.log("Todos os IPC handlers foram inicializados com sucesso.");
   } catch (error) {

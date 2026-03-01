@@ -654,9 +654,23 @@
                 "administrador",
                 "123456789",
               );
-              if(!responseCadastro.success){
-                console.log("erro no cadastro");
-              }
+                const responseCadastro2 =
+              await window.api.funcionario.cadastrarFuncionario(
+                "Gerente",
+                "07312004355",
+                "gerente@gerente.com",
+                "gerente",
+                "123456789",
+              );
+                 const responseCadastro3 =
+              await window.api.funcionario.cadastrarFuncionario(
+                "Garçom",
+                "07312003355",
+                "garcom@garcom.com",
+                "garcom",
+                "123456789",
+              );
+             
           }
           evento()
           

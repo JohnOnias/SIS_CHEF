@@ -41,14 +41,8 @@ module.exports = function tableIpc() {
     }
   });
 
-  ipcMain.handle("deletar-mesa", async (event, numeroMesa) => {
-    try {
-      const resultado = await deletarMesa(numeroMesa);
-      return { success: true, data: resultado };
-    } catch (err) {
-      console.error("Erro ao deletar a mesa:", err);
-      return { success: false, error: err.message };
-    }   
+ipcMain.handle("deletar-mesa", async (event, numero) => {
+  return await deletarMesa(numero);
 });
 
 }

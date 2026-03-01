@@ -1,7 +1,7 @@
 /* Sidebar */
 .sidebar {
-    width: 220px;
-    background-color: #fff;
+    width: 13vw;
+    background-color: #ffffff;
     height: 100vh;
     display: flex;
     flex-direction: column;
