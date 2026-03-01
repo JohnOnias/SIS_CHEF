@@ -193,16 +193,21 @@ export async function getFuncionario(tipoFuncionario) {
   }
 }
 
+
+
 export async function listarFuncionarios() {
   try {
     const funcionarios = await Funcionario.findAll({
       order: [["tipo", "ASC"]],
     });
 
-    return funcionarios;
+    // transforma em JSON simples
+    const jsonFuncionarios = funcionarios.map((f) => f.toJSON());
+
+    return jsonFuncionarios; // array de objetos puros
   } catch (error) {
     console.error("Erro ao buscar funcionários:", error);
-    return { success: false, error: error.message };
+    return []; // retorna array vazio em caso de erro
   }
 }
 

@@ -102,12 +102,7 @@
 }
 
 /* Texto dentro do botão */
-.bntlogin::after {
-  content: "Entrar";
-  color: white;
-  font-weight: bold;
-  font-size: 15px;
-}
+
 
 .bntlogin:hover {
   background-color: #43a047;

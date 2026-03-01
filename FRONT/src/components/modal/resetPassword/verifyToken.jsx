@@ -1,17 +1,24 @@
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/verifytoken.css";
 import CloseIcon from "../../../assets/modal/close.png";
 
 function ModalVerifyToken({ isOpen, onClose, email }) {
+  const [formulario, setFormulario] = useState({
+    token: "",
+    senha1: "",
+    senha2: "",
+  });
 
-const [formulario, setFormulario] = useState({
-  email: email || "",
-  token: "",
-  senha1: "",
-  senha2: "",
-});
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState(""); // success | error
+  const [loading, setLoading] = useState(false);
 
-
+  // Atualiza o formulário caso o modal seja aberto com novo email
+  useEffect(() => {
+    setMensagem("");
+    setTipoMensagem("");
+    setFormulario({ token: "", senha1: "", senha2: "" });
+  }, [email, isOpen]);
 
   const evento = (event) => {
     const { name, value } = event.target;
@@ -21,44 +28,50 @@ const [formulario, setFormulario] = useState({
   const updateSenha = async (event) => {
     event.preventDefault();
 
-    if (
-      !formulario.email ||
-      !formulario.token ||
-      !formulario.senha1 ||
-      !formulario.senha2
-    ) {
-      alert("Preencha todos os dados!");
+    setMensagem("");
+    setTipoMensagem("");
+
+    const { token, senha1, senha2 } = formulario;
+
+    if (!token || !senha1 || !senha2) {
+      setMensagem("Preencha todos os dados.");
+      setTipoMensagem("error");
       return;
     }
 
-    if (formulario.senha1 !== formulario.senha2) {
-      alert("As senhas devem ser iguais");
+    if (senha1 !== senha2) {
+      setMensagem("As senhas devem ser iguais.");
+      setTipoMensagem("error");
       return;
     }
 
     try {
-      // ainda n fiz essa api
-      const ok = await window.api.login.updatePassword(
-        formulario.email,
-        formulario.token,
-        formulario.senha1,
-      );
+      setLoading(true);
 
-      if (!ok) {
-        alert("Token inválido ou expirado.");
+      // Chama IPC resetar-senha
+      const result = await window.api.email.resetarSenha(token, senha1);
+
+      if (!result.sucesso) {
+        setMensagem(result.mensagem || "Token inválido ou expirado.");
+        setTipoMensagem("error");
+        setLoading(false);
         return;
       }
 
-      alert("Senha atualizada com sucesso!");
-      onClose();
+      setMensagem(result.mensagem || "Senha atualizada com sucesso!");
+      setTipoMensagem("success");
+
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     } catch (err) {
       console.error(err);
-      alert("Erro ao atualizar senha.");
+      setMensagem("Erro ao atualizar senha.");
+      setTipoMensagem("error");
+    } finally {
+      setLoading(false);
     }
   };
-
-
-
 
   if (!isOpen) return null;
 
@@ -68,13 +81,18 @@ const [formulario, setFormulario] = useState({
         <div id="formCentre">
           <img src={CloseIcon} id="closeIcon" alt="Fechar" onClick={onClose} />
 
-          <h1 className="h1reset">Validar Token</h1>
+          <h1 className="h1reset">Redefinir Senha</h1>
+
+          {email && (
+            <div className="emailInfo">
+              Email: <strong>{email}</strong>
+            </div>
+          )}
 
           <form onSubmit={updateSenha}>
             <label className="labelreset" htmlFor="tokenReset">
               Token recebido
             </label>
-
             <input
               className="inputreset"
               type="text"
@@ -88,7 +106,6 @@ const [formulario, setFormulario] = useState({
             <label className="labelreset" htmlFor="novaSenhaReset">
               Nova senha
             </label>
-
             <input
               className="inputreset"
               type="password"
@@ -102,7 +119,6 @@ const [formulario, setFormulario] = useState({
             <label className="labelreset" htmlFor="confirmarSenhaReset">
               Confirmar senha
             </label>
-
             <input
               className="inputreset"
               type="password"
@@ -113,8 +129,12 @@ const [formulario, setFormulario] = useState({
               onChange={evento}
             />
 
-            <button className="bntreset" type="submit">
-              Atualizar Senha
+            {mensagem && (
+              <div className={`mensagem ${tipoMensagem}`}>{mensagem}</div>
+            )}
+
+            <button className="bntreset" type="submit" disabled={loading}>
+              {loading ? "Atualizando..." : "Atualizar Senha"}
             </button>
           </form>
         </div>

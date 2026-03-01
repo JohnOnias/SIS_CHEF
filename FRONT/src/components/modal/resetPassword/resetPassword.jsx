@@ -10,6 +10,10 @@ function ModalResetSenha({ isOpen, onClose }) {
     email: "",
   });
 
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState(""); // success | error
+  const [loading, setLoading] = useState(false);
+
   const evento = (event) => {
     const { name, value } = event.target;
     setFormulario((prev) => ({ ...prev, [name]: value }));
@@ -18,21 +22,40 @@ function ModalResetSenha({ isOpen, onClose }) {
   const enviarEmail = async (event) => {
     event.preventDefault();
 
+    setMensagem("");
+    setTipoMensagem("");
 
-    
+    if (!formulario.email) {
+      setMensagem("Digite um email válido.");
+      setTipoMensagem("error");
+      return;
+    }
+
     try {
-      // ainda não fiz essa api
-      const ok = await window.api.login.sendResetEmail(formulario.email);
+      setLoading(true);
+
+      const ok = await window.api.email.gerarEEnviarToken(formulario.email);
 
       if (!ok) {
-        alert("Erro ao acessar sua conta, tente novamente mais tarde");
+        setMensagem("Erro ao acessar sua conta. Tente novamente mais tarde.");
+        setTipoMensagem("error");
+        setLoading(false);
         return;
       }
 
-      setOpenModal(true);
+      setMensagem("Email enviado com sucesso! Verifique sua caixa de entrada.");
+      setTipoMensagem("success");
+
+      setTimeout(() => {
+        setOpenModal(true);
+        setMensagem("");
+      }, 1200);
     } catch (e) {
       console.error(e);
-      alert(e?.message || "Erro ao enviar token");
+      setMensagem(e?.message || "Erro ao enviar token.");
+      setTipoMensagem("error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,11 +69,14 @@ function ModalResetSenha({ isOpen, onClose }) {
 
           <h1 className="h1reset">Recuperar Acesso</h1>
 
-          <label className="labelreset" htmlFor="emailResetTest">Digite o Email cadastrado!</label>
+          <label className="labelreset" htmlFor="emailResetTest">
+            Digite o Email cadastrado!
+          </label>
 
           <form onSubmit={enviarEmail}>
             <input
               className="inputreset"
+              required
               type="text"
               name="email"
               id="emailResetTest"
@@ -59,8 +85,17 @@ function ModalResetSenha({ isOpen, onClose }) {
               onChange={evento}
             />
 
-            <button className="bntreset" id="enviar" type="submit">
-              Enviar
+            {mensagem && (
+              <div className={`mensagem ${tipoMensagem}`}>{mensagem}</div>
+            )}
+
+            <button
+              className="bntreset"
+              id="enviar"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Enviando..." : "Enviar"}
             </button>
           </form>
         </div>

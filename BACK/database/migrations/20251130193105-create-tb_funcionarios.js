@@ -47,14 +47,14 @@ module.exports = {
       },
       
 
-      reset_token: {
+      resetToken: {
         type: Sequelize.STRING(255),
         allowNull: true,
         defaultValue: null,
       },
 
-      reset_expires: {
-        type: Sequelize.STRING(255),
+      resetTokenExpires: {
+        type: Sequelize.DATE,
         allowNull: true,
         defaultValue: null,
       },

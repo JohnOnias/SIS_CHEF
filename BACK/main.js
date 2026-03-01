@@ -10,11 +10,11 @@ const loginIpc = require("./ipc/login/loginIpc.js");
 const categoryIpc = require("./ipc/registration/categoryIpc.js");
 const productIpc = require("./ipc/registration/productIpc.js");
 const tableIpc = require("./ipc/registration/tableIpc.js");
-const resetIpc = require("./ipc/reset/resetIpc.js");
 const userIpc = require("./ipc/user/userIpc.js");
 const orderIpc = require("./ipc/order/orderIpc.js");
 const employeeIpc = require("./ipc/registration/employeeIpc.js");
 const paymantIpc = require("./ipc/paymant/paymantIpc.js");
+const emailIpc = require("./ipc/email/emailIpc.js");
 
 // ============================================================
 // Função para inicializar todos os IPC handlers
@@ -26,10 +26,10 @@ function inicializarIpcHandlers() {
     employeeIpc();
     productIpc();
     tableIpc();
-    resetIpc();
     userIpc();
     orderIpc();
     paymantIpc();
+    emailIpc();
 
     console.log("Todos os IPC handlers foram inicializados com sucesso.");
   } catch (error) {
@@ -66,7 +66,6 @@ module.exports = {
   employeeIpc,
   categoryIpc,
   tableIpc,
-  resetIpc,
   userIpc,
   orderIpc,
 };
