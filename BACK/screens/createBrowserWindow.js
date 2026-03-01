@@ -1,6 +1,18 @@
 const { BrowserWindow } = require("electron");
 const { join } = require("path");
 
+
+
+
+
+
+
+
+
+
+
+
+
 let win; // variável global para a janela
 
 function createWindow() {

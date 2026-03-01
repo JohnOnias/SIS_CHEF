@@ -20,10 +20,16 @@ export default function FuncionarioModel(sequelize) {
       tipo: { type: DataTypes.STRING, allowNull: false },
 
       senha: { type: DataTypes.STRING, allowNull: false },
-      ativo: { type:DataTypes.BOOLEAN, allowNull: true},
+      ativo: { type: DataTypes.BOOLEAN, allowNull: true },
 
-      reset_token: { type: DataTypes.STRING, allowNull: true }, 
-      reset_expires: { type: DataTypes.STRING, allowNull: true },
+      resetToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      resetTokenExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
       tableName: "tb_funcionarios",

@@ -11,6 +11,7 @@ const loginPreload = require("./login/login.js");
 const pedidoPreload = require("./order/order.js");
 const userPreload = require("./user/user.js");
 const paymantPreload = require("./paymant/paymant.js");
+const emailPreload = require("./email/email.js");
 
 // API única
 const api = {
@@ -24,6 +25,7 @@ const api = {
   pedido: pedidoPreload(),
   user: userPreload(),
   pagamento: paymantPreload(),
+  email: emailPreload()
 
 };
 

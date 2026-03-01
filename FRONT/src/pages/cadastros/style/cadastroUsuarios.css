@@ -1,110 +1,143 @@
-.container-cadastros {
-  width: 95vw; 
+/* ========= Container geral ========= */
+
+.cadastro-usuarios-container {
+  width: 95vw;
   margin: 10px;
   margin-left: 250px;
   padding: 40px;
   height: 88vh;
-  background-color: #1e1e1e;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
-  color: #f1f1f1;
   font-family: Arial, Helvetica, sans-serif;
   overflow: hidden;
 }
 
-.container-cadastros .top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* ========= Header ========= */
+
+.cadastro-usuarios-top {
+  margin-bottom: 16px;
 }
 
-.container-cadastros h2 {
+.cadastro-usuarios-top h2 {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #0f172a;
 }
 
-.container-cadastros hr {
+.cadastro-usuarios-divider {
   border: none;
   height: 1px;
-  background-color: #333;
+  background-color: #e5e7eb;
   margin: 20px 0;
 }
 
-.divbnt {
+/* ========= Botão Novo Funcionário ========= */
+
+.cadastro-usuarios-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.divbnt label {
+.cadastro-usuarios-actions label {
   font-size: 14px;
-  color: #bdbdbd;
+  color: #6b7280;
 }
 
-.divbnt button {
+.cadastro-usuarios-actions button {
   padding: 10px 18px;
   border: none;
   border-radius: 8px;
-  background-color: #4caf50;
+  background-color: #0f172a;
   color: white;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
 }
 
-.divbnt button:hover {
-  background-color: #43a047;
+.cadastro-usuarios-actions button:hover {
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
-table {
+/* ========= Wrapper para scroll ========= */
+
+.cadastro-usuarios-table-wrapper {
+  overflow-x: auto;
+}
+
+/* ========= Tabela ========= */
+
+.cadastro-usuarios-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 860px;
+  background: transparent;
+  color: #111827;
 }
 
-thead {
-  background-color: #2a2a2a;
-}
+/* ========= Cabeçalho ========= */
 
-th {
+.cadastro-usuarios-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #0f172a;
+  color: #ffffff;
   text-align: left;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fdfdfd;
-  border: solid 1px white;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-td {
-  padding: 12px;
-  font-size: 14px;
-  border-top: 1px solid #333;
-  border: solid 1px white;
-  color: white;
+.cadastro-usuarios-table thead th:first-child {
+  border-top-left-radius: 10px;
 }
 
-tbody tr {
-  transition: 0.2s ease;
+.cadastro-usuarios-table thead th:last-child {
+  border-top-right-radius: 10px;
 }
 
-tbody tr:hover {
-  background-color: #4b4b4b;
+/* ========= Corpo ========= */
+
+.cadastro-usuarios-table tbody td {
+  padding: 12px 14px;
+  font-size: 13.5px;
+  color: #111827;
+  border-bottom: 1px solid #eef2f7;
+  background: #ffffff;
 }
 
-.editar-icon{
-  background-color: #ff000000;
+/* Zebra */
 
+.cadastro-usuarios-table tbody tr:nth-child(even) td {
+  background: #f8fafc;
 }
-.editar-icon:hover{
+
+/* Hover */
+
+.cadastro-usuarios-table tbody tr:hover td {
+  background: #eef6ff;
+}
+
+/* ========= Ícones ========= */
+
+.cadastro-usuarios-edit,
+.cadastro-usuarios-delete {
   cursor: pointer;
+  margin-right: 10px;
+  font-size: 14px;
+  transition: 0.15s ease;
 }
-.delete-icon{
-  background-color: #ff000000;
-  
+
+.cadastro-usuarios-edit:hover {
+  transform: scale(1.1);
 }
-.delete-icon:hover{
-  cursor: pointer;
-   
+
+.cadastro-usuarios-delete:hover {
+  transform: scale(1.1);
 }

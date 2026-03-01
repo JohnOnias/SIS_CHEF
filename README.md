@@ -13,6 +13,7 @@ Olá Pessoal :D
 - cd para raiz do projeto
 - cd front e instale o react via npm (npm install vite@latest )
 - cd back instale o electron via npm (npm install electron)
+- ainda no back instale o Nodemailer(npm install nodemailer) tbm instale (npm install bcryptjs)
 - cd back, cd database, instale o sequelize para rodar as migrations(
     
     npm install --save-dev sequelize-cli
