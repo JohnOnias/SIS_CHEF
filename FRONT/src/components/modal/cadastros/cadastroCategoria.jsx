@@ -1,66 +1,58 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./styles/cadastroUsuario.css";
 import CloseIcon from "../../../assets/modal/close.png";
-
-
-
-
-
-
-
-
+import CustomModal from "../../../components/modal/error/customModal";
 
 function CategoriaModal({ isOpen, onClose }) {
-
-
   const [formulario, setFormulario] = useState({
     nome: "",
     status: "",
   });
 
-    
-  
+  const [openFeedback, setOpenFeedback] = useState(false);
+  const [mensagemFeedback, setMensagemFeedback] = useState("");
+  const [tipoFeedback, setTipoFeedback] = useState("success");
 
   const evento = (event) => {
     const { name, value } = event.target;
     setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
+  const enviar = async (event) => {
+    event.preventDefault();
 
+    try {
+      const resposta = await window.api.categoria.cadastrarCategoria(
+        formulario.nome,
+        formulario.status,
+      );
 
-const enviar = async (event) => {
-  event.preventDefault();
-  try {
-    const resposta = await window.api.categoria.cadastrarCategoria(
-      formulario.nome,
-      formulario.status,
-    
-      
-    );
+      if (!resposta?.success) {
+        setMensagemFeedback(resposta?.error || "Erro ao cadastrar categoria");
+        setTipoFeedback("error");
+        setOpenFeedback(true);
+        return;
+      }
 
-    if (!resposta?.success) {
-      alert(`Erro ao cadastrar: ${resposta?.error || "Erro ao cadastrar"}`);
-      return;
+      setMensagemFeedback("Categoria cadastrada com sucesso!");
+      setTipoFeedback("success");
+      setOpenFeedback(true);
+
+      setFormulario({
+        nome: "",
+        status: "",
+      });
+
+  
+    } catch (e) {
+      setMensagemFeedback(e?.message || "Erro inesperado ao cadastrar");
+      setTipoFeedback("error");
+      setOpenFeedback(true);
     }
-    
-    console.log("objeto retornado do cadastro", resposta);
-    alert("Categoria cadastrada com sucesso!");
-
-    setFormulario({
-      nome: "",
-      status: "",
-    
-    });
-
-    onClose();
-  } catch (e) {
-    console.error(e);
-    alert(e?.message || "Erro ao cadastrar");
-  }
-};
-
+  };
 
   if (!isOpen) return null;
+
   return (
     <div className="modal-overlay">
       <div className="modal-container">
@@ -88,29 +80,42 @@ const enviar = async (event) => {
               value={formulario.nome}
               onChange={evento}
             />
-                <select
-                required
-                className="modal-input"
-                name="status"
-                id="status"
-                value={formulario.status}
-                onChange={evento}
-                >
 
+            <label className="modal-label" htmlFor="status">
+              Status:
+            </label>
+
+            <select
+              required
+              className="modal-input"
+              name="status"
+              id="status"
+              value={formulario.status}
+              onChange={evento}
+            >
               <option value="">Selecione</option>
               <option value="ativo">Ativa</option>
               <option value="desativa">Desativa</option>
-          
             </select>
-    
-            <button className="modal-button" type="submit" >
+
+            <button className="modal-button" type="submit">
               Cadastrar
             </button>
-            
           </form>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={openFeedback}
+        title={tipoFeedback === "success" ? "Sucesso" : "Erro"}
+        message={mensagemFeedback}
+        onClose={() => setOpenFeedback(false)}
+        duration={3000}
+        type={tipoFeedback}
+        cancelText="Fechar"
+      />
     </div>
   );
 }
-export default CategoriaModal; 
+
+export default CategoriaModal;

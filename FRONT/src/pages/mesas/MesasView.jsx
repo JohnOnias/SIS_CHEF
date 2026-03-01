@@ -5,21 +5,35 @@ import AddMesaModal from "../../components/modal/mesas/addmesa";
 import RemoverMesaModal from "../../components/modal/mesas/removermesa";
 import PedidoModal from "../../components/modal/orders/addPedido";
 import EditarPedidoModal from "../../components/modal/orders/editPedido";
+import PaymentModal from "../../components/modal/orders/paymentModal";
+import CustomModal from "../../components/modal/error/customModal";
 
 export default function Mesas() {
   const [mesas, setMesas] = useState([]);
+
   const [openModalAdd, setOpenModalAdd] = useState(false);
   const [openModalRemover, setOpenModalRemover] = useState(false);
-const [openAdd, setOpenAdd] = useState(false);
-const [openEdit, setOpenEdit] = useState(false);
-const [mesaSelecionada, setMesaSelecionada] = useState(null);
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+
+  const [mesaSelecionada, setMesaSelecionada] = useState(null);
+
+  const [openPagamento, setOpenPagamento] = useState(false);
+  const [pedidoParaPagamento, setPedidoParaPagamento] = useState(null);
+  const [totalPagamento, setTotalPagamento] = useState(0);
+
+  const [openFeedback, setOpenFeedback] = useState(false);
+  const [mensagemFeedback, setMensagemFeedback] = useState("");
+  const [tipoFeedback, setTipoFeedback] = useState("success");
 
   async function carregarMesas() {
     try {
       const data = await window.api.mesas.listarMesas();
       setMesas(data);
     } catch (error) {
-      console.error("Erro ao carregar mesas:", error);
+      setMensagemFeedback("Erro ao carregar mesas");
+      setTipoFeedback("error");
+      setOpenFeedback(true);
     }
   }
 
@@ -27,17 +41,52 @@ const [mesaSelecionada, setMesaSelecionada] = useState(null);
     carregarMesas();
   }, []);
 
+  const abrirPedido = (mesa) => {
+    setMesaSelecionada(mesa);
 
-const abrirPedido = (mesa) => {
-  setMesaSelecionada(mesa);
+    if (mesa.status === "livre") {
+      setOpenAdd(true);
+    } else {
+      setOpenEdit(true);
+    }
+  };
 
-  if (mesa.status === "livre") {
-    setOpenAdd(true);
-  } else {
-    setOpenEdit(true);
-  }
-};
+  const handleFecharPedido = (pedidoAtual, total) => {
+    setPedidoParaPagamento(pedidoAtual);
+    setTotalPagamento(total);
+    setOpenPagamento(true);
+  };
 
+  const handleConfirmPagamento = async (formaPagamento) => {
+    if (!pedidoParaPagamento || !mesaSelecionada) return;
+
+    try {
+      const resposta = await window.api.pagamento.cadastrarPagamento(
+        pedidoParaPagamento.id,
+        formaPagamento,
+        totalPagamento,
+        mesaSelecionada.numero,
+      );
+
+      if (!resposta?.success) {
+        setMensagemFeedback(resposta?.error || "Erro ao registrar pagamento");
+        setTipoFeedback("error");
+        setOpenFeedback(true);
+        return;
+      }
+
+      setMensagemFeedback("Pagamento realizado com sucesso!");
+      setTipoFeedback("success");
+      setOpenFeedback(true);
+
+      setOpenPagamento(false);
+      carregarMesas();
+    } catch (error) {
+      setMensagemFeedback("Erro inesperado ao processar pagamento");
+      setTipoFeedback("error");
+      setOpenFeedback(true);
+    }
+  };
 
   return (
     <div className="layout">
@@ -85,34 +134,70 @@ const abrirPedido = (mesa) => {
         </div>
       </main>
 
+      {/* MODAIS */}
+
       <AddMesaModal
         isOpen={openModalAdd}
         onClose={() => setOpenModalAdd(false)}
-        onMesaCriada={carregarMesas}
+        onMesaCriada={() => {
+          carregarMesas();
+          setMensagemFeedback("Mesa cadastrada com sucesso!");
+          setTipoFeedback("success");
+          setOpenFeedback(true);
+        }}
       />
 
       <RemoverMesaModal
         isOpen={openModalRemover}
         onClose={() => setOpenModalRemover(false)}
-        onMesaRemovida={carregarMesas}
+        onMesaRemovida={() => {
+          carregarMesas();
+          setMensagemFeedback("Mesa removida com sucesso!");
+          setTipoFeedback("success");
+          setOpenFeedback(true);
+        }}
       />
 
       <PedidoModal
         isOpen={openAdd}
-        onClose={() => setOpenAdd(false)}
+        onClose={() => {
+          setOpenAdd(false);
+          carregarMesas();
+        }}
         mesa={mesaSelecionada}
       />
+
       <EditarPedidoModal
         isOpen={openEdit}
-        onClose={() => setOpenEdit(false)}
+        onClose={() => {
+          setOpenEdit(false);
+          carregarMesas();
+        }}
         mesa={mesaSelecionada}
         onAdicionarItens={() => {
           setOpenEdit(false);
           setOpenAdd(true);
         }}
+        onFecharPedido={handleFecharPedido}
       />
-      
-    
+
+      <PaymentModal
+        isOpen={openPagamento}
+        onClose={() => setOpenPagamento(false)}
+        total={totalPagamento}
+        pedidoAtual={pedidoParaPagamento}
+        onConfirm={handleConfirmPagamento}
+      />
+
+      <CustomModal
+        isOpen={openFeedback}
+        title={tipoFeedback === "success" ? "Sucesso" : "Erro"}
+        message={mensagemFeedback}
+        onClose={() => setOpenFeedback(false)}
+        duration={3000}
+        type={tipoFeedback}
+        cancelText="Fechar"
+      />
     </div>
   );
 }

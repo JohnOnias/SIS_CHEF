@@ -32,8 +32,7 @@ export async function cadastrarMesa(numero) {
     await transaction.commit();
 
     return {
-      success: true,
-      mesaCriada: mesaCriada.get({ plain: true }),
+      success: true
     };
   } catch (error) {
     if (transaction && !transaction.finished) {

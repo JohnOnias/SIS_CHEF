@@ -12,19 +12,18 @@ export default function CadastroUsuariosView() {
 
 
   const [openModal, setOpenModal] = useState(false);
-
   const [openModalEdit, setOpenEdit] = useState(false);
   const[ openModalDelete, setOpenDelete] = useState(false);
-
-
-    const [formulario, setFormulario] = useState({
+  const [usuarios, setUsuarios] = useState([]);
+  const [formulario, setFormulario] = useState({
       nome: "",
       cpf: "",
       email: "",
       tipo: ""
     });
 
-    const [usuarios, setUsuarios] = useState([]);
+  
+    
       useEffect(() => {
         async function carregarFuncionarios() {
           const dados = await window.api.funcionario.listarFuncionarios();
@@ -42,7 +41,7 @@ export default function CadastroUsuariosView() {
 
       }
       function editarFuncionario(user){
-        console.log("id recebido na função editar:", user.dataValues.id); 
+      
 
         setFormulario({
           id: user.dataValues.id,
@@ -51,7 +50,7 @@ export default function CadastroUsuariosView() {
           email: user.dataValues.email,
           tipo: user.dataValues.tipo
         });
-        console.log("id passado ao formulario", formulario.id);
+  
         setOpenEdit(true);
       }
 

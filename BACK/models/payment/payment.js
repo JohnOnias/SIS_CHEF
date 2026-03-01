@@ -1,20 +1,37 @@
-import { Pagamento } from "../../database/models/index.js";
+import { Pagamento, Pedido } from "../../database/models/index.js";
+
+import { Mesa } from "../../database/models/index.js";
 
 
-export async function cadastrarPagamento(pedidoId, tipoPagamento, dividido,valorPago) {
+
+
+export async function cadastrarPagamento(
+  pedidoId,
+  tipoPagamento,
+  valorPago,
+  mesa,
+) {
   try {
     const pagamento = await Pagamento.create({
       id_pedido: pedidoId,
       tipo_pagamento: tipoPagamento,
-      dividido: dividido,
       valor_pago: valorPago,
     });
-    return true;
+
+    if (pagamento) {
+      // Atualiza status da mesa para livre
+      await Mesa.update({ status: "livre" }, { where: { numero: mesa } });
+      await Pedido.update({ status: "fechado"}, { where: {id: pedidoId}});
+
+    }
+
+    return { success: true };
   } catch (error) {
     console.error("Erro ao cadastrar pagamento:", error);
     return { success: false, error: error.message };
   }
 }
+
 
 
 export async function buscarPagamentoPorPedidoId(pedidoId) {

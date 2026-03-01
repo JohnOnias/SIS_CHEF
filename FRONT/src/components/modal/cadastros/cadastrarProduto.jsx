@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import "./styles/cadastroUsuario.css";
 import CloseIcon from "../../../assets/modal/close.png";
-
-
+import CustomModal from "../../../components/modal/error/customModal";
 
 function ProdutoModal({ isOpen, onClose }) {
+  const [openFeedback, setOpenFeedback] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  const [tipoMsg, setTipoMsg] = useState("");
+  const [titulo, setTitulo] = useState("");
 
-
-const [categorias, setCategorias] = useState([]);
+  const [categorias, setCategorias] = useState([]);
 
   const [formulario, setFormulario] = useState({
     nome: "",
@@ -16,65 +18,87 @@ const [categorias, setCategorias] = useState([]);
     categoria: "",
   });
 
-async function getCategorias() {
-  try {
-    const resposta = await window.api.categoria.getCategorias();
+  async function getCategorias() {
+    try {
+      const resposta = await window.api.categoria.getCategorias();
 
-    if (resposta?.success) {
-      setCategorias(resposta.data);
-      console.log(" lista de categorias",resposta.data)
-    } else {
-      console.log("Erro ao buscar categorias");
+      if (resposta?.success) {
+        setCategorias(resposta.data);
+      } else {
+        setTitulo("Erro");
+        setMensagem("Erro ao buscar categorias");
+        setTipoMsg("error");
+        setOpenFeedback(true);
+      }
+    } catch (error) {
+      setTitulo("Erro");
+      setMensagem("Erro ao carregar categorias");
+      setTipoMsg("error");
+      setOpenFeedback(true);
     }
-  } catch (error) {
-    console.log("erro ao pegar categorias", error);
   }
-}
-  
+
   useEffect(() => {
-  getCategorias();
-}, []);
-
-
-
+    if (isOpen) {
+      getCategorias();
+    }
+  }, [isOpen]);
 
   const evento = (event) => {
     const { name, value } = event.target;
     setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
+  const enviar = async (event) => {
+    event.preventDefault();
 
+    if (!formulario.preco || Number(formulario.preco) <= 0) {
+      setTitulo("Erro");
+      setMensagem("Preço inválido");
+      setTipoMsg("error");
+      setOpenFeedback(true);
+      return;
+    }
 
-const enviar = async (event) => {
-  event.preventDefault();
-  try {
-    const resposta = await window.api.produto.cadastrarProduto(
+    try {
+      const resposta = await window.api.produto.cadastrarProduto(
         formulario.nome,
         Number(formulario.preco),
         formulario.categoria,
-        formulario.descricao
+        formulario.descricao,
       );
-    
 
-    if (!resposta?.success) {
-      alert(`Erro ao cadastrar: ${resposta?.error || "Erro ao cadastrar"}`);
-      return;
+      if (!resposta?.success) {
+        setTitulo("Erro");
+        setMensagem(resposta?.error || "Erro ao cadastrar produto");
+        setTipoMsg("error");
+        setOpenFeedback(true);
+        return;
+      }
+
+      setTitulo("Sucesso");
+      setMensagem("Produto cadastrado com sucesso!");
+      setTipoMsg("success");
+      setOpenFeedback(true);
+
+      setFormulario({
+        nome: "",
+        preco: "",
+        descricao: "",
+        categoria: "",
+      });
+
+    
+    } catch (e) {
+      setTitulo("Erro");
+      setMensagem("Erro inesperado ao cadastrar produto");
+      setTipoMsg("error");
+      setOpenFeedback(true);
     }
-    
-    console.log("objeto retornado do cadastro", resposta);
-    alert("Produto cadastrado com sucesso!");
-
- 
-
-    onClose();
-  } catch (e) {
-    console.error(e);
-    alert(e?.message || "Erro ao cadastrar");
-  }
-};
-
+  };
 
   if (!isOpen) return null;
+
   return (
     <div className="modal-overlay">
       <div className="modal-container">
@@ -119,25 +143,26 @@ const enviar = async (event) => {
             />
 
             <label className="modal-label" htmlFor="categoria">
-              Categoria: 
+              Categoria:
             </label>
 
-           <select
-  required
-  className="modal-input"
-  name="categoria"
-  id="categoria"
-  value={formulario.categoria}
-  onChange={evento}
->
-  <option value="">Selecione</option>
-  {Array.isArray(categorias) &&
-    categorias.map((categoria) => (
-      <option key={categoria.id} value={categoria.id}>
-        {categoria.nome}
-      </option>
-    ))}
-</select>
+            <select
+              required
+              className="modal-input"
+              name="categoria"
+              id="categoria"
+              value={formulario.categoria}
+              onChange={evento}
+            >
+              <option value="">Selecione</option>
+              {Array.isArray(categorias) &&
+                categorias.map((categoria) => (
+                  <option key={categoria.id} value={categoria.id}>
+                    {categoria.nome}
+                  </option>
+                ))}
+            </select>
+
             <label className="modal-label" htmlFor="descricao">
               Descrição:
             </label>
@@ -147,18 +172,29 @@ const enviar = async (event) => {
               type="text"
               name="descricao"
               id="descricao"
-              placeholder="Digite uma descricao"
+              placeholder="Digite uma descrição"
               value={formulario.descricao}
               onChange={evento}
             />
 
-            <button className="modal-button" type="submit" >
+            <button className="modal-button" type="submit">
               Cadastrar
             </button>
           </form>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={openFeedback}
+        title={titulo}
+        message={mensagem}
+        onClose={() => setOpenFeedback(false)}
+        duration={5000}
+        type={tipoMsg}
+        cancelText="Fechar"
+      />
     </div>
   );
 }
-export default ProdutoModal; 
+
+export default ProdutoModal;

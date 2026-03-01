@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "./styles/editarpedido.css";
 
-function EditarPedidoModal({ isOpen, onClose, mesa, onAdicionarItens }) {
+function EditarPedidoModal({
+  isOpen,
+  onClose,
+  mesa,
+  onAdicionarItens,
+  onFecharPedido,
+}) {
   const [itens, setItens] = useState([]);
-  const [pedidoAtual, setPedidoAtual] = useState(null); // objeto do pedido ativo
+  const [pedidoAtual, setPedidoAtual] = useState(null);
 
   useEffect(() => {
     if (!isOpen || !mesa) return;
 
     async function carregarPedidos() {
       try {
-        const pedidosNaMesa = await window.api.pedido.listarPedidos(mesa.numero);
+        const pedidosNaMesa = await window.api.pedido.listarPedidos(
+          mesa.numero,
+        );
         if (pedidosNaMesa && pedidosNaMesa.length > 0) {
           const pedidoAtivo = Array.isArray(pedidosNaMesa)
             ? pedidosNaMesa[0]
             : pedidosNaMesa;
           setPedidoAtual(pedidoAtivo);
 
-          const respostaItens = await window.api.pedido.listarItensPedido(pedidoAtivo.id);
+          const respostaItens = await window.api.pedido.listarItensPedido(
+            pedidoAtivo.id,
+          );
           setItens(Array.isArray(respostaItens) ? respostaItens : []);
         } else {
           setPedidoAtual(null);
@@ -45,7 +55,11 @@ function EditarPedidoModal({ isOpen, onClose, mesa, onAdicionarItens }) {
         await window.api.pedido.removerItemPedido(pedidoAtual.id, item.id);
         novosItens.splice(index, 1);
       } else {
-        await window.api.pedido.atualizarItemPedido(pedidoAtual.id, item.id, novaQuantidade);
+        await window.api.pedido.atualizarItemPedido(
+          pedidoAtual.id,
+          item.id,
+          novaQuantidade,
+        );
       }
 
       setItens(novosItens);
@@ -54,20 +68,20 @@ function EditarPedidoModal({ isOpen, onClose, mesa, onAdicionarItens }) {
     }
   };
 
-  const aumentarQuantidade = (index) => atualizarItem(index, itens[index].quantidade + 1);
-  const diminuirQuantidade = (index) => atualizarItem(index, itens[index].quantidade - 1);
+  const aumentarQuantidade = (index) =>
+    atualizarItem(index, itens[index].quantidade + 1);
+  const diminuirQuantidade = (index) =>
+    atualizarItem(index, itens[index].quantidade - 1);
   const removerItem = (index) => atualizarItem(index, 0);
 
-  const calcularTotal = () => itens.reduce((total, item) => total + item.preco * item.quantidade, 0);
+  const calcularTotal = () =>
+    itens.reduce((total, item) => total + item.preco * item.quantidade, 0);
 
   return (
     <div className="modal-overlay">
       <div className="modal-editar">
         {/* Botão X no canto superior direito */}
-        <button
-          className="btn-fechar"
-          onClick={onClose}
-        >
+        <button className="btn-fechar" onClick={onClose}>
           X
         </button>
 
@@ -100,8 +114,16 @@ function EditarPedidoModal({ isOpen, onClose, mesa, onAdicionarItens }) {
         </div>
 
         <div className="acoes">
-          <button onClick={() => onAdicionarItens(mesa)}>Adicionar Itens</button>
-          <button onClick={() => alert("Fechar pedido (modal ainda não criado)")}>
+          <button onClick={() => onAdicionarItens(mesa)}>
+            Adicionar Itens
+          </button>
+
+          <button
+            onClick={() => {
+              onClose(); // fecha o EditarPedidoModal
+              onFecharPedido(pedidoAtual, calcularTotal()); // abre PaymentModal via função pai
+            }}
+          >
             Fechar Pedido
           </button>
         </div>

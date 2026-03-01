@@ -1,9 +1,12 @@
 import "./style/addmesa.css";
 import { useState } from "react"; 
+import CustomModal from "../../../components/modal/error/customModal";
 
 
 
 function AddMesaModal({ isOpen, onClose, onMesaCriada }) {
+   const [openErro, setOpenErro] = useState(false);
+   const [mensagemErro, setMensagemErro] = useState("");
   const [formulario, setFormulario] = useState({
     numero: "",
   });
@@ -17,25 +20,31 @@ function AddMesaModal({ isOpen, onClose, onMesaCriada }) {
 
   const addMesa = async () => {
     if (!formulario.numero.trim()) {
-      alert("Digite o número da mesa");
+      
       return;
     }
 
     try {
       const ok = await window.api.mesas.cadastrarMesas(formulario.numero);
-      console.log("erro?:",ok);
-      console.log(formulario.numero);
-
+  
         if (ok.success) {
           
           setFormulario({ numero: "" });
             onMesaCriada();
               onClose();
         }
+        else{
+          
+           setMensagemErro("Erro ao remover mesa");
+           setOpenErro(true);
+           return;
+
+        }
+        
      
     } catch (err) {
-      console.error(err);
-      alert("Erro ao cadastrar mesa");
+
+        console.log(err, "teste");
     }
   };
 
@@ -53,7 +62,7 @@ function AddMesaModal({ isOpen, onClose, onMesaCriada }) {
         <p>Número da mesa</p>
 
         <input
-          type="text"
+          type="number"
           name="numero"
           placeholder="Digite o número"
           value={formulario.numero}
@@ -68,6 +77,16 @@ function AddMesaModal({ isOpen, onClose, onMesaCriada }) {
           Cancelar
         </button>
       </div>
+
+      <CustomModal
+        isOpen={openErro}
+        title="Erro"
+        message={mensagemErro}
+        onClose={() => setOpenErro(false)}
+        duration={5000}
+        type="error"
+        cancelText="Fechar"
+      />
     </div>
   );
 }

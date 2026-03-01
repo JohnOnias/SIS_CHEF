@@ -1,17 +1,17 @@
-const {ipcRenderer} = require('electron');
+const { ipcRenderer } = require('electron');
 
 
 
 module.exports = function paymantPreload() {
 
   return {
-    cadastrarPagamento: (idPedido, tipoPagamento, dividido, valorPago) =>
+    cadastrarPagamento: (idPedido, tipoPagamento, valorPago, mesa) =>
       ipcRenderer.invoke(
         "cadastrar-pagamento",
         idPedido,
         tipoPagamento,
-        dividido,
         valorPago,
+        mesa
       ),
 
     todosOsPagamentos: () => ipcRenderer.invoke("get-pagamento"),

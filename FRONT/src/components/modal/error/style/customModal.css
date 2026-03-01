@@ -1,0 +1,55 @@
+.custom-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.custom-modal {
+  background: #fdfdfd;
+  padding: 24px;
+  border-radius: 8px;
+  width: 320px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+}
+
+.custom-modal.error {
+  border-left: 5px solid #ff4d4d;
+}
+
+.custom-modal.warning {
+  border-left: 5px solid #ffa500;
+}
+
+.custom-modal.success {
+  border-left: 5px solid #4caf50;
+}
+
+.custom-modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.custom-modal-confirm {
+  padding: 8px 16px;
+  background: #4caf50;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.custom-modal-cancel {
+  padding: 8px 16px;
+  background: #555;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}

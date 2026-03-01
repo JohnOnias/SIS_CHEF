@@ -1,0 +1,126 @@
+/* Overlay */
+.payment-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 18px;
+}
+
+/* Container principal */
+.payment-modal-container {
+  width: 420px;
+  max-width: 95%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  padding: 26px 20px;
+  animation: modalFade 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Header */
+.payment-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-modal-header h2 {
+  font-size: 22px;
+  margin: 0;
+  color: #222;
+}
+
+.payment-modal-close {
+  width: 18px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.payment-modal-close:hover {
+  opacity: 1;
+}
+
+/* Conteúdo */
+.payment-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Total */
+.payment-total {
+  font-weight: 600;
+  font-size: 16px;
+  color: #111827;
+}
+
+/* Labels */
+.payment-label {
+  font-size: 14px;
+  color: #444;
+}
+
+/* Métodos de pagamento */
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-method-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-method-btn:hover {
+  border-color: #4a90e2;
+  background: #e5f0ff;
+}
+
+.payment-method-btn.active {
+  border-color: #4a90e2;
+  background: #d0e6ff;
+}
+
+/* Botão confirmar */
+.payment-confirm-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #4a90e2;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.payment-confirm-btn:hover {
+  background: #357abd;
+}
+
+/* Animação */
+@keyframes modalFade {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

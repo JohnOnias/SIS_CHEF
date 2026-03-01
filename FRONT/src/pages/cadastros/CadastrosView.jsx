@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import "./style/cadastros.css";
 import ProdutoModal from "../../components/modal/cadastros/cadastrarProduto";
 import CategoriaModal from "../../components/modal/cadastros/cadastroCategoria";

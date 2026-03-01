@@ -1,0 +1,100 @@
+/* ========= Container geral e header ========= */
+.container-cadastros {
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+  background: #f8f7f7;
+}
+
+.container-cadastros .top {
+  margin-bottom: 16px;
+}
+
+.container-cadastros .top h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ========= Scroll horizontal e tabela ========= */
+.container-cadastros table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 860px; /* garante que não quebre layout */
+  background: transparent;
+  color: #111827;
+  overflow-x: auto;
+}
+
+/* Cabeçalho */
+.container-cadastros thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #0f172a;
+  color: #ffffff;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0;
+}
+
+/* Bordas arredondadas no header */
+.container-cadastros thead th:first-child {
+  border-top-left-radius: 10px;
+}
+.container-cadastros thead th:last-child {
+  border-top-right-radius: 10px;
+}
+
+/* Corpo da tabela */
+.container-cadastros tbody td {
+  padding: 12px 14px;
+  font-size: 13.5px;
+  color: #111827;
+  border-bottom: 1px solid #eef2f7;
+  background: #ffffff;
+}
+
+/* Zebra e hover */
+.container-cadastros tbody tr:nth-child(even) td {
+  background: #f8fafc;
+}
+.container-cadastros tbody tr:hover td {
+  background: #eef6ff;
+}
+
+/* Linha “Lista de pedidos vazia” */
+.container-cadastros tbody td[colspan] {
+  text-align: center;
+  font-weight: 700;
+  color: #9ca3af; /* cor para texto desabilitado/muted */
+  padding: 18px 14px;
+}
+
+/* ========= Ajustes extras ========= */
+.container-cadastros main,
+.container-cadastros .content {
+  background: transparent;
+}
+
+/* Caso queira deixar header estilizado se existir futuramente */
+.container-cadastros .header,
+.container-cadastros .historico-header {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+.container-cadastros .header p,
+.container-cadastros .historico-header p {
+  margin: 6px 0 0 0;
+  color: #9ca3af;
+  font-size: 13.5px;
+}
