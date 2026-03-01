@@ -12,7 +12,11 @@ export default function HistoricoView() {
 
     carregarPedidos();
   }, []);
-
+pedidos.forEach((pedido) => {
+  console.log(
+    `Pedido ${pedido.id} - Tipo de pagamento: ${pedido.pagamento?.tipo_pagamento || "Sem pagamento"}`,
+  );
+});
   return (
     <div className="historico-view-container">
       <div className="historico-view-top">
@@ -29,6 +33,7 @@ export default function HistoricoView() {
               <th>Status</th>
               <th>Responsável</th>
               <th>Valor Total</th>
+              <th>Metodo</th>
             </tr>
           </thead>
 
@@ -41,7 +46,8 @@ export default function HistoricoView() {
                   <td>{new Date(pedido.data_criacao).toLocaleDateString()}</td>
                   <td>{pedido.status}</td>
                   <td>{pedido.Funcionario?.nome}</td>
-                  <td>{pedido.valor_total}</td>
+                  <td>R$ {pedido.valor_total}</td>
+                  <td>{pedido.pagamento?.tipo_pagamento || "Sem pagamento"}</td>
                 </tr>
               ))
             ) : (

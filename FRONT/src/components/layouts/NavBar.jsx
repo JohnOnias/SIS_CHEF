@@ -65,13 +65,11 @@ function NavBar() {
                 <img src={ProdutosIcon} alt="icone produtos" />
                 <Link to="/categorias">Produtos</Link>
               </li>
-              
+
               <li className="menu">
-                <img src={ProdutosIcon} alt="icone historico" />
+                <img src={CadastroIcon} alt="icone historico" />
                 <Link to="/historico">Histórico de Pedidos</Link>
               </li>
-
-             
             </>
           )}
         </ul>

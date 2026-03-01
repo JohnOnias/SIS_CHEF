@@ -9,6 +9,7 @@ function DeleteProdutoModal({ isOpen, onClose }) {
   const [tipoMsg, setTipoMsg] = useState("");
   const [titulo, setTitulo] = useState("");
 
+  const [loading, setLoading] = useState(false); // loading durante exclusão
   const [openAviso, setOpenAviso] = useState(false);
 
   const [categorias, setCategorias] = useState([]);
@@ -16,20 +17,17 @@ function DeleteProdutoModal({ isOpen, onClose }) {
   const [selectedCategoria, setSelectedCategoria] = useState("");
   const [selectedProduto, setSelectedProduto] = useState("");
 
-  // limpa seleções do modal
   const limparFormulario = () => {
     setSelectedCategoria("");
     setSelectedProduto("");
     setProdutos([]);
   };
 
-  // busca todas as categorias
   async function getCategorias() {
     try {
       const resposta = await window.api.categoria.getCategorias();
-      if (resposta?.success) {
-        setCategorias(resposta.data);
-      } else {
+      if (resposta?.success) setCategorias(resposta.data);
+      else {
         setTitulo("Erro");
         setMensagem("Erro ao buscar categorias");
         setTipoMsg("error");
@@ -43,7 +41,6 @@ function DeleteProdutoModal({ isOpen, onClose }) {
     }
   }
 
-  // busca produtos de uma categoria específica
   async function getProdutos(categoriaId) {
     try {
       const resposta =
@@ -55,30 +52,20 @@ function DeleteProdutoModal({ isOpen, onClose }) {
     }
   }
 
-  // carrega categorias ao abrir modal
   useEffect(() => {
-    if (isOpen) {
-      getCategorias();
-    } else {
-      limparFormulario();
-    }
+    if (isOpen) getCategorias();
+    else limparFormulario();
   }, [isOpen]);
 
-  // atualiza lista de produtos quando muda a categoria
   useEffect(() => {
     if (selectedCategoria) {
       getProdutos(selectedCategoria);
       setSelectedProduto("");
-    } else {
-      setProdutos([]);
-    }
+    } else setProdutos([]);
   }, [selectedCategoria]);
 
-  // mostra aviso ao selecionar um produto
   useEffect(() => {
-    if (selectedProduto) {
-      setOpenAviso(true);
-    }
+    if (selectedProduto) setOpenAviso(true);
   }, [selectedProduto]);
 
   const deletarProduto = async () => {
@@ -90,6 +77,7 @@ function DeleteProdutoModal({ isOpen, onClose }) {
       return;
     }
 
+    setLoading(true);
     try {
       const resposta = await window.api.produto.deletarProduto(selectedProduto);
 
@@ -106,18 +94,16 @@ function DeleteProdutoModal({ isOpen, onClose }) {
       setTipoMsg("success");
       setOpenFeedback(true);
 
-      // Recarrega produtos da categoria após exclusão
-      if (selectedCategoria) {
-        await getProdutos(selectedCategoria);
-      }
+      if (selectedCategoria) await getProdutos(selectedCategoria);
 
-      // limpa seleção após exclusão
       setSelectedProduto("");
     } catch (error) {
       setTitulo("Erro");
       setMensagem("Erro inesperado ao excluir produto");
       setTipoMsg("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -133,7 +119,7 @@ function DeleteProdutoModal({ isOpen, onClose }) {
             alt="Fechar"
             onClick={() => {
               limparFormulario();
-              onClose();
+              onClose(true); // avisa o pai para recarregar lista
             }}
           />
           <h1 className="modal-title">Excluir Produto</h1>
@@ -179,14 +165,14 @@ function DeleteProdutoModal({ isOpen, onClose }) {
               className="modal-button btn-danger"
               type="button"
               onClick={deletarProduto}
+              disabled={loading} // desativa botão enquanto carrega
             >
-              Excluir Produto
+              {loading ? "Excluindo..." : "Excluir Produto"}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Aviso de exclusão permanente */}
       <CustomModal
         isOpen={openAviso}
         title="Atenção!"
@@ -197,7 +183,6 @@ function DeleteProdutoModal({ isOpen, onClose }) {
         cancelText="Fechar"
       />
 
-      {/* Feedback */}
       <CustomModal
         isOpen={openFeedback}
         title={titulo}

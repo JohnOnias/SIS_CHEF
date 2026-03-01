@@ -15,6 +15,7 @@ function CadastroUsuarioModal({ isOpen, onClose }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [mensagemFeedback, setMensagemFeedback] = useState("");
   const [tipoFeedback, setTipoFeedback] = useState("success");
+  const [loading, setLoading] = useState(false); // estado de loading
 
   const evento = (event) => {
     const { name, value } = event.target;
@@ -24,6 +25,7 @@ function CadastroUsuarioModal({ isOpen, onClose }) {
   const enviar = async (event) => {
     event.preventDefault();
 
+    setLoading(true); // inicia loading
     try {
       const resposta = await window.api.funcionario.cadastrarFuncionario(
         formulario.nome,
@@ -52,14 +54,17 @@ function CadastroUsuarioModal({ isOpen, onClose }) {
         senha: "",
       });
 
+      // fecha o modal após 3s e recarrega a lista de funcionários
       setTimeout(() => {
         setOpenFeedback(false);
-        onClose();
+        onClose(true); // podemos passar true para avisar o pai recarregar
       }, 3000);
     } catch (e) {
       setMensagemFeedback(e?.message || "Erro inesperado ao cadastrar");
       setTipoFeedback("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false); // finaliza loading
     }
   };
 
@@ -73,89 +78,93 @@ function CadastroUsuarioModal({ isOpen, onClose }) {
             src={CloseIcon}
             className="modal-close"
             alt="Fechar"
-            onClick={onClose}
+            onClick={() => onClose(false)}
           />
 
           <h1 className="modal-title">Cadastro de Usuário</h1>
 
-          <form className="modal-form" onSubmit={enviar}>
-            <label className="modal-label" htmlFor="nome">
-              Nome:
-            </label>
-            <input
-              required
-              className="modal-input"
-              type="text"
-              name="nome"
-              id="nome"
-              placeholder="Digite o nome"
-              value={formulario.nome}
-              onChange={evento}
-            />
+          {loading ? (
+            <p>Processando...</p>
+          ) : (
+            <form className="modal-form" onSubmit={enviar}>
+              <label className="modal-label" htmlFor="nome">
+                Nome:
+              </label>
+              <input
+                required
+                className="modal-input"
+                type="text"
+                name="nome"
+                id="nome"
+                placeholder="Digite o nome"
+                value={formulario.nome}
+                onChange={evento}
+              />
 
-            <label className="modal-label" htmlFor="cpf">
-              CPF:
-            </label>
-            <input
-              required
-              maxLength={11}
-              className="modal-input"
-              type="text"
-              name="cpf"
-              id="cpf"
-              placeholder="Digite o CPF"
-              value={formulario.cpf}
-              onChange={evento}
-            />
+              <label className="modal-label" htmlFor="cpf">
+                CPF:
+              </label>
+              <input
+                required
+                maxLength={11}
+                className="modal-input"
+                type="text"
+                name="cpf"
+                id="cpf"
+                placeholder="Digite o CPF"
+                value={formulario.cpf}
+                onChange={evento}
+              />
 
-            <label className="modal-label" htmlFor="email">
-              Email:
-            </label>
-            <input
-              required
-              className="modal-input"
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Digite o email"
-              value={formulario.email}
-              onChange={evento}
-            />
+              <label className="modal-label" htmlFor="email">
+                Email:
+              </label>
+              <input
+                required
+                className="modal-input"
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Digite o email"
+                value={formulario.email}
+                onChange={evento}
+              />
 
-            <label className="modal-label" htmlFor="tipo">
-              Tipo:
-            </label>
-            <select
-              required
-              className="modal-input"
-              name="tipo"
-              id="tipo"
-              value={formulario.tipo}
-              onChange={evento}
-            >
-              <option value="">Selecione</option>
-              <option value="garçom">Garçom</option>
-              <option value="gerente">Gerente</option>
-            </select>
+              <label className="modal-label" htmlFor="tipo">
+                Tipo:
+              </label>
+              <select
+                required
+                className="modal-input"
+                name="tipo"
+                id="tipo"
+                value={formulario.tipo}
+                onChange={evento}
+              >
+                <option value="">Selecione</option>
+                <option value="garçom">Garçom</option>
+                <option value="gerente">Gerente</option>
+              </select>
 
-            <label className="modal-label" htmlFor="senha">
-              Senha:
-            </label>
-            <input
-              required
-              className="modal-input"
-              type="password"
-              name="senha"
-              id="senha"
-              placeholder="Digite a senha"
-              value={formulario.senha}
-              onChange={evento}
-            />
+              <label className="modal-label" htmlFor="senha">
+                Senha:
+              </label>
+              <input
+                required
+                className="modal-input"
+                type="password"
+                name="senha"
+                id="senha"
+                placeholder="Digite a senha"
+                value={formulario.senha}
+                onChange={evento}
+              />
 
-            <button className="modal-button" type="submit">
-              Enviar
-            </button>
-          </form>
+              <button className="modal-button" type="submit">
+                Enviar
+              </button>
+            </form>
+          )}
         </div>
       </div>
 

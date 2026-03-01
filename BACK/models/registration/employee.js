@@ -11,20 +11,22 @@ export async function cadastrarFuncionario(
   tipoFuncionario,
   senha,
 ) {
-  // Inicia uma transação para garantir consistência
   const transaction = await Funcionario.sequelize.transaction();
 
   try {
-    // Validação: Verifica se já existe um gerente (se for cadastro de gerente)
+    // Validação: Verifica se já existe um gerente ativo
     if (tipoFuncionario === "gerente") {
       const gerenteExistente = await Funcionario.findOne({
-        where: { tipo: "gerente" },
+        where: { tipo: "gerente", ativo: true }, // só considera gerentes ativos
         transaction,
       });
 
       if (gerenteExistente) {
         await transaction.rollback();
-        return { success: false, error: "Já existe um gerente cadastrado." };
+        return {
+          success: false,
+          error: "Já existe um gerente ativo cadastrado.",
+        };
       }
     }
 
@@ -69,7 +71,6 @@ export async function cadastrarFuncionario(
       { transaction },
     );
 
-    // Confirma a transação
     await transaction.commit();
 
     return {
@@ -79,18 +80,16 @@ export async function cadastrarFuncionario(
         nome: funcionario.nome,
         email: funcionario.email,
         tipo: funcionario.tipo,
-        senha: true, // Indica que a senha foi armazenada com sucesso, mas não retorna o hash
+        senha: true,
       },
     };
   } catch (error) {
-    // Reverte a transação em caso de erro
     if (transaction && !transaction.finished) {
       await transaction.rollback();
     }
 
     console.error("Erro ao cadastrar funcionário:", error);
 
-    // Tratamento de erros específicos do Sequelize
     if (error.name === "SequelizeValidationError") {
       const errors = error.errors.map((err) => err.message);
       return { success: false, error: errors.join(", ") };
@@ -106,7 +105,6 @@ export async function cadastrarFuncionario(
     return { success: false, error: error.message };
   }
 }
-
 export async function atualizarFuncionario(id, nome, cpf, email, tipo, senha) {
   try {
     const funcionario = await Funcionario.findByPk(Number(id));
@@ -115,16 +113,16 @@ export async function atualizarFuncionario(id, nome, cpf, email, tipo, senha) {
       return { success: false, error: "Funcionário não encontrado" };
     }
 
-    // Só pode existir um gerente
+    // Só pode existir um gerente ativo
     if (tipo === "gerente") {
       const gerenteExistente = await Funcionario.findOne({
-        where: { tipo: "gerente" },
+        where: { tipo: "gerente", ativo: true }, // só considera gerentes ativos
       });
 
       if (gerenteExistente && gerenteExistente.id !== Number(id)) {
         return {
           success: false,
-          error: "Já existe um gerente cadastrado",
+          error: "Já existe um gerente ativo cadastrado",
         };
       }
     }
@@ -198,6 +196,7 @@ export async function getFuncionario(tipoFuncionario) {
 export async function listarFuncionarios() {
   try {
     const funcionarios = await Funcionario.findAll({
+      where: { ativo: 1 }, // filtra apenas ativos
       order: [["tipo", "ASC"]],
     });
 

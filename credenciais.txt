@@ -2,11 +2,10 @@ garçom:
 email: garcom@garcom.com
 senha: 123456789
 
-gerente:
+gerente: 
 email: gerente@gerente.com
 senha: 123456789
 
 adm:
-
-email: john@adm.com
+email: jose@adm.com
 senha: 123456789
