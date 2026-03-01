@@ -18,6 +18,11 @@ function ProdutoModal({ isOpen, onClose }) {
     categoria: "",
   });
 
+  // função para limpar formulário
+  const limparFormulario = () => {
+    setFormulario({ nome: "", preco: "", descricao: "", categoria: "" });
+  };
+
   async function getCategorias() {
     try {
       const resposta = await window.api.categoria.getCategorias();
@@ -81,14 +86,8 @@ function ProdutoModal({ isOpen, onClose }) {
       setTipoMsg("success");
       setOpenFeedback(true);
 
-      setFormulario({
-        nome: "",
-        preco: "",
-        descricao: "",
-        categoria: "",
-      });
-
-    
+      // limpa formulário após sucesso
+      limparFormulario();
     } catch (e) {
       setTitulo("Erro");
       setMensagem("Erro inesperado ao cadastrar produto");
@@ -107,7 +106,10 @@ function ProdutoModal({ isOpen, onClose }) {
             src={CloseIcon}
             className="modal-close"
             alt="Fechar"
-            onClick={onClose}
+            onClick={() => {
+              limparFormulario(); // limpa formulário ao fechar
+              onClose();
+            }}
           />
 
           <h1 className="modal-title">Cadastro Produto</h1>

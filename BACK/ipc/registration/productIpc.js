@@ -4,6 +4,8 @@ const {
   getProdutosID,
   mudarStatus,
   getTodosProdutos,
+  editarProduto,
+  deletarProduto
 } = require("../../models/registration/product.js");
 
 
@@ -27,6 +29,9 @@ ipcMain.handle("mudar-status", async (event, idProduto) => {
     } 
   });
 
+  ipcMain.handle("update-produto", async (event, idProduto, nome, preco, descricao) =>{
+        return editarProduto(idProduto, nome, preco, descricao);
+  })
 
   ipcMain.handle("getTodosProdutos", async () => {
     try {
@@ -36,6 +41,11 @@ ipcMain.handle("mudar-status", async (event, idProduto) => {
       return [];
     }
   });
+  ipcMain.handle("deletar-produto", async (event, idProduto) =>{
+
+    return deletarProduto(idProduto);
+  })
+
   ipcMain.handle("get-produtos-por-categoria", async (event, idCategoria) => {
     try {
       return await getProdutosID(idCategoria);

@@ -6,7 +6,7 @@ import CustomModal from "../../../components/modal/error/customModal";
 function CategoriaModal({ isOpen, onClose }) {
   const [formulario, setFormulario] = useState({
     nome: "",
-    status: "",
+    status: "disponivel",
   });
 
   const [openFeedback, setOpenFeedback] = useState(false);
@@ -81,22 +81,9 @@ function CategoriaModal({ isOpen, onClose }) {
               onChange={evento}
             />
 
-            <label className="modal-label" htmlFor="status">
-              Status:
-            </label>
+      
 
-            <select
-              required
-              className="modal-input"
-              name="status"
-              id="status"
-              value={formulario.status}
-              onChange={evento}
-            >
-              <option value="">Selecione</option>
-              <option value="ativo">Ativa</option>
-              <option value="desativa">Desativa</option>
-            </select>
+           
 
             <button className="modal-button" type="submit">
               Cadastrar

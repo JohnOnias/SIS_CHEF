@@ -7,10 +7,10 @@ import ErrorView from "../pages/404/ErrorView.jsx";
 import RotaProtegida from "./RotaProtegida.jsx";
 import HomeView from "../pages/home/HomeView.jsx";
 import HistoricoView from "../pages/historico/HistoricoView.jsx";
-import CadastrosView from "../pages/cadastros/CadastrosView.jsx"; 
-import ProdutosView from "../pages/produtos/ProdutosView.jsx"
+import CadastrosView from "../pages/cadastros/CadastrosView.jsx";
+import CategoriasView from "../pages/produtos/CategoriasView.jsx";
+import ProdutosView from "../pages/produtos/ProdutosView.jsx";
 import MesasView from "../pages/mesas/MesasView.jsx";
-
 
 const router = createHashRouter([
   {
@@ -19,8 +19,7 @@ const router = createHashRouter([
   },
   {
     path: "/404",
-    element: <ErrorView/>
-
+    element: <ErrorView />,
   },
   {
     element: (
@@ -35,30 +34,33 @@ const router = createHashRouter([
       },
       {
         path: "home",
-        element: <HomeView/>,
-      },
-      { path:"historico",
-        element: <HistoricoView/>
+        element: <HomeView />,
       },
       {
-        path:"cadastros",
-        element:<CadastrosView/>
+        path: "historico",
+        element: <HistoricoView />,
       },
       {
-        path:"produtos",
-        element: <ProdutosView/>
+        path: "cadastros",
+        element: <CadastrosView />,
       },
       {
-        path:"mesas",
-        element: <MesasView/>
-      }
-     
-
+        path: "categorias",
+        element: <CategoriasView />,
+      },
+      {
+        path: "produtos/:categoriaId",
+        element: <ProdutosView />, 
+      },
+      {
+        path: "mesas",
+        element: <MesasView />,
+      },
     ],
   },
   {
     path: "*",
-    element: <Navigate to= {<ErrorView/>} />,
+    element: <Navigate to="/404" />, 
   },
 ]);
 

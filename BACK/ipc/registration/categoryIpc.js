@@ -2,6 +2,7 @@ const { ipcMain } = require("electron");
 const {
   cadastrarCategoria,
   getCategorias,
+  editarCategoria,
 } = require("../../models/registration/category.js");
 
 module.exports = function categoryIpc() {
@@ -22,6 +23,9 @@ module.exports = function categoryIpc() {
       console.error("Erro ao pegar categorias:", error);
       return [];
     }
+  });
+  ipcMain.handle("editar-categoria", async (event, idCategoria, nome, status)=>{
+      return await editarCategoria(idCategoria, nome, status);
   });
 }
 
