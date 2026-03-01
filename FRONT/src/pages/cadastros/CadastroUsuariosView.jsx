@@ -17,17 +17,18 @@ export default function CadastroUsuariosView() {
     tipo: "",
   });
 
-  useEffect(() => {
-    async function carregarFuncionarios() {
-      try {
-        const dados = await window.api.funcionario.listarFuncionarios();
-        setUsuarios(Array.isArray(dados) ? dados : []);
-      } catch (err) {
-        console.error("Erro ao carregar funcionários:", err);
-        setUsuarios([]);
-      }
+  // Função de carregamento reutilizável
+  async function carregarFuncionarios() {
+    try {
+      const dados = await window.api.funcionario.listarFuncionarios();
+      setUsuarios(Array.isArray(dados) ? dados : []);
+    } catch (err) {
+      console.error("Erro ao carregar funcionários:", err);
+      setUsuarios([]);
     }
+  }
 
+  useEffect(() => {
     carregarFuncionarios();
   }, []);
 
@@ -56,6 +57,12 @@ export default function CadastroUsuariosView() {
     });
     setOpenDelete(true);
   }
+
+  // Função para fechar e recarregar a lista
+  const handleCloseModal = (setModal) => async () => {
+    setModal(false);
+    await carregarFuncionarios();
+  };
 
   return (
     <div className="cadastro-usuarios-container">
@@ -88,18 +95,22 @@ export default function CadastroUsuariosView() {
                 <td>{user.tipo}</td>
                 <td>{user.email}</td>
                 <td>
-                  <span
-                    onClick={() => editarFuncionario(user)}
-                    className="cadastro-usuarios-edit"
-                  >
-                    ✏️
-                  </span>
-                  <span
-                    onClick={() => deletarFuncionario(user)}
-                    className="cadastro-usuarios-delete"
-                  >
-                    ❌
-                  </span>
+                  {user.tipo !== "administrador" && (
+                    <>
+                      <span
+                        onClick={() => editarFuncionario(user)}
+                        className="cadastro-usuarios-edit"
+                      >
+                        ✏️
+                      </span>
+                      <span
+                        onClick={() => deletarFuncionario(user)}
+                        className="cadastro-usuarios-delete"
+                      >
+                        ❌
+                      </span>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
@@ -109,18 +120,18 @@ export default function CadastroUsuariosView() {
 
       <EditarUsuarioModal
         isOpen={openModalEdit}
-        onClose={() => setOpenEdit(false)}
+        onClose={handleCloseModal(setOpenEdit)}
         funcionario={formulario}
       />
 
       <CadastroUsuarioModal
         isOpen={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={handleCloseModal(setOpenModal)}
       />
 
       <DeleteUsuarioModal
         isOpen={openModalDelete}
-        onClose={() => setOpenDelete(false)}
+        onClose={handleCloseModal(setOpenDelete)}
         funcionario={formulario}
       />
     </div>

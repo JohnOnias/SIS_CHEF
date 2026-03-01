@@ -49,7 +49,7 @@ const router = createHashRouter([
         element: <CategoriasView />,
       },
       {
-        path: "produtos/:categoriaId",
+        path: "produtos/:categoriaId/:categoria",
         element: <ProdutosView />, 
       },
       {

@@ -10,6 +10,7 @@ function ProdutoModal({ isOpen, onClose }) {
   const [titulo, setTitulo] = useState("");
 
   const [categorias, setCategorias] = useState([]);
+  const [loading, setLoading] = useState(false); // estado para loading
 
   const [formulario, setFormulario] = useState({
     nome: "",
@@ -24,6 +25,7 @@ function ProdutoModal({ isOpen, onClose }) {
   };
 
   async function getCategorias() {
+    setLoading(true); // inicia loading
     try {
       const resposta = await window.api.categoria.getCategorias();
 
@@ -40,6 +42,8 @@ function ProdutoModal({ isOpen, onClose }) {
       setMensagem("Erro ao carregar categorias");
       setTipoMsg("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false); // finaliza loading
     }
   }
 
@@ -107,82 +111,86 @@ function ProdutoModal({ isOpen, onClose }) {
             className="modal-close"
             alt="Fechar"
             onClick={() => {
-              limparFormulario(); // limpa formulário ao fechar
+              limparFormulario();
               onClose();
             }}
           />
 
           <h1 className="modal-title">Cadastro Produto</h1>
 
-          <form className="modal-form" onSubmit={enviar}>
-            <label className="modal-label" htmlFor="nome">
-              Nome:
-            </label>
-            <input
-              required
-              className="modal-input"
-              type="text"
-              name="nome"
-              id="nome"
-              placeholder="Digite o nome"
-              value={formulario.nome}
-              onChange={evento}
-            />
+          {loading ? (
+            <p>Carregando categorias...</p> // mostra loading
+          ) : (
+            <form className="modal-form" onSubmit={enviar}>
+              <label className="modal-label" htmlFor="nome">
+                Nome:
+              </label>
+              <input
+                required
+                className="modal-input"
+                type="text"
+                name="nome"
+                id="nome"
+                placeholder="Digite o nome"
+                value={formulario.nome}
+                onChange={evento}
+              />
 
-            <label className="modal-label" htmlFor="preco">
-              Preço:
-            </label>
-            <input
-              required
-              maxLength={11}
-              className="modal-input"
-              type="number"
-              name="preco"
-              id="preco"
-              placeholder="Digite o preço do produto"
-              value={formulario.preco}
-              onChange={evento}
-            />
+              <label className="modal-label" htmlFor="preco">
+                Preço:
+              </label>
+              <input
+                required
+                maxLength={11}
+                className="modal-input"
+                type="number"
+                name="preco"
+                id="preco"
+                placeholder="Digite o preço do produto"
+                value={formulario.preco}
+                onChange={evento}
+              />
 
-            <label className="modal-label" htmlFor="categoria">
-              Categoria:
-            </label>
+              <label className="modal-label" htmlFor="categoria">
+                Categoria:
+              </label>
 
-            <select
-              required
-              className="modal-input"
-              name="categoria"
-              id="categoria"
-              value={formulario.categoria}
-              onChange={evento}
-            >
-              <option value="">Selecione</option>
-              {Array.isArray(categorias) &&
-                categorias.map((categoria) => (
-                  <option key={categoria.id} value={categoria.id}>
-                    {categoria.nome}
-                  </option>
-                ))}
-            </select>
+              <select
+                required
+                className="modal-input"
+                name="categoria"
+                id="categoria"
+                value={formulario.categoria}
+                onChange={evento}
+              >
+                <option value="">Selecione</option>
+                {Array.isArray(categorias) &&
+                  categorias.map((categoria) => (
+                    <option key={categoria.id} value={categoria.id}>
+                      {categoria.nome}
+                    </option>
+                  ))}
+              </select>
 
-            <label className="modal-label" htmlFor="descricao">
-              Descrição:
-            </label>
-            <input
-              required
-              className="modal-input"
-              type="text"
-              name="descricao"
-              id="descricao"
-              placeholder="Digite uma descrição"
-              value={formulario.descricao}
-              onChange={evento}
-            />
+              <label className="modal-label" htmlFor="descricao">
+                Descrição:
+              </label>
+              <input
+                required
+                className="modal-input"
+                type="text"
+                name="descricao"
+                id="descricao"
+                placeholder="Digite uma descrição"
+                value={formulario.descricao}
+                onChange={evento}
+              />
 
-            <button className="modal-button" type="submit">
-              Cadastrar
-            </button>
-          </form>
+              <button className="modal-button" type="submit">
+                Cadastrar
+              </button>
+            </form>
+          )}
         </div>
       </div>
 

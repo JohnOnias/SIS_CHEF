@@ -16,6 +16,7 @@ function EditarUsuarioModal({ isOpen, onClose, funcionario }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [mensagemFeedback, setMensagemFeedback] = useState("");
   const [tipoFeedback, setTipoFeedback] = useState("success");
+  const [loading, setLoading] = useState(false); // loading
 
   useEffect(() => {
     if (funcionario && isOpen) {
@@ -37,6 +38,7 @@ function EditarUsuarioModal({ isOpen, onClose, funcionario }) {
 
   const enviar = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     try {
       const resposta = await window.api.funcionario.editarFuncionario(
@@ -67,6 +69,8 @@ function EditarUsuarioModal({ isOpen, onClose, funcionario }) {
       setMensagemFeedback(e?.message || "Erro inesperado ao editar usuário");
       setTipoFeedback("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,8 +144,8 @@ function EditarUsuarioModal({ isOpen, onClose, funcionario }) {
                 onChange={evento}
               />
 
-              <button className="modal-button" type="submit">
-                Atualizar
+              <button className="modal-button" type="submit" disabled={loading}>
+                {loading ? "Atualizando..." : "Atualizar"}
               </button>
             </form>
           </div>

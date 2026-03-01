@@ -7,8 +7,10 @@ function DeleteUsuarioModal({ isOpen, onClose, funcionario }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [mensagemFeedback, setMensagemFeedback] = useState("");
   const [tipoFeedback, setTipoFeedback] = useState("success");
+  const [loading, setLoading] = useState(false); // loading para exclusão
 
-  async function enviar(id) {
+  const enviar = async (id) => {
+    setLoading(true);
     try {
       const resposta = await window.api.funcionario.deletarFuncionario(id);
 
@@ -25,18 +27,18 @@ function DeleteUsuarioModal({ isOpen, onClose, funcionario }) {
 
       setTimeout(() => {
         setOpenFeedback(false);
-        onClose();
+        onClose(true); // avisa pai para recarregar lista
       }, 2000);
     } catch (error) {
       setMensagemFeedback("Erro inesperado ao deletar funcionário");
       setTipoFeedback("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  if (!isOpen || !funcionario) {
-    return null;
-  }
+  if (!isOpen || !funcionario) return null;
 
   return (
     <>
@@ -48,7 +50,7 @@ function DeleteUsuarioModal({ isOpen, onClose, funcionario }) {
               src={CloseIcon}
               alt="Fechar"
               className="delete-usuario-close"
-              onClick={onClose}
+              onClick={() => onClose(true)}
             />
           </div>
 
@@ -81,11 +83,16 @@ function DeleteUsuarioModal({ isOpen, onClose, funcionario }) {
             <button
               className="delete-usuario-btn-confirm"
               onClick={() => enviar(funcionario.id)}
+              disabled={loading} // desativa enquanto carrega
             >
-              Confirmar
+              {loading ? "Excluindo..." : "Confirmar"}
             </button>
 
-            <button className="delete-usuario-btn-cancel" onClick={onClose}>
+            <button
+              className="delete-usuario-btn-cancel"
+              onClick={() => onClose(true)}
+              disabled={loading}
+            >
               Cancelar
             </button>
           </div>

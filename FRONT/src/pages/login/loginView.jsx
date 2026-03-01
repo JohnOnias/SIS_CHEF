@@ -21,6 +21,8 @@ function LoginView() {
   const [mensagemFeedback, setMensagemFeedback] = useState("");
   const [tipoFeedback, setTipoFeedback] = useState("error");
 
+  const [loading, setLoading] = useState(false); // loading do botão
+
   const [formulario, setFormulario] = useState({
     email: "",
     senha: "",
@@ -32,6 +34,7 @@ function LoginView() {
   };
 
   const login = async () => {
+    setLoading(true);
     try {
       const user = await window.api.login.login(
         formulario.email,
@@ -58,6 +61,8 @@ function LoginView() {
       setMensagemFeedback("Erro ao realizar login. Tente novamente.");
       setTipoFeedback("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,8 +105,8 @@ function LoginView() {
             </div>
 
             <div className="containerButton">
-              <button className="bntlogin" onClick={login}>
-                Entrar
+              <button className="bntlogin" onClick={login} disabled={loading}>
+                {loading ? "Carregando..." : "Entrar"}
               </button>
 
               <br />

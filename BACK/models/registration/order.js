@@ -1,10 +1,10 @@
-
 import {
   Pedido,
   Funcionario,
   Mesa,
   ItemPedido,
   Produto,
+  Pagamento,
 } from "../../database/models/index.js";
 
 /* =========================
@@ -221,7 +221,6 @@ export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
   }
 }
 
-
 export async function listarItensPedido(idPedido) {
   try {
     const itens = await ItemPedido.findAll({
@@ -257,7 +256,7 @@ export async function getListaPedidos() {
       include: [
         {
           model: Funcionario,
-          as: "funcionario", // aqui é o alias definido no model
+          as: "funcionario",
           attributes: ["id", "nome"],
         },
         {
@@ -273,6 +272,11 @@ export async function getListaPedidos() {
             as: "produto",
             attributes: ["nome", "preco"],
           },
+        },
+        {
+          model: Pagamento,
+          as: "pagamento",
+          attributes: ["tipo_pagamento", "valor_pago"],
         },
       ],
       order: [["data_criacao", "DESC"]],
@@ -292,6 +296,7 @@ export async function getListaPedidos() {
         status: json.status,
         Funcionario: json.funcionario,
         valor_total,
+        pagamento: json.pagamento,
       };
     });
   } catch (err) {
@@ -299,7 +304,6 @@ export async function getListaPedidos() {
     throw err;
   }
 }
-
 
 export async function listarPedidosMesa(mesaNumero) {
   try {

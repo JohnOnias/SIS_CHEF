@@ -10,18 +10,18 @@ function EditCategoriaModal({ isOpen, onClose }) {
   const [titulo, setTitulo] = useState("");
 
   const [openAviso, setOpenAviso] = useState(false);
+  const [loading, setLoading] = useState(false); // loading
 
   const [categorias, setCategorias] = useState([]);
   const [selectedCategoria, setSelectedCategoria] = useState("");
   const [formulario, setFormulario] = useState({
     nome: "",
-    status: "disponivel", // padrão
+    status: "disponivel",
   });
 
   const limparFormulario = () =>
     setFormulario({ nome: "", status: "disponivel" });
 
-  // Busca todas as categorias
   async function getCategorias() {
     try {
       const resposta = await window.api.categoria.getCategorias();
@@ -41,7 +41,6 @@ function EditCategoriaModal({ isOpen, onClose }) {
     }
   }
 
-  // Carrega categorias ao abrir modal
   useEffect(() => {
     if (isOpen) {
       getCategorias();
@@ -51,7 +50,6 @@ function EditCategoriaModal({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
-  // Preenche formulário quando seleciona uma categoria
   useEffect(() => {
     if (selectedCategoria) {
       const cat = categorias.find((c) => c.id === Number(selectedCategoria));
@@ -68,12 +66,7 @@ function EditCategoriaModal({ isOpen, onClose }) {
 
   const evento = (event) => {
     const { name, value } = event.target;
-
-    // Se estiver alterando o status e for diferente do original, mostra aviso
-    if (name === "status" && value !== formulario.status) {
-      setOpenAviso(true);
-    }
-
+    if (name === "status" && value !== formulario.status) setOpenAviso(true);
     setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -94,6 +87,7 @@ function EditCategoriaModal({ isOpen, onClose }) {
       return;
     }
 
+    setLoading(true);
     try {
       const resposta = await window.api.categoria.editarCategoria(
         selectedCategoria,
@@ -117,11 +111,14 @@ function EditCategoriaModal({ isOpen, onClose }) {
       await getCategorias();
       setSelectedCategoria("");
       limparFormulario();
+      onClose(true); // avisa pai para recarregar categorias
     } catch (error) {
       setTitulo("Erro");
       setMensagem("Erro inesperado ao atualizar categoria");
       setTipoMsg("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -138,7 +135,7 @@ function EditCategoriaModal({ isOpen, onClose }) {
             onClick={() => {
               limparFormulario();
               setSelectedCategoria("");
-              onClose();
+              onClose(true);
             }}
           />
 
@@ -195,14 +192,14 @@ function EditCategoriaModal({ isOpen, onClose }) {
               className="modal-button btn-success"
               type="button"
               onClick={salvar}
+              disabled={loading}
             >
-              Salvar Alterações
+              {loading ? "Salvando..." : "Salvar Alterações"}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Aviso de alteração de status */}
       <CustomModal
         isOpen={openAviso}
         title="Atenção!"
@@ -213,7 +210,6 @@ function EditCategoriaModal({ isOpen, onClose }) {
         cancelText="Fechar"
       />
 
-      {/* Feedback */}
       <CustomModal
         isOpen={openFeedback}
         title={titulo}

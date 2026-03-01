@@ -6,6 +6,7 @@ const {
 } = require("../../models/payment/payment.js");
 
 module.exports = function paymentIpc() {
+
   ipcMain.handle(
     "cadastrar-pagamento",
     async (_, idPedido, tipoPagamento, valorPago, mesaId) => {
@@ -25,4 +26,5 @@ module.exports = function paymentIpc() {
   ipcMain.handle("get-pagamento-por-pedido-id", async (_, pedidoId) => {
     return await buscarPagamentoPorPedidoId(pedidoId);
   });
+  
 };

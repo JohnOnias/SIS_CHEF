@@ -8,6 +8,7 @@ function EditProdutoModal({ isOpen, onClose }) {
   const [mensagem, setMensagem] = useState("");
   const [tipoMsg, setTipoMsg] = useState("");
   const [titulo, setTitulo] = useState("");
+  const [loading, setLoading] = useState(false); // loading
 
   const [categorias, setCategorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
@@ -21,13 +22,11 @@ function EditProdutoModal({ isOpen, onClose }) {
     categoria: "",
   });
 
-  // busca todas as categorias
   async function getCategorias() {
     try {
       const resposta = await window.api.categoria.getCategorias();
-      if (resposta?.success) {
-        setCategorias(resposta.data);
-      } else {
+      if (resposta?.success) setCategorias(resposta.data);
+      else {
         setTitulo("Erro");
         setMensagem("Erro ao buscar categorias");
         setTipoMsg("error");
@@ -41,7 +40,6 @@ function EditProdutoModal({ isOpen, onClose }) {
     }
   }
 
-  // busca produtos de uma categoria específica
   async function getProdutos(categoriaId) {
     try {
       const resposta =
@@ -53,14 +51,10 @@ function EditProdutoModal({ isOpen, onClose }) {
     }
   }
 
-  // carrega categorias ao abrir modal
   useEffect(() => {
-    if (isOpen) {
-      getCategorias();
-    }
+    if (isOpen) getCategorias();
   }, [isOpen]);
 
-  // atualiza lista de produtos quando muda a categoria
   useEffect(() => {
     if (selectedCategoria) {
       getProdutos(selectedCategoria);
@@ -71,12 +65,9 @@ function EditProdutoModal({ isOpen, onClose }) {
         descricao: "",
         categoria: selectedCategoria,
       });
-    } else {
-      setProdutos([]);
-    }
+    } else setProdutos([]);
   }, [selectedCategoria]);
 
-  // preenche formulário quando seleciona o produto
   useEffect(() => {
     if (selectedProduto) {
       const produto = produtos.find((p) => p.id === Number(selectedProduto));
@@ -115,6 +106,7 @@ function EditProdutoModal({ isOpen, onClose }) {
       return;
     }
 
+    setLoading(true);
     try {
       const resposta = await window.api.produto.editarProduto(
         selectedProduto,
@@ -136,10 +128,7 @@ function EditProdutoModal({ isOpen, onClose }) {
       setTipoMsg("success");
       setOpenFeedback(true);
 
-      // Recarrega a lista de produtos da categoria atual
-      if (selectedCategoria) {
-        await getProdutos(selectedCategoria);
-      }
+      if (selectedCategoria) await getProdutos(selectedCategoria);
 
       // opcional: resetar seleção e formulário
       setSelectedProduto("");
@@ -154,6 +143,8 @@ function EditProdutoModal({ isOpen, onClose }) {
       setMensagem("Erro inesperado ao editar produto");
       setTipoMsg("error");
       setOpenFeedback(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,7 +159,6 @@ function EditProdutoModal({ isOpen, onClose }) {
             className="modal-close"
             alt="Fechar"
             onClick={() => {
-              // resetar formulário e seleções
               setSelectedCategoria("");
               setSelectedProduto("");
               setFormulario({
@@ -261,8 +251,8 @@ function EditProdutoModal({ isOpen, onClose }) {
               onChange={evento}
             />
 
-            <button className="modal-button" type="submit">
-              Salvar Alterações
+            <button className="modal-button" type="submit" disabled={loading}>
+              {loading ? "Salvando..." : "Salvar Alterações"}
             </button>
           </form>
         </div>
