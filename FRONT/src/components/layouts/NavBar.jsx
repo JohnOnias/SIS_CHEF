@@ -63,7 +63,7 @@ function NavBar() {
 
               <li className="menu">
                 <img src={ProdutosIcon} alt="icone produtos" />
-                <Link to="/produtos">Produtos</Link>
+                <Link to="/categorias">Produtos</Link>
               </li>
               
               <li className="menu">
@@ -71,12 +71,7 @@ function NavBar() {
                 <Link to="/historico">Histórico de Pedidos</Link>
               </li>
 
-              {usuario.tipo === "gerente" && (
-                <li className="menu">
-                  <img src={CadastroIcon} alt="icone cadastros" />
-                  <Link to="/cadastros">Cadastros</Link>
-                </li>
-              )}
+             
             </>
           )}
         </ul>

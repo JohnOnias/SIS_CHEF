@@ -114,3 +114,45 @@ nav ul {
   background-color: #b71c1c;
   color: #fff;
 }
+
+
+.layout {
+  display: flex;
+  height: 100vh;
+  background: #fff;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 250px;
+  background: #eaeaea;
+  padding: 25px;
+}
+
+.profile {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #ccc;
+  margin: 0 auto 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  background: #dcdcdc;
+}

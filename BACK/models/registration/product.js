@@ -1,4 +1,4 @@
-import { Produto } from "../../database/models/index.js";
+import { Produto, Categoria } from "../../database/models/index.js";
 
 // Cadastrar um produto
 export async function cadastrarProduto(nome, preco, idCategoria, descricao) {
@@ -16,19 +16,74 @@ export async function cadastrarProduto(nome, preco, idCategoria, descricao) {
   }
 }
 
+export async function editarProduto(idProduto, nome, preco, descricao) {
+  console.log(
+    "dados recebidos pelo update produto: id:",
+    idProduto,
+    "nome: ",
+    nome,
+    "preço: ",
+    preco,
+    "descrição: ",
+    descricao,
+  );
+  try {
+    const [atualizados] = await Produto.update(
+      {
+        nome,
+        preco,
+        descricao,
+      },
+      {
+        where: { id: idProduto },
+      },
+    );
+
+    if (atualizados === 0) {
+      return {
+        success: false,
+        error: "Produto não encontrado ou sem alterações",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao editar produto:", error);
+    return { success: false, error: "Erro inesperado ao editar produto" };
+  }
+}
+
+export async function deletarProduto(idProduto) {
+  try {
+  
+    const [atualizados] = await Produto.update(
+      { status: "indisponivel" }, 
+      { where: { id: idProduto } },
+    );
+
+    if (atualizados === 0) {
+      return {
+        success: false,
+        error: "Produto não encontrado ou já indisponível",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao marcar produto como indisponível:", error);
+    return { success: false, error: "Erro inesperado ao atualizar produto" };
+  }
+}
+
 // Buscar produtos por ID de categoria
 export async function getProdutosID(idCategoria) {
   try {
     const produtos = await Produto.findAll({
-      attributes: [
-        "id",
-        "nome",
-        "preco",
-        "id_categoria",
-        "descricao",
-        "status",
-      ],
-      where: { id_categoria: idCategoria },
+      where: {
+        id_categoria: idCategoria,
+        status: "disponivel", 
+      },
+      order: [["nome", "ASC"]],
     });
 
     return produtos.map((p) => p.toJSON());
@@ -74,11 +129,19 @@ export async function getTodosProdutos() {
         "descricao",
         "status",
       ],
+      include: [
+        {
+          model: Categoria,
+          as: "categoria",
+          attributes: ["id", "nome", "status"],
+          where: { status: "disponivel" }, // filtra apenas categorias disponíveis
+        },
+      ],
     });
+
     return produtos;
   } catch (err) {
     console.error("Erro ao buscar todos os produtos:", err);
     throw err;
   }
 }
-
