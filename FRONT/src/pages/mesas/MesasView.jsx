@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./style/mesas.css";
 
 import AddMesaModal from "../../components/modal/mesas/addmesa";
@@ -8,85 +8,186 @@ import EditarPedidoModal from "../../components/modal/orders/editPedido";
 import PaymentModal from "../../components/modal/orders/paymentModal";
 import CustomModal from "../../components/modal/error/customModal";
 
+const MESA_STATUS = {
+  LIVRE: "livre",
+  OCUPADA: "ocupada",
+};
+
 export default function Mesas() {
   const [mesas, setMesas] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [openModalAdd, setOpenModalAdd] = useState(false);
-  const [openModalRemover, setOpenModalRemover] = useState(false);
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
+  // Modais
+  const [modalState, setModalState] = useState({
+    addMesa: false,
+    removerMesa: false,
+    addPedido: false,
+    editPedido: false,
+    pagamento: false,
+    feedback: false,
+  });
 
-  const [mesaSelecionada, setMesaSelecionada] = useState(null);
+  // Dados
+  const [selectedData, setSelectedData] = useState({
+    mesa: null,
+    pedido: null,
+    total: 0,
+  });
 
-  const [openPagamento, setOpenPagamento] = useState(false);
-  const [pedidoParaPagamento, setPedidoParaPagamento] = useState(null);
-  const [totalPagamento, setTotalPagamento] = useState(0);
+  // Feedback
+  const [feedback, setFeedback] = useState({
+    message: "",
+    type: "success",
+  });
 
-  const [openFeedback, setOpenFeedback] = useState(false);
-  const [mensagemFeedback, setMensagemFeedback] = useState("");
-  const [tipoFeedback, setTipoFeedback] = useState("success");
+  // =============================
+  // CARREGAR MESAS
+  // =============================
+  const carregarMesas = useCallback(async () => {
+    if (isLoading) return;
 
-  async function carregarMesas() {
+    setIsLoading(true);
     try {
-      const data = await window.api.mesas.listarMesas();
-      setMesas(data);
+      const response = await window.api.mesas.listarMesas();
+      const mesasData = Array.isArray(response)
+        ? response
+        : response?.data
+          ? response.data
+          : [];
+      setMesas(mesasData);
     } catch (error) {
-      setMensagemFeedback("Erro ao carregar mesas");
-      setTipoFeedback("error");
-      setOpenFeedback(true);
+      showFeedback("Erro ao carregar mesas", "error");
+    } finally {
+      setIsLoading(false);
     }
-  }
+  }, [isLoading]);
 
   useEffect(() => {
     carregarMesas();
   }, []);
 
+  // =============================
+  // UTILITÁRIOS
+  // =============================
+  const showFeedback = (message, type = "success") => {
+    setFeedback({ message, type });
+    setModalState((prev) => ({ ...prev, feedback: true }));
+  };
+
+  const closeModal = (modalName) => {
+    setModalState((prev) => ({ ...prev, [modalName]: false }));
+    if (
+      modalName === "pagamento" ||
+      modalName === "addPedido" ||
+      modalName === "editPedido"
+    ) {
+      //setSelectedData({ mesa: null, pedido: null, total: 0 });
+    }
+  };
+
+  // =============================
+  // AÇÕES
+  // =============================
   const abrirPedido = (mesa) => {
-    setMesaSelecionada(mesa);
+    if (!mesa?.id) {
+      showFeedback("Mesa inválida", "error");
+      return;
+    }
 
-    if (mesa.status === "livre") {
-      setOpenAdd(true);
+    setSelectedData((prev) => ({ ...prev, mesa }));
+
+    if (mesa.status === MESA_STATUS.LIVRE) {
+      setModalState((prev) => ({ ...prev, addPedido: true }));
     } else {
-      setOpenEdit(true);
+      setModalState((prev) => ({ ...prev, editPedido: true }));
     }
   };
 
-  const handleFecharPedido = (pedidoAtual, total) => {
-    setPedidoParaPagamento(pedidoAtual);
-    setTotalPagamento(total);
-    setOpenPagamento(true);
-  };
-
-  const handleConfirmPagamento = async (formaPagamento) => {
-    if (!pedidoParaPagamento || !mesaSelecionada) return;
-
-    try {
-      const resposta = await window.api.pagamento.cadastrarPagamento(
-        pedidoParaPagamento.id,
-        formaPagamento,
-        totalPagamento,
-        mesaSelecionada.numero,
-      );
-
-      if (!resposta?.success) {
-        setMensagemFeedback(resposta?.error || "Erro ao registrar pagamento");
-        setTipoFeedback("error");
-        setOpenFeedback(true);
-        return;
-      }
-
-      setMensagemFeedback("Pagamento realizado com sucesso!");
-      setTipoFeedback("success");
-      setOpenFeedback(true);
-
-      setOpenPagamento(false);
-      carregarMesas();
-    } catch (error) {
-      setMensagemFeedback("Erro inesperado ao processar pagamento");
-      setTipoFeedback("error");
-      setOpenFeedback(true);
+  const handleFecharPedido = (pedidoAtual, total, mesa) => {
+    if (!pedidoAtual?.id || total <= 0) {
+      showFeedback("Pedido inválido", "error");
+      return;
     }
+
+    setSelectedData((prev) => ({
+      ...prev,
+      pedido: pedidoAtual,
+      total: total,
+      mesa: mesa
+    }));
+    
+
+    setModalState((prev) => ({ ...prev, pagamento: true }));
   };
+
+ const handleConfirmPagamento = async (formaPagamento) => {
+   // 🟢 1. PEGA OS DADOS PRIMEIRO
+   const { mesa, pedido, total } = selectedData;
+
+   // 🟢 2. LOG DEPOIS DE PEGAR OS DADOS (com optional chaining pra não quebrar)
+   console.log("📝 Dados do pagamento:", {
+     formaPagamento,
+     idPedido: pedido?.id,
+     numeroMesa: mesa,
+     total,
+   });
+
+   // 🟢 3. VALIDAÇÕES
+   if (!pedido?.id) {
+     showFeedback("ID do pedido não encontrado", "error");
+     return;
+   }
+
+   if (!mesa?.numero) {
+     showFeedback("Número da mesa não encontrado", "error");
+     return;
+   }
+
+   if (!formaPagamento) {
+     showFeedback("Selecione uma forma de pagamento", "error");
+     return;
+   }
+
+   if (total <= 0) {
+     showFeedback("Total inválido para pagamento", "error");
+     return;
+   }
+
+   // 🟢 4. PROCESSA PAGAMENTO
+   setIsLoading(true);
+
+   try {
+     console.log("🔄 Processando pagamento...");
+
+     const resposta = await window.api.pagamento.cadastrarPagamento(
+       pedido.id,
+       formaPagamento,
+       total,
+       mesa.numero,
+     );
+
+     console.log("✅ Resposta do pagamento:", resposta);
+
+     const success = resposta?.success || resposta?.status === "success";
+
+     if (!success) {
+       showFeedback(resposta?.error || "Erro no pagamento", "error");
+       return;
+     }
+
+     showFeedback("Pagamento realizado com sucesso!", "success");
+     closeModal("pagamento");
+     await carregarMesas();
+   } catch (error) {
+     console.error("❌ Erro no pagamento:", error);
+     showFeedback(
+       "Erro ao processar pagamento: " + (error.message || ""),
+       "error",
+     );
+   } finally {
+     setIsLoading(false);
+   }
+ };
 
   return (
     <div className="layout">
@@ -96,106 +197,110 @@ export default function Mesas() {
             <h1>Mesas</h1>
             <p>Clique na mesa para abrir pedido</p>
           </div>
-
           <div className="buttons">
             <button
               className="remove"
-              onClick={() => setOpenModalRemover(true)}
+              onClick={() =>
+                setModalState((prev) => ({ ...prev, removerMesa: true }))
+              }
+              disabled={isLoading || mesas.length === 0}
             >
               Remover Mesa
             </button>
-
-            <button className="add" onClick={() => setOpenModalAdd(true)}>
+            <button
+              className="add"
+              onClick={() =>
+                setModalState((prev) => ({ ...prev, addMesa: true }))
+              }
+              disabled={isLoading}
+            >
               Adicionar Mesa
             </button>
           </div>
         </div>
 
-        <div className="grid">
-          {mesas.map((mesa) => (
-            <div
-              key={mesa.id}
-              className="card"
-              onClick={() => abrirPedido(mesa)}
-            >
-              <h2>{mesa.numero}</h2>
-
-              <span
-                className={
-                  mesa.status === "livre"
-                    ? "status disponivel"
-                    : "status ocupada"
-                }
+        {isLoading && !mesas.length ? (
+          <div className="loading">Carregando mesas...</div>
+        ) : (
+          <div className="grid">
+            {mesas.map((mesa) => (
+              <div
+                key={mesa.id}
+                className={`card ${isLoading ? "disabled" : ""}`}
+                onClick={() => !isLoading && abrirPedido(mesa)}
               >
-                {mesa.status === "livre" ? "Disponível" : "Ocupada"}
-              </span>
-            </div>
-          ))}
-        </div>
+                <h2>Mesa {mesa.numero}</h2>
+                <span
+                  className={`status ${
+                    mesa.status === MESA_STATUS.LIVRE ? "disponivel" : "ocupada"
+                  }`}
+                >
+                  {mesa.status === MESA_STATUS.LIVRE ? "Disponível" : "Ocupada"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
 
-      {/* MODAIS */}
-
+      {/* Modais */}
       <AddMesaModal
-        isOpen={openModalAdd}
-        onClose={() => setOpenModalAdd(false)}
+        isOpen={modalState.addMesa}
+        onClose={() => closeModal("addMesa")}
         onMesaCriada={() => {
           carregarMesas();
-          setMensagemFeedback("Mesa cadastrada com sucesso!");
-          setTipoFeedback("success");
-          setOpenFeedback(true);
+          showFeedback("Mesa cadastrada com sucesso!");
+          closeModal("addMesa");
         }}
       />
 
       <RemoverMesaModal
-        isOpen={openModalRemover}
-        onClose={() => setOpenModalRemover(false)}
+        isOpen={modalState.removerMesa}
+        onClose={() => closeModal("removerMesa")}
         onMesaRemovida={() => {
           carregarMesas();
-          setMensagemFeedback("Mesa removida com sucesso!");
-          setTipoFeedback("success");
-          setOpenFeedback(true);
+          showFeedback("Mesa removida com sucesso!");
+          closeModal("removerMesa");
         }}
       />
 
       <PedidoModal
-        isOpen={openAdd}
-        onClose={() => {
-          setOpenAdd(false);
-          carregarMesas();
+        isOpen={modalState.addPedido}
+        onClose={(sucesso) => {
+          closeModal("addPedido");
+          if (sucesso) carregarMesas();
         }}
-        mesa={mesaSelecionada}
+        mesa={selectedData.mesa}
       />
 
       <EditarPedidoModal
-        isOpen={openEdit}
-        onClose={() => {
-          setOpenEdit(false);
-          carregarMesas();
-        }}
-        mesa={mesaSelecionada}
+        isOpen={modalState.editPedido}
+        onClose={() => closeModal("editPedido")}
+        mesa={selectedData.mesa}
         onAdicionarItens={() => {
-          setOpenEdit(false);
-          setOpenAdd(true);
+          closeModal("editPedido");
+          setModalState((prev) => ({ ...prev, addPedido: true }));
+         
+       
         }}
         onFecharPedido={handleFecharPedido}
       />
 
       <PaymentModal
-        isOpen={openPagamento}
-        onClose={() => setOpenPagamento(false)}
-        total={totalPagamento}
-        pedidoAtual={pedidoParaPagamento}
+        isOpen={modalState.pagamento}
+        onClose={() => closeModal("pagamento")}
+        total={selectedData.total}
         onConfirm={handleConfirmPagamento}
+        isLoading={isLoading}
       />
 
       <CustomModal
-        isOpen={openFeedback}
-        title={tipoFeedback === "success" ? "Sucesso" : "Erro"}
-        message={mensagemFeedback}
-        onClose={() => setOpenFeedback(false)}
+        isOpen={modalState.feedback}
+        title={feedback.type === "success" ? "Sucesso" : "Erro"}
+        message={feedback.message}
+        onClose={() => closeModal("feedback")}
         duration={3000}
-        type={tipoFeedback}
+        type={feedback.type}
         cancelText="Fechar"
       />
     </div>

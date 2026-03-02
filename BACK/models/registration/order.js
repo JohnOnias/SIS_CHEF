@@ -1,4 +1,5 @@
 import {
+  sequelize,
   Pedido,
   Funcionario,
   Mesa,
@@ -32,6 +33,7 @@ export async function getPedidos() {
   }
 }
 export async function atualizarPedido(idPedido, idItemPedido, novaQuantidade) {
+  console.log("oq chegou no AtualizarPedido: idpedido:" ,idPedido, "idItemPedido: ", idItemPedido, "Novaquantidade: ", novaQuantidade);
   if (!idPedido) throw new Error("ID do pedido não definido");
   if (!idItemPedido) throw new Error("ID do item não definido");
   if (novaQuantidade < 0) throw new Error("Quantidade inválida");
@@ -56,6 +58,7 @@ export async function atualizarPedido(idPedido, idItemPedido, novaQuantidade) {
   return item;
 }
 export async function editarPedido(idPedido, dadosAtualizados) {
+  console.log("oqchegou no editarPedido: idPedido: ",idPedido, "objeto:", dadosAtualizados );
   try {
     const pedido = await Pedido.findByPk(idPedido);
 
@@ -78,43 +81,55 @@ export async function editarPedido(idPedido, dadosAtualizados) {
   }
 }
 
+
+
+
 export async function registrarPedido(numeroMesa, idGarcom) {
+  console.log("oq chegou no registrarPedido: " ,numeroMesa, "idfuncionario: ", idGarcom );
+  const t = await sequelize.transaction();
+
   try {
-    const mesa = await Mesa.findOne({ where: { numero: numeroMesa } });
+    const mesa = await Mesa.findOne(
+      { where: { numero: numeroMesa } },
+      { transaction: t },
+    );
 
-    if (!mesa) {
-      throw new Error("Numeração de mesa não cadastrada!");
-    }
+    if (!mesa) throw new Error("Numeração de mesa não cadastrada!");
 
-    if (mesa.status.toLowerCase() === "ocupada") {
+    if (mesa.status.toLowerCase() === "ocupada")
       throw new Error("Mesa já ocupada.");
-    }
 
-    const pedidoExistente = await Pedido.findOne({
-      where: { mesa_numero: numeroMesa, status: "aberto" },
-    });
+    const pedidoExistente = await Pedido.findOne(
+      {
+        where: { mesa_numero: numeroMesa, status: "aberto" },
+      },
+      { transaction: t },
+    );
 
-    if (pedidoExistente) {
-      throw new Error("Mesa já tem um pedido.");
-    }
+    if (pedidoExistente) throw new Error("Mesa já tem um pedido aberto.");
 
     mesa.status = "ocupada";
-    await mesa.save();
+    await mesa.save({ transaction: t });
 
-    const pedido = await Pedido.create({
-      mesa_numero: numeroMesa,
-      data_criacao: new Date(),
-      status: "aberto",
-      valor_total: 0,
-      id_funcionario: idGarcom,
-    });
+    const pedido = await Pedido.create(
+      {
+        mesa_numero: numeroMesa,
+        data_criacao: new Date(),
+        status: "aberto",
+        valor_total: 0,
+        id_funcionario: idGarcom,
+      },
+      { transaction: t },
+    );
 
+    await t.commit();
     return { success: true, id: pedido.id };
   } catch (err) {
-    console.error("Erro no registrarPedido:", err);
+    await t.rollback();
     throw err;
   }
 }
+
 
 /* =========================
    PRODUTOS
@@ -139,57 +154,60 @@ export async function getTodosProdutos() {
     throw err;
   }
 }
-
 export async function adicionarProdutosPedido(idPedido, itens) {
-  console.log("pegos no adcionar itens", itens);
+  console.log("oq chegou no adcionarProdutosPedido: idpedido:", idPedido, "objeto: ", itens);
+  const t = await sequelize.transaction();
+
   try {
-    if (!idPedido) {
-      throw new Error("ID do pedido não definido");
-    }
+    if (!idPedido) throw new Error("ID do pedido não definido");
 
-    if (!Array.isArray(itens) || itens.length === 0) {
+    if (!Array.isArray(itens) || itens.length === 0)
       throw new Error("Lista de itens inválida");
-    }
 
-    const pedido = await Pedido.findByPk(idPedido);
-    if (!pedido) {
-      throw new Error("Pedido não encontrado");
-    }
+    const pedido = await Pedido.findByPk(idPedido, { transaction: t });
 
-    if (pedido.status !== "aberto") {
-      throw new Error("Pedido não está aberto");
-    }
+    if (!pedido) throw new Error("Pedido não encontrado");
+
+    if (pedido.status !== "aberto") throw new Error("Pedido não está aberto");
 
     const itensCriados = [];
 
     for (const item of itens) {
       const { id, quantidade } = item;
+
       if (!id) throw new Error("ID do produto não informado");
 
-      const produto = await Produto.findByPk(id);
+      const produto = await Produto.findByPk(id, { transaction: t });
+
       if (!produto) throw new Error(`Produto ${id} não encontrado`);
 
-      if (produto.status?.toLowerCase() !== "disponivel") {
+      if (produto.status?.toLowerCase() !== "disponivel")
         throw new Error(`Produto ${produto.nome} está indisponível`);
-      }
 
-      const novoItem = await ItemPedido.create({
-        id_pedido: idPedido,
-        id_produto: id,
-        quantidade: quantidade,
-        preco_unitario: produto.preco,
-      });
+      const novoItem = await ItemPedido.create(
+        {
+          id_pedido: idPedido,
+          id_produto: id,
+          quantidade,
+          preco_unitario: produto.preco,
+        },
+        { transaction: t },
+      );
 
       itensCriados.push(novoItem);
     }
+
+    await t.commit();
     return itensCriados;
   } catch (error) {
-    console.error("Erro ao adicionar produtos:", error);
+    await t.rollback();
     throw error;
   }
 }
 
+
 export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
+  console.log("oq chegou no removerPordutoPedido: idpedido: ", idPedido, "idproduto: ", idProduto, "quantidade: ",quantidade);
   try {
     const item = await ItemPedido.findOne({
       where: { id_pedido: idPedido, id_produto: idProduto },
@@ -222,6 +240,7 @@ export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
 }
 
 export async function listarItensPedido(idPedido) {
+  console.log("idPedido que chegou no ListarItensPedido: ", idPedido);
   try {
     const itens = await ItemPedido.findAll({
       where: { id_pedido: idPedido },
@@ -260,11 +279,6 @@ export async function getListaPedidos() {
           attributes: ["id", "nome"],
         },
         {
-          model: Mesa,
-          as: "mesa",
-          attributes: ["numero"],
-        },
-        {
           model: ItemPedido,
           as: "itens",
           include: {
@@ -289,15 +303,15 @@ export async function getListaPedidos() {
         0,
       );
 
-      return {
-        id: json.id,
-        mesa_numero: json.mesa?.numero,
-        data_criacao: new Date(json.data_criacao),
-        status: json.status,
-        Funcionario: json.funcionario,
-        valor_total,
-        pagamento: json.pagamento,
-      };
+     return {
+       id: json.id,
+       mesa_numero: json.mesa_numero,
+       data_criacao: new Date(json.data_criacao),
+       status: json.status,
+       Funcionario: json.funcionario,
+       valor_total,
+       pagamento: json.pagamento,
+     };
     });
   } catch (err) {
     console.error("Erro ao listar pedidos:", err);
@@ -306,6 +320,8 @@ export async function getListaPedidos() {
 }
 
 export async function listarPedidosMesa(mesaNumero) {
+  console.log("oq chegou no listarPedidoMesa: mesaNumero: ", mesaNumero);
+
   try {
     const pedidos = await Pedido.findAll({
       where: { mesa_numero: mesaNumero, status: "aberto" },
@@ -330,24 +346,38 @@ export async function listarPedidosMesa(mesaNumero) {
 /* =========================
    STATUS
 ========================= */
-
 export async function fecharPedido(idPedido, valorTotal) {
-  try {
-    const pedido = await Pedido.findByPk(idPedido);
+  console.log("oq chegou no fecharPedido: idpedido: ", idPedido, "valortotal: ", valorTotal);
+  const t = await sequelize.transaction();
 
-    if (!pedido) {
-      return { success: false, error: "Pedido não encontrado." };
+  try {
+    const pedido = await Pedido.findByPk(idPedido, { transaction: t });
+
+    if (!pedido) throw new Error("Pedido não encontrado.");
+
+    await pedido.update(
+      {
+        status: "fechado",
+        valor_total: valorTotal,
+      },
+      { transaction: t },
+    );
+
+    const mesa = await Mesa.findOne(
+      { where: { numero: pedido.mesa_numero } },
+      { transaction: t },
+    );
+
+    if (mesa) {
+      mesa.status = "livre";
+      await mesa.save({ transaction: t });
     }
 
-    await pedido.update({
-      status: "fechado",
-      valor_total: valorTotal,
-    });
-
+    await t.commit();
     return pedido;
   } catch (error) {
-    console.error("Erro ao fechar pedido:", error);
-    return { success: false, error: error.message };
+    await t.rollback();
+    throw error;
   }
 }
 

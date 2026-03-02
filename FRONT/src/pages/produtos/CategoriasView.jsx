@@ -23,6 +23,8 @@ function CategoriasView() {
   const [mensagemFeedback, setMensagemFeedback] = useState("");
   const [tipoFeedback, setTipoFeedback] = useState("success");
 
+  //usuario logado
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
   // produtos
   const [openProdutoAdd, setOpenProdutoAdd] = useState(false);
   const [openProdutoEdit, setOpenProdutoEdit] = useState(false);
@@ -60,6 +62,7 @@ function CategoriasView() {
 
             </div>
 
+         {usuario.tipo === "gerente" ? 
           <div className="buttons">
             <button
               className="remove"
@@ -86,7 +89,8 @@ function CategoriasView() {
             <button className="add" onClick={() => setOpenProdutoAdd(true)}>
               Adicionar Produto
             </button>
-          </div>
+          </div> :
+          ""}
           </div>
           
           <div className="catview-category-container">

@@ -58,11 +58,11 @@ module.exports = function orderIpc() {
 
   // Pegar dados do pedido atual
   ipcMain.handle("getDadosPedidoAtual", async () => {
-    return pedidoAtual;
+    return  await pedidoAtual;
   });
   
   ipcMain.handle("listarPedidos", async (event, numeroMesa) => {
-     return listarPedidos(numeroMesa);
+     return await listarPedidos(numeroMesa);
   });
     
   // Pegar produtos de uma categoria
