@@ -5,7 +5,6 @@ import "./styles/paymentModal.css";
 
 function PaymentModal({ isOpen, total, onClose, onConfirm }) {
   const [formaPagamento, setFormaPagamento] = useState("PIX");
-  
 
   const portalRoot = useMemo(() => {
     let el = document.getElementById("payment-modal-root");
@@ -17,11 +16,15 @@ function PaymentModal({ isOpen, total, onClose, onConfirm }) {
     return el;
   }, []);
 
+  if (!isOpen || total <= 0) return null; // Validação do total
 
-
-  if (!isOpen) return null;
-
-  const confirmar = () => onConfirm(formaPagamento);
+  const confirmar = () => {
+    if (!formaPagamento) {
+      alert("Selecione uma forma de pagamento."); // Feedback simples
+      return;
+    }
+    onConfirm(formaPagamento);
+  };
 
   return createPortal(
     <div className="payment-modal-overlay" onClick={onClose}>
@@ -42,7 +45,7 @@ function PaymentModal({ isOpen, total, onClose, onConfirm }) {
 
         {/* ===== CONTEÚDO ===== */}
         <div className="payment-modal-content">
-          <p className="payment-total">Total a pagar: R$ {total}</p>
+          <p className="payment-total">Total a pagar: R$ {total.toFixed(2)}</p>
 
           <label className="payment-label">Forma de pagamento:</label>
           <div className="payment-methods">
@@ -73,7 +76,7 @@ function PaymentModal({ isOpen, total, onClose, onConfirm }) {
           </div>
 
           <button className="payment-confirm-btn" onClick={confirmar}>
-            Pagar R$ {total} com {formaPagamento}
+            Pagar R$ {total.toFixed(2)} com {formaPagamento}
           </button>
         </div>
       </div>

@@ -121,7 +121,7 @@ function EditarPedidoModal({
           <button
             onClick={() => {
               onClose(); // fecha o EditarPedidoModal
-              onFecharPedido(pedidoAtual, calcularTotal()); // abre PaymentModal via função pai
+              onFecharPedido(pedidoAtual, calcularTotal(), mesa); // abre PaymentModal via função pai
             }}
           >
             Fechar Pedido

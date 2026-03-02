@@ -1,4 +1,5 @@
 import {
+  sequelize,
   Pedido,
   Funcionario,
   Mesa,
@@ -78,43 +79,54 @@ export async function editarPedido(idPedido, dadosAtualizados) {
   }
 }
 
+
+
+
 export async function registrarPedido(numeroMesa, idGarcom) {
+  const t = await sequelize.transaction();
+
   try {
-    const mesa = await Mesa.findOne({ where: { numero: numeroMesa } });
+    const mesa = await Mesa.findOne(
+      { where: { numero: numeroMesa } },
+      { transaction: t },
+    );
 
-    if (!mesa) {
-      throw new Error("Numeração de mesa não cadastrada!");
-    }
+    if (!mesa) throw new Error("Numeração de mesa não cadastrada!");
 
-    if (mesa.status.toLowerCase() === "ocupada") {
+    if (mesa.status.toLowerCase() === "ocupada")
       throw new Error("Mesa já ocupada.");
-    }
 
-    const pedidoExistente = await Pedido.findOne({
-      where: { mesa_numero: numeroMesa, status: "aberto" },
-    });
+    const pedidoExistente = await Pedido.findOne(
+      {
+        where: { mesa_numero: numeroMesa, status: "aberto" },
+      },
+      { transaction: t },
+    );
 
-    if (pedidoExistente) {
-      throw new Error("Mesa já tem um pedido.");
-    }
+    if (pedidoExistente) throw new Error("Mesa já tem um pedido aberto.");
 
     mesa.status = "ocupada";
-    await mesa.save();
+    await mesa.save({ transaction: t });
 
-    const pedido = await Pedido.create({
-      mesa_numero: numeroMesa,
-      data_criacao: new Date(),
-      status: "aberto",
-      valor_total: 0,
-      id_funcionario: idGarcom,
-    });
+    const pedido = await Pedido.create(
+      {
+        mesa_numero: numeroMesa,
+        data_criacao: new Date(),
+        status: "aberto",
+        valor_total: 0,
+        id_funcionario: idGarcom,
+      },
+      { transaction: t },
+    );
 
+    await t.commit();
     return { success: true, id: pedido.id };
   } catch (err) {
-    console.error("Erro no registrarPedido:", err);
+    await t.rollback();
     throw err;
   }
 }
+
 
 /* =========================
    PRODUTOS
@@ -139,55 +151,56 @@ export async function getTodosProdutos() {
     throw err;
   }
 }
-
 export async function adicionarProdutosPedido(idPedido, itens) {
-  console.log("pegos no adcionar itens", itens);
+  const t = await sequelize.transaction();
+
   try {
-    if (!idPedido) {
-      throw new Error("ID do pedido não definido");
-    }
+    if (!idPedido) throw new Error("ID do pedido não definido");
 
-    if (!Array.isArray(itens) || itens.length === 0) {
+    if (!Array.isArray(itens) || itens.length === 0)
       throw new Error("Lista de itens inválida");
-    }
 
-    const pedido = await Pedido.findByPk(idPedido);
-    if (!pedido) {
-      throw new Error("Pedido não encontrado");
-    }
+    const pedido = await Pedido.findByPk(idPedido, { transaction: t });
 
-    if (pedido.status !== "aberto") {
-      throw new Error("Pedido não está aberto");
-    }
+    if (!pedido) throw new Error("Pedido não encontrado");
+
+    if (pedido.status !== "aberto") throw new Error("Pedido não está aberto");
 
     const itensCriados = [];
 
     for (const item of itens) {
       const { id, quantidade } = item;
+
       if (!id) throw new Error("ID do produto não informado");
 
-      const produto = await Produto.findByPk(id);
+      const produto = await Produto.findByPk(id, { transaction: t });
+
       if (!produto) throw new Error(`Produto ${id} não encontrado`);
 
-      if (produto.status?.toLowerCase() !== "disponivel") {
+      if (produto.status?.toLowerCase() !== "disponivel")
         throw new Error(`Produto ${produto.nome} está indisponível`);
-      }
 
-      const novoItem = await ItemPedido.create({
-        id_pedido: idPedido,
-        id_produto: id,
-        quantidade: quantidade,
-        preco_unitario: produto.preco,
-      });
+      const novoItem = await ItemPedido.create(
+        {
+          id_pedido: idPedido,
+          id_produto: id,
+          quantidade,
+          preco_unitario: produto.preco,
+        },
+        { transaction: t },
+      );
 
       itensCriados.push(novoItem);
     }
+
+    await t.commit();
     return itensCriados;
   } catch (error) {
-    console.error("Erro ao adicionar produtos:", error);
+    await t.rollback();
     throw error;
   }
 }
+
 
 export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
   try {
@@ -330,24 +343,37 @@ export async function listarPedidosMesa(mesaNumero) {
 /* =========================
    STATUS
 ========================= */
-
 export async function fecharPedido(idPedido, valorTotal) {
-  try {
-    const pedido = await Pedido.findByPk(idPedido);
+  const t = await sequelize.transaction();
 
-    if (!pedido) {
-      return { success: false, error: "Pedido não encontrado." };
+  try {
+    const pedido = await Pedido.findByPk(idPedido, { transaction: t });
+
+    if (!pedido) throw new Error("Pedido não encontrado.");
+
+    await pedido.update(
+      {
+        status: "fechado",
+        valor_total: valorTotal,
+      },
+      { transaction: t },
+    );
+
+    const mesa = await Mesa.findOne(
+      { where: { numero: pedido.mesa_numero } },
+      { transaction: t },
+    );
+
+    if (mesa) {
+      mesa.status = "livre";
+      await mesa.save({ transaction: t });
     }
 
-    await pedido.update({
-      status: "fechado",
-      valor_total: valorTotal,
-    });
-
+    await t.commit();
     return pedido;
   } catch (error) {
-    console.error("Erro ao fechar pedido:", error);
-    return { success: false, error: error.message };
+    await t.rollback();
+    throw error;
   }
 }
 
