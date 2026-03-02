@@ -13,9 +13,9 @@ export default function HistoricoView() {
     carregarPedidos();
   }, []);
 pedidos.forEach((pedido) => {
-  console.log(
-    `Pedido ${pedido.id} - Tipo de pagamento: ${pedido.pagamento?.tipo_pagamento || "Sem pagamento"}`,
-  );
+  //console.log(`Pedido ${pedido.id} - Tipo de pagamento: ${pedido.pagamento?.tipo_pagamento || "Sem pagamento"}`,
+  console.log(pedido);  
+
 });
   return (
     <div className="historico-view-container">
@@ -40,6 +40,7 @@ pedidos.forEach((pedido) => {
           <tbody>
             {pedidos.length > 0 ? (
               pedidos.map((pedido) => (
+               
                 <tr key={pedido.id}>
                   <td>{pedido.id}</td>
                   <td>{pedido.mesa_numero}</td>

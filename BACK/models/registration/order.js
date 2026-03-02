@@ -33,6 +33,7 @@ export async function getPedidos() {
   }
 }
 export async function atualizarPedido(idPedido, idItemPedido, novaQuantidade) {
+  console.log("oq chegou no AtualizarPedido: idpedido:" ,idPedido, "idItemPedido: ", idItemPedido, "Novaquantidade: ", novaQuantidade);
   if (!idPedido) throw new Error("ID do pedido não definido");
   if (!idItemPedido) throw new Error("ID do item não definido");
   if (novaQuantidade < 0) throw new Error("Quantidade inválida");
@@ -57,6 +58,7 @@ export async function atualizarPedido(idPedido, idItemPedido, novaQuantidade) {
   return item;
 }
 export async function editarPedido(idPedido, dadosAtualizados) {
+  console.log("oqchegou no editarPedido: idPedido: ",idPedido, "objeto:", dadosAtualizados );
   try {
     const pedido = await Pedido.findByPk(idPedido);
 
@@ -83,6 +85,7 @@ export async function editarPedido(idPedido, dadosAtualizados) {
 
 
 export async function registrarPedido(numeroMesa, idGarcom) {
+  console.log("oq chegou no registrarPedido: " ,numeroMesa, "idfuncionario: ", idGarcom );
   const t = await sequelize.transaction();
 
   try {
@@ -152,6 +155,7 @@ export async function getTodosProdutos() {
   }
 }
 export async function adicionarProdutosPedido(idPedido, itens) {
+  console.log("oq chegou no adcionarProdutosPedido: idpedido:", idPedido, "objeto: ", itens);
   const t = await sequelize.transaction();
 
   try {
@@ -203,6 +207,7 @@ export async function adicionarProdutosPedido(idPedido, itens) {
 
 
 export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
+  console.log("oq chegou no removerPordutoPedido: idpedido: ", idPedido, "idproduto: ", idProduto, "quantidade: ",quantidade);
   try {
     const item = await ItemPedido.findOne({
       where: { id_pedido: idPedido, id_produto: idProduto },
@@ -235,6 +240,7 @@ export async function removerProdutoPedido(idPedido, idProduto, quantidade) {
 }
 
 export async function listarItensPedido(idPedido) {
+  console.log("idPedido que chegou no ListarItensPedido: ", idPedido);
   try {
     const itens = await ItemPedido.findAll({
       where: { id_pedido: idPedido },
@@ -273,11 +279,6 @@ export async function getListaPedidos() {
           attributes: ["id", "nome"],
         },
         {
-          model: Mesa,
-          as: "mesa",
-          attributes: ["numero"],
-        },
-        {
           model: ItemPedido,
           as: "itens",
           include: {
@@ -302,15 +303,15 @@ export async function getListaPedidos() {
         0,
       );
 
-      return {
-        id: json.id,
-        mesa_numero: json.mesa?.numero,
-        data_criacao: new Date(json.data_criacao),
-        status: json.status,
-        Funcionario: json.funcionario,
-        valor_total,
-        pagamento: json.pagamento,
-      };
+     return {
+       id: json.id,
+       mesa_numero: json.mesa_numero,
+       data_criacao: new Date(json.data_criacao),
+       status: json.status,
+       Funcionario: json.funcionario,
+       valor_total,
+       pagamento: json.pagamento,
+     };
     });
   } catch (err) {
     console.error("Erro ao listar pedidos:", err);
@@ -319,6 +320,8 @@ export async function getListaPedidos() {
 }
 
 export async function listarPedidosMesa(mesaNumero) {
+  console.log("oq chegou no listarPedidoMesa: mesaNumero: ", mesaNumero);
+
   try {
     const pedidos = await Pedido.findAll({
       where: { mesa_numero: mesaNumero, status: "aberto" },
@@ -344,6 +347,7 @@ export async function listarPedidosMesa(mesaNumero) {
    STATUS
 ========================= */
 export async function fecharPedido(idPedido, valorTotal) {
+  console.log("oq chegou no fecharPedido: idpedido: ", idPedido, "valortotal: ", valorTotal);
   const t = await sequelize.transaction();
 
   try {

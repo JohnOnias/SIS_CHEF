@@ -14,6 +14,7 @@ const MESA_STATUS = {
 };
 
 function AddPedidoModal({ isOpen, onClose, mesa }) {
+    console.log("🎯 PedidoModal renderizando:", { isOpen, mesa });
   const [itensSelecionados, setItensSelecionados] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
@@ -108,7 +109,12 @@ function AddPedidoModal({ isOpen, onClose, mesa }) {
     getProdutos();
   }, [categoriaSelecionada, isOpen]);
 
-  if (!isOpen || !mesa) return null;
+  if (!isOpen || !mesa){
+        console.log("❌ PedidoModal não vai renderizar:", { isOpen, mesa });
+    return null;
+
+
+  } 
 
   // =============================
   // MANIPULAR ITENS

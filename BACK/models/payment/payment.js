@@ -1,4 +1,5 @@
-import { Pagamento, Pedido } from "../../database/models/index.js";
+import { Pagamento, Pedido, sequelize } from "../../database/models/index.js";
+
 
 import { Mesa } from "../../database/models/index.js";
 
@@ -11,22 +12,49 @@ export async function cadastrarPagamento(
   valorPago,
   mesa,
 ) {
+  console.log(
+    "oq chegou no registrar pagamento:",
+    "idPedido:",
+    pedidoId,
+    "tipoPagamento:",
+    tipoPagamento,
+    "valorpago:",
+    valorPago,
+    "mesa:",
+    mesa,
+  );
+
+  const transaction = await sequelize.transaction();
+
   try {
-    const pagamento = await Pagamento.create({
-      id_pedido: pedidoId,
-      tipo_pagamento: tipoPagamento,
-      valor_pago: valorPago,
-    });
+    const pagamento = await Pagamento.create(
+      {
+        id_pedido: pedidoId,
+        tipo_pagamento: tipoPagamento,
+        valor_pago: valorPago,
+      },
+      { transaction },
+    );
 
-    if (pagamento) {
-      // Atualiza status da mesa para livre
-      await Mesa.update({ status: "livre" }, { where: { numero: mesa } });
-      await Pedido.update({ status: "fechado"}, { where: {id: pedidoId}});
-
+    if (!pagamento) {
+      throw new Error("Falha ao criar pagamento");
     }
+
+    await Pedido.update(
+      { status: "fechado" },
+      { where: { id: pedidoId }, transaction },
+    );
+
+    await Mesa.update(
+      { status: "livre" },
+      { where: { numero: mesa }, transaction },
+    );
+
+    await transaction.commit();
 
     return { success: true };
   } catch (error) {
+    await transaction.rollback();
     console.error("Erro ao cadastrar pagamento:", error);
     return { success: false, error: error.message };
   }
@@ -35,6 +63,7 @@ export async function cadastrarPagamento(
 
 
 export async function buscarPagamentoPorPedidoId(pedidoId) {
+  console.log("oq chegou o buscamentoPagamentoPedidoId: pedidoid:", pedidoId);
   try {
     const pagamento = await Pagamento.findOne({
       where: { id_pedido: pedidoId },

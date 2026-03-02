@@ -81,7 +81,7 @@ export default function Mesas() {
       modalName === "addPedido" ||
       modalName === "editPedido"
     ) {
-      setSelectedData({ mesa: null, pedido: null, total: 0 });
+      //setSelectedData({ mesa: null, pedido: null, total: 0 });
     }
   };
 
@@ -113,8 +113,9 @@ export default function Mesas() {
       ...prev,
       pedido: pedidoAtual,
       total: total,
-      mesa: mesa.numero, 
+      mesa: mesa
     }));
+    
 
     setModalState((prev) => ({ ...prev, pagamento: true }));
   };
@@ -137,7 +138,7 @@ export default function Mesas() {
      return;
    }
 
-   if (!mesa) {
+   if (!mesa?.numero) {
      showFeedback("Número da mesa não encontrado", "error");
      return;
    }
@@ -162,7 +163,7 @@ export default function Mesas() {
        pedido.id,
        formaPagamento,
        total,
-       mesa,
+       mesa.numero,
      );
 
      console.log("✅ Resposta do pagamento:", resposta);
@@ -279,6 +280,8 @@ export default function Mesas() {
         onAdicionarItens={() => {
           closeModal("editPedido");
           setModalState((prev) => ({ ...prev, addPedido: true }));
+         
+       
         }}
         onFecharPedido={handleFecharPedido}
       />
